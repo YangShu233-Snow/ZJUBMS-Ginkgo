@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ginkgo Examples</title>
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+      body {
+        font-family:
+          "Inter",
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          Roboto,
+          sans-serif;
+      }
+      .flip-card {
+        perspective: 1000px;
+        height: clamp(320px, 55dvh, 380px);
+      }
+      .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        transform-style: preserve-3d;
+        cursor: pointer;
+      }
+      .flip-card.flipped .flip-card-inner {
+        transform: rotateY(180deg);
+      }
+      .flip-card-front,
+      .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 2rem;
+        border-radius: 1.5rem;
+        box-shadow:
+          0 10px 25px -5px rgba(0, 0, 0, 0.05),
+          0 8px 10px -6px rgba(0, 0, 0, 0.05);
+      }
+      .flip-card-back {
+        transform: rotateY(180deg);
+      }
+      .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+      }
+      .sidebar-shell {
+        visibility: hidden;
+        transition: visibility 0s linear 450ms;
+      }
+      .sidebar-shell aside {
+        transform: translateX(-100%);
+        transition-duration: 360ms;
+      }
+      .js-sidebar-backdrop {
+        opacity: 0;
+        -webkit-backdrop-filter: blur(0);
+        backdrop-filter: blur(0);
+        transition:
+          opacity 450ms ease,
+          -webkit-backdrop-filter 450ms ease,
+          backdrop-filter 450ms ease;
+      }
+      .sidebar-shell.is-open {
+        visibility: visible;
+        transition-delay: 0s;
+      }
+      .sidebar-shell.is-open aside {
+        transform: translateX(0);
+      }
+      .sidebar-shell.is-open .js-sidebar-backdrop {
+        opacity: 1;
+        -webkit-backdrop-filter: blur(2px);
+        backdrop-filter: blur(2px);
+      }
+      @media (min-width: 768px) {
+        .sidebar-shell {
+          visibility: visible;
+        }
+        .sidebar-shell aside {
+          transform: none;
+        }
+      }
+      @media (max-width: 767px) {
+        .sidebar-shell nav a {
+          display: flex;
+          min-height: 36px;
+          align-items: center;
+          padding-top: 0.5rem;
+          padding-bottom: 0.5rem;
+          font-size: 0.8125rem;
+          line-height: 1.25rem;
+        }
+        .sidebar-shell .js-link-container {
+          position: relative;
+          border-left: 0;
+        }
+        .sidebar-shell .js-link-container::before {
+          position: absolute;
+          top: 0.375rem;
+          bottom: 0.375rem;
+          left: 0;
+          width: 2px;
+          border-radius: 9999px;
+          background: rgb(226 232 240);
+          content: "";
+        }
+        .mobile-question-scroll {
+          max-height: calc(100dvh - 10.75rem);
+          overflow-y: auto;
+          overscroll-behavior: contain;
+          padding-right: 0.125rem;
+          padding-bottom: max(0.25rem, env(safe-area-inset-bottom));
+          -webkit-overflow-scrolling: touch;
+          scrollbar-color: rgb(203 213 225) transparent;
+          scrollbar-width: thin;
+        }
+        .flip-card-front,
+        .flip-card-back {
+          padding: 1rem;
+          border-radius: 1rem;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .flip-card-inner,
+        .sidebar-shell aside,
+        .js-sidebar-backdrop {
+          transition-duration: 0.01ms !important;
+        }
+      }
+    </style>
+  </head>
+  <body class="h-screen h-[100dvh] overflow-hidden bg-slate-50 text-slate-800">
+    <div class="flex h-full w-full flex-col md:flex-row">
+      <!-- 移动端顶部导航 -->
+      <header class="flex h-14 shrink-0 items-center gap-3 border-b border-slate-200 bg-white px-3 md:hidden">
+        <button type="button" class="js-sidebar-open inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-slate-600 hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500" aria-label="打开目录" aria-controls="site-sidebar" aria-expanded="false">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <path d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
+        <div class="js-mobile-site-title truncate font-bold text-slate-900">
+          Site Name
+        </div>
+      </header>
+
+      <!-- 引入侧边栏子组件 -->
+      <div class=".js-asider-container sidebar-shell fixed inset-0 z-50 md:static md:z-auto md:h-full md:w-60 md:shrink-0" aria-hidden="true" inert>
+        <button type="button" class="js-sidebar-backdrop absolute inset-0 bg-slate-900/50 md:hidden" aria-label="关闭目录"></button>
+      <aside id="site-sidebar" class="absolute inset-y-0 left-0 flex h-full w-[min(20rem,75vw)] shrink-0 flex-col border-r border-slate-200 bg-white shadow-2xl transition-transform ease-out md:static md:w-60 md:shadow-none">
+  <!-- 网站标题 -->
+  <div class="flex min-h-14 items-center gap-2 border-b border-slate-100 p-3 md:p-4">
+    <a href="../index.html" class="js-site-link min-w-0 flex-1 truncate text-lg font-bold">Ginkgo Examples</a>
+    <button type="button" class="js-sidebar-close inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-2xl font-normal text-slate-500 hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 md:hidden" aria-label="关闭目录">
+      ×
+    </button>
+  </div>
+
+  <!-- 动态菜单挂载的目标容器 -->
+  <nav class="js-menu-container flex-1 space-y-3 overflow-y-auto p-4 pb-[max(1rem,env(safe-area-inset-bottom))] md:space-y-4">
+    <!--  -->
+  <div class="js-tpl-category-item space-y-1 md:space-y-2">
+      <div class="js-category-title px-2 text-sm font-bold tracking-wide text-slate-600 md:text-xs md:uppercase md:tracking-wider md:text-slate-400">人体结构与功能学<!-- 分类名占位 -->
+      </div>
+      <div class="js-link-container ml-3 space-y-0.5 border-l-2 border-slate-200 pl-2 md:space-y-1 md:border-l md:border-slate-100">
+        <!-- 子链接将会被 append 到这里 -->
+      <a href="../%E4%BA%BA%E4%BD%93%E7%BB%93%E6%9E%84%E4%B8%8E%E5%8A%9F%E8%83%BD%E5%AD%A6/2024-2025%E6%98%A5%E5%A4%8F%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="block w-full text-left px-3 py-1.5 text-xs rounded-md transition-all bg-blue-50 text-blue-600 font-bold">2024-2025春夏期末回忆卷<!-- 链接文本占位 -->
+    </a>
+  </div>
+    </div>
+  <div class="js-tpl-category-item space-y-1 md:space-y-2">
+      <div class="js-category-title px-2 text-sm font-bold tracking-wide text-slate-600 md:text-xs md:uppercase md:tracking-wider md:text-slate-400">细胞与生物分子 I<!-- 分类名占位 -->
+      </div>
+      <div class="js-link-container ml-3 space-y-0.5 border-l-2 border-slate-200 pl-2 md:space-y-1 md:border-l md:border-slate-100">
+        <!-- 子链接将会被 append 到这里 -->
+      <a href="../%E7%BB%86%E8%83%9E%E4%B8%8E%E7%94%9F%E7%89%A9%E5%88%86%E5%AD%90%20I/2024-2025%E7%A7%8B%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025秋回忆卷<!-- 链接文本占位 -->
+    </a>
+  <a href="../%E7%BB%86%E8%83%9E%E4%B8%8E%E7%94%9F%E7%89%A9%E5%88%86%E5%AD%90%20I/2023-2024%E7%A7%8B%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2023-2024秋回忆卷<!-- 链接文本占位 -->
+    </a>
+  </div>
+    </div>
+  <div class="js-tpl-category-item space-y-1 md:space-y-2">
+      <div class="js-category-title px-2 text-sm font-bold tracking-wide text-slate-600 md:text-xs md:uppercase md:tracking-wider md:text-slate-400">医学生命基础<!-- 分类名占位 -->
+      </div>
+      <div class="js-link-container ml-3 space-y-0.5 border-l-2 border-slate-200 pl-2 md:space-y-1 md:border-l md:border-slate-100">
+        <!-- 子链接将会被 append 到这里 -->
+      <a href="../%E5%8C%BB%E5%AD%A6%E7%94%9F%E5%91%BD%E5%9F%BA%E7%A1%80/2024-2025%E7%A7%8B%E5%86%AC%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7%EF%BC%88%E8%80%81%E5%B8%88%E7%89%88%EF%BC%89.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025秋冬期末回忆卷（老师版）<!-- 链接文本占位 -->
+    </a>
+  </div>
+    </div>
+  <div class="js-tpl-category-item space-y-1 md:space-y-2">
+      <div class="js-category-title px-2 text-sm font-bold tracking-wide text-slate-600 md:text-xs md:uppercase md:tracking-wider md:text-slate-400">医学大数据与应用<!-- 分类名占位 -->
+      </div>
+      <div class="js-link-container ml-3 space-y-0.5 border-l-2 border-slate-200 pl-2 md:space-y-1 md:border-l md:border-slate-100">
+        <!-- 子链接将会被 append 到这里 -->
+      <a href="../%E5%8C%BB%E5%AD%A6%E5%A4%A7%E6%95%B0%E6%8D%AE%E4%B8%8E%E5%BA%94%E7%94%A8/2024-2025%E5%A4%8F%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025夏回忆卷<!-- 链接文本占位 -->
+    </a>
+  </div>
+    </div>
+  </nav>
+
+  <!-- 分类外壳母版 -->
+  <template class="js-tpl-category">
+    <div class="js-tpl-category-item space-y-1 md:space-y-2">
+      <div class="js-category-title px-2 text-sm font-bold tracking-wide text-slate-600 md:text-xs md:uppercase md:tracking-wider md:text-slate-400">
+        <!-- 分类名占位 -->
+      </div>
+      <div class="js-link-container ml-3 space-y-0.5 border-l-2 border-slate-200 pl-2 md:space-y-1 md:border-l md:border-slate-100">
+        <!-- 子链接将会被 append 到这里 -->
+      </div>
+    </div>
+  </template>
+
+  <!-- 2. 链接母版 -->
+  <template class="js-tpl-link">
+    <a href="#" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">
+      <!-- 链接文本占位 -->
+    </a>
+  </template>
+</aside>
+</div>
+
+      <!-- 右侧主体内容区 -->
+      <main class=".js-quiz-container min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-contain p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:p-5 md:p-8"><div id="root"></div>
+
+<script>const mcqs = [{"q": "神经嵴的作用不包括以下哪项？", "a": [" 介导体节的分化", "参与头尾轴形成", "参与椎间盘髓核的形成", "参与颅面骨板的发育", "形成外周神经系统"], "c": [0]}, {"q": "Which of the following statements about the ovary is incorrect?", "a": ["A constant endocrine gland secreting estrogen and progesterone", "Lies between the internal and external iliac arteries", "Located in the ovarian fossa", "Covered by peritoneum on its surface", " Develops from the paramesonephric duct"], "c": [4]}, {"q": "一名新生儿因肚子微胀被检查发现无肛门，推测其母亲在孕早期发烧导致此畸形。根据胚胎发育规律，该畸形最可能发生在末次月经计算的哪一周？", "a": ["1-2", "3-4", " 9-10", "19-20", "29"], "c": [2]}, {"q": "A woman undergoes an abdominal examination immediately after breakfast while lying supine (on her back). Which of the following organs is most likely to be palpable or auscultated under these conditions?", "a": ["Stomach", "Pancreas", " Kidney", "Liver", "Spleen"], "c": [2]}, {"q": "关于甲状腺的描述错误的是", "a": ["人体最大的内分泌器官", "甲状腺峡部通常位于第2-4气管软骨前方", " 在 C1-C2 椎体的位置", "分泌三碘甲状腺原氨酸（T3）和甲状腺素（T4）", "甲状腺滤泡上皮细胞是甲状腺激素合成的主要细胞"], "c": [2]}, {"q": "甲状腺滤泡的形态与其功能状态密切相关，关于甲状腺滤泡旁细胞的描述，正确的是", "a": ["甲状腺分泌活跃时，滤泡旁细胞变扁平，滤泡腔缩小", "甲状腺分泌不活跃时，滤泡旁细胞呈立方或柱状，滤泡腔变大", "甲状腺分泌活跃时，滤泡旁细胞呈高柱状，滤泡腔变大", "甲状腺分泌不活跃时，滤泡旁细胞变扁平，滤泡腔缩小", " 其形态与功能状态无关"], "c": [4]}, {"q": "The alveolus is mainly composed of which of the following?", "a": ["Elastic fibers", "Reticular fibers", "Collagen fibers", " Type I pneumocytes", "Type II pneumocytes"], "c": [3]}, {"q": "Which of the following statements about the thymus is correct?", "a": ["Located anterior to the 2nd-4th thoracic vertebrae", " Secretes thymosin", "Site of B lymphocyte differentiation", "Secretes thyroxine", "Located in the abdominal cavity"], "c": [1]}, {"q": "What is the basic structural and functional unit of the kidney?", "a": ["Glomerulus", "Renal pyramid", " Nephron", "Collecting duct", "Renal pelvis"], "c": [2]}, {"q": "Which transporter mediates NaCl reabsorption in the thick ascending limb of the loop of Henle?", "a": ["Na⁺/K⁺ ATPase", "Na⁺/H⁺ exchanger", " Na⁺-K⁺-2Cl⁻ cotransporter", "ACP", "Mineralocorticoid receptor"], "c": [2]}, {"q": "肾上腺", "a": ["是腹膜内器官", "分泌肾素", " 髓质分泌肾上腺素", "束状带和网状带分泌醛固酮", "球状带分泌糖皮质激素"], "c": [2]}, {"q": "下列哪种激素主要促进肾小管对钠离子的重吸收？", "a": [" 醛固酮（Aldosterone）", "抗利尿激素（ADH）", "心房利钠肽（ANP）", "甲状旁腺激素（PTH）", "血管紧张素II（Angiotensin II）"], "c": [0]}, {"q": "Which vein drains the gallbladder?", "a": [" Hepatic portal vein", "Inferior vena cava", "Splenic vein", "Superior mesenteric vein", "Hepatic veins"], "c": [0]}, {"q": "关于近端小管重吸收的特点，正确的是：", "a": ["选择性吸收葡萄糖和氨基酸", " 主动重吸收钠离子并伴随被动重吸收水", "通过渗透作用重吸收尿素", "高度依赖管周毛细血管的胶体渗透压", "参与肾小管-间质旁路重吸收"], "c": [1]}, {"q": "子宫内膜增生的主要促进激素是：", "a": [" 雌激素", "孕激素", "黄体生成素（LH）", "促卵泡激素（FSH）", "促性腺激素释放激素"], "c": [0]}, {"q": "肺换气的直接动力是：", "a": [" 气体扩散", "呼吸膜的通透性", "扩散系数", "肺内负压", "大气与肺泡压差"], "c": [0]}, {"q": "The primary mode of carbon dioxide (CO₂) transport in the blood is:", "a": ["H₂CO₃", "Bound to plasma proteins", " HCO₃⁻", "carbaminohemoglobin", "CO₂"], "c": [2]}, {"q": "肺通气的直接动力是什么？", "a": ["肺的顺应性", " 呼吸运动引起的胸廓容积变化", "胸廓的弹性回缩力", "肺泡表面活性物质的作用", "气道阻力"], "c": [1]}, {"q": "氧气在血液中的主要运输方式是什么？", "a": ["直接溶解于血浆中", " 与血红蛋白结合形成氧合血红蛋白", "以碳酸氢盐形式运输", "通过细胞外液扩散运输", "与白蛋白结合运输"], "c": [1]}, {"q": "结肠看不到下列哪种组织？", "a": ["腺体组织", "脂肪组织", " 骨骼肌", "神经丛", "浆膜"], "c": [2]}, {"q": "关于胰岛的描述，下列哪项正确？", "a": [" 胰岛素是目前发现唯一的降血糖激素", "胰岛A细胞和B细胞均分泌胰岛素", "胰岛的内分泌细胞与外分泌细胞数量相近", "胰岛A细胞分泌胰岛素", "胰岛B细胞分泌胰高血糖素"], "c": [0]}, {"q": "Which of the following is the function of the acrosome reaction（顶体反应）?", "a": ["Prevents polyspermy", " Releases hydrolytic enzymes to penetrate the zona pellucida", "Blocks polyspermy", "Promotes sperm capacitation", "Provides energy for sperm motility"], "c": [1]}, {"q": "垂体门脉系统的主要作用是？", "a": ["为垂体组织提供营养物质", " 将下丘脑分泌的释放激素传递至垂体前叶", "运输生长激素", "调节肾上腺皮质功能", "直接释放激素到血液循环"], "c": [1]}, {"q": "甲状腺滤泡旁细胞分泌的激素是？", "a": [" 降钙素", "甲状腺素（T4）", "甲状旁腺激素（PTH）", "皮质醇", "胰岛素"], "c": [0]}, {"q": "某同学看见吃羊肉烧烤吞咽并流口水的反射活动，其神经通路不涉及以下哪项？", "a": ["视神经", "舌咽神经", " 三叉神经", "面神经", "泌涎核"], "c": [2]}, {"q": "Which of the following is not part of the respiratory portion of the lung?", "a": ["Respiratory bronchioles", " Terminal bronchioles", "Alveoli", "Alveolar sacs", "Alveolar ducts"], "c": [1]}, {"q": "The mucosal epithelium of the trachea develops from which embryonic layer?", "a": ["Ectoderm", " Endoderm", "Mesoderm", "Neuroectoderm", "Trophoblast"], "c": [1]}, {"q": "控制胃的神经丛主要位于以下哪个部位？", "a": ["贲门", "胃底", "幽门", " 胃体", "胃窦"], "c": [3]}, {"q": "Which cell type secretes pulmonary surfactant（表面活性物质）?", "a": ["Type I pneumocytes", " Type II pneumocytes", "Alveolar macrophages", "Capillary endothelial cells", "Fibroblasts"], "c": [1]}, {"q": "关于细支气管的结构特征，下列说法正确的是", "a": [" 没有杯状细胞和软骨环，但有完整的平滑肌", "有大量杯状细胞", "上皮为假复层纤毛柱状上皮", "管壁存在完整的软骨环", "上皮为复层扁平上皮"], "c": [0]}, {"q": "下列结构中，哪一项具有假复层纤毛柱状上皮？", "a": [" 气管", "食管", "胃", "小肠", "膀胱"], "c": [0]}];
+const flashcards = [{"q": "神经嵴的作用不包括以下哪项？", "a": "神经嵴的作用不包括以下哪项？"}, {"q": "Which of the following statements about the ovary is incorrect?", "a": "Which of the following statements about the ovary is incorrect?"}, {"q": "一名新生儿因肚子微胀被检查发现无肛门，推测其母亲在孕早期发烧导致此畸形。根据胚胎发育规律，该畸形最可能发生在末次月经计算的哪一周？", "a": "一名新生儿因肚子微胀被检查发现无肛门，推测其母亲在孕早期发烧导致此畸形。根据胚胎发育规律，该畸形最可能发生在末次月经计算的哪一周？"}, {"q": "A woman undergoes an abdominal examination immediately after breakfast while lying supine (on her back). Which of the following organs is most likely to be palpable or auscultated under these conditions?", "a": "A woman undergoes an abdominal examination immediately after breakfast while lying supine (on her back). Which of the following organs is most likely to be palpable or auscultated under these conditions?"}, {"q": "关于甲状腺的描述错误的是", "a": "关于甲状腺的描述错误的是"}, {"q": "甲状腺滤泡的形态与其功能状态密切相关，关于甲状腺滤泡旁细胞的描述，正确的是", "a": "甲状腺滤泡的形态与其功能状态密切相关，关于甲状腺滤泡旁细胞的描述，正确的是"}, {"q": "The alveolus is mainly composed of which of the following?", "a": "The alveolus is mainly composed of which of the following?"}, {"q": "Which of the following statements about the thymus is correct?", "a": "Which of the following statements about the thymus is correct?"}, {"q": "What is the basic structural and functional unit of the kidney?", "a": "What is the basic structural and functional unit of the kidney?"}, {"q": "Which transporter mediates NaCl reabsorption in the thick ascending limb of the loop of Henle?", "a": "Which transporter mediates NaCl reabsorption in the thick ascending limb of the loop of Henle?"}, {"q": "肾上腺", "a": "肾上腺"}, {"q": "下列哪种激素主要促进肾小管对钠离子的重吸收？", "a": "下列哪种激素主要促进肾小管对钠离子的重吸收？"}, {"q": "Which vein drains the gallbladder?", "a": "Which vein drains the gallbladder?"}, {"q": "关于近端小管重吸收的特点，正确的是：", "a": "关于近端小管重吸收的特点，正确的是："}, {"q": "子宫内膜增生的主要促进激素是：", "a": "子宫内膜增生的主要促进激素是："}, {"q": "肺换气的直接动力是：", "a": "肺换气的直接动力是："}, {"q": "The primary mode of carbon dioxide (CO₂) transport in the blood is:", "a": "The primary mode of carbon dioxide (CO₂) transport in the blood is:"}, {"q": "肺通气的直接动力是什么？", "a": "肺通气的直接动力是什么？"}, {"q": "氧气在血液中的主要运输方式是什么？", "a": "氧气在血液中的主要运输方式是什么？"}, {"q": "结肠看不到下列哪种组织？", "a": "结肠看不到下列哪种组织？"}, {"q": "关于胰岛的描述，下列哪项正确？", "a": "关于胰岛的描述，下列哪项正确？"}, {"q": "Which of the following is the function of the acrosome reaction（顶体反应）?", "a": "Which of the following is the function of the acrosome reaction（顶体反应）?"}, {"q": "垂体门脉系统的主要作用是？", "a": "垂体门脉系统的主要作用是？"}, {"q": "甲状腺滤泡旁细胞分泌的激素是？", "a": "甲状腺滤泡旁细胞分泌的激素是？"}, {"q": "某同学看见吃羊肉烧烤吞咽并流口水的反射活动，其神经通路不涉及以下哪项？", "a": "某同学看见吃羊肉烧烤吞咽并流口水的反射活动，其神经通路不涉及以下哪项？"}, {"q": "Which of the following is not part of the respiratory portion of the lung?", "a": "Which of the following is not part of the respiratory portion of the lung?"}, {"q": "The mucosal epithelium of the trachea develops from which embryonic layer?", "a": "The mucosal epithelium of the trachea develops from which embryonic layer?"}, {"q": "控制胃的神经丛主要位于以下哪个部位？", "a": "控制胃的神经丛主要位于以下哪个部位？"}, {"q": "Which cell type secretes pulmonary surfactant（表面活性物质）?", "a": "Which cell type secretes pulmonary surfactant（表面活性物质）?"}, {"q": "关于细支气管的结构特征，下列说法正确的是", "a": "关于细支气管的结构特征，下列说法正确的是"}, {"q": "下列结构中，哪一项具有假复层纤毛柱状上皮？", "a": "下列结构中，哪一项具有假复层纤毛柱状上皮？"}];</script>
+
+<script type="text/babel">
+  const { useState, useEffect } = React;
+
+  // 自定义 SVG 图标组件，替代有 bug 的 Lucide-React 库，解决 Infinity 冲突
+  const CheckCircle2 = ({ size = 24, className = "" }) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      <circle cx="12" cy="12" r="10" />
+      <path d="m9 12 2 2 4-4" />
+    </svg>
+  );
+
+  const XCircle = ({ size = 24, className = "" }) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      <circle cx="12" cy="12" r="10" />
+      <path d="m15 9-6 6" />
+      <path d="m9 9 6 6" />
+    </svg>
+  );
+
+  const CreditCard = ({ size = 24, className = "" }) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      <rect width="20" height="14" x="2" y="5" rx="2" />
+      <line x1="2" x2="22" y1="10" y2="10" />
+    </svg>
+  );
+
+  const ListChecks = ({ size = 24, className = "" }) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      <path d="m3 17 2 2 4-4" />
+      <path d="m3 7 2 2 4-4" />
+      <path d="M13 6h8" />
+      <path d="M13 12h8" />
+      <path d="M13 18h8" />
+      <path d="m3 12 2 2 4-4" />
+    </svg>
+  );
+
+  const Trophy = ({ size = 24, className = "" }) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
+      <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
+      <path d="M4 22h16" />
+      <path d="M10 14.66V17c0 .55-.45 1-1 1H4v2h16v-2h-5c-.55 0-1-.45-1-1v-2.34" />
+      <path d="M12 2a6 6 0 0 1 6 6v3.5c0 1.63-1.22 3.14-2.85 3.3a6 6 0 0 1-6.3-5.96V8a6 6 0 0 1 6-6Z" />
+    </svg>
+  );
+
+  const ChevronRight = ({ size = 24, className = "" }) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      <path d="m9 18 6-6-6-6" />
+    </svg>
+  );
+
+  const ChevronLeft = ({ size = 24, className = "" }) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      <path d="m15 18-6-6 6-6" />
+    </svg>
+  );
+
+  const Lightbulb = ({ size = 24, className = "" }) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .6 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5" />
+      <path d="M9 18h6" />
+      <path d="M10 22h4" />
+    </svg>
+  );
+
+  const BookOpen = ({ size = 24, className = "" }) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+      <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+    </svg>
+  );
+
+  const Layers = ({ size = 24, className = "" }) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      <path d="m12 3-10 5L12 13l10-5-10-5Z" />
+      <path d="m2 17 10 5 10-5" />
+      <path d="m2 12 10 5 10-5" />
+    </svg>
+  );
+
+  function App() {
+    const [view, setView] = useState("menu"); // 'menu', 'quiz', 'flashcard'
+    const [currentIdx, setCurrentIdx] = useState(0);
+    const [score, setScore] = useState(0);
+    const [showResult, setShowResult] = useState(false);
+    const [selectedOptions, setSelectedOptions] = useState([]);
+    const [isAnswerSubmitted, setIsAnswerSubmitted] = useState(false);
+    const [flipped, setFlipped] = useState(false);
+    const [showNavModal, setShowNavModal] = useState(false); // 题目跳转导航面板显隐状态
+
+    // 答错记录追踪（供最后结果页查看分析）
+    const [wrongAnswers, setWrongAnswers] = useState([]);
+
+    const resetState = () => {
+      setCurrentIdx(0);
+      setScore(0);
+      setShowResult(false);
+      setSelectedOptions([]);
+      setIsAnswerSubmitted(false);
+      setFlipped(false);
+      setWrongAnswers([]);
+    };
+
+    // 将旧版单值 c 和新版列表 c 统一为答案索引列表。
+    const getCorrectAnswers = (question) =>
+      Array.isArray(question.c) ? question.c : [question.c];
+
+    const submitQuizAnswer = (userAnswers) => {
+      if (isAnswerSubmitted || userAnswers.length === 0) return;
+
+      const correctAnswers = getCorrectAnswers(mcqs[currentIdx]);
+      const sortedUserAnswers = [...userAnswers].sort((a, b) => a - b);
+      const sortedCorrectAnswers = [...correctAnswers].sort((a, b) => a - b);
+      const isCorrect =
+        sortedUserAnswers.length === sortedCorrectAnswers.length &&
+        sortedUserAnswers.every(
+          (answer, index) => answer === sortedCorrectAnswers[index],
+        );
+
+      setSelectedOptions(userAnswers);
+      setIsAnswerSubmitted(true);
+      if (isCorrect) {
+        setScore((currentScore) => currentScore + 1);
+      } else {
+        setWrongAnswers((answers) => [
+          ...answers,
+          {
+            ...mcqs[currentIdx],
+            userAnswers,
+            userLetter: sortedUserAnswers
+              .map((answer) => String.fromCharCode(65 + answer))
+              .join("、"),
+            correctLetter: sortedCorrectAnswers
+              .map((answer) => String.fromCharCode(65 + answer))
+              .join("、"),
+          },
+        ]);
+      }
+
+      setTimeout(() => {
+        if (currentIdx < mcqs.length - 1) {
+          setCurrentIdx((index) => index + 1);
+          setSelectedOptions([]);
+          setIsAnswerSubmitted(false);
+        } else {
+          setShowResult(true);
+        }
+      }, 1400);
+    };
+
+    const handleQuizAnswer = (idx) => {
+      if (isAnswerSubmitted) return;
+
+      const isMultipleChoice =
+        getCorrectAnswers(mcqs[currentIdx]).length > 1;
+      if (!isMultipleChoice) {
+        submitQuizAnswer([idx]);
+        return;
+      }
+
+      setSelectedOptions((options) =>
+        options.includes(idx)
+          ? options.filter((option) => option !== idx)
+          : [...options, idx],
+      );
+    };
+
+    // 跳转到指定题目
+    const jumpToQuestion = (idx) => {
+      setCurrentIdx(idx);
+      setSelectedOptions([]);
+      setIsAnswerSubmitted(false);
+      setFlipped(false);
+      setShowNavModal(false);
+    };
+
+    if (view === "menu") {
+      return (
+        <div className="max-w-2xl mx-auto pt-4 px-0 sm:pt-10 sm:px-4 md:pt-16">
+          <div className="text-center mb-7 sm:mb-12">
+            <div className="inline-flex p-3 sm:p-4 bg-blue-50 text-blue-600 rounded-2xl sm:rounded-3xl mb-4">
+              <BookOpen size={40} />
+            </div>
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-3 break-words">
+              2024-2025春夏人体结构与功能学期末测试
+            </h1>
+            <p className="text-base sm:text-lg text-slate-500 leading-relaxed">
+              <p>期末测试回忆卷（部分内容已根据医学知识补齐）</p><p>Made by 李建树</p>
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 gap-3 sm:gap-6 mb-8">
+            <button
+              onClick={() => {
+                setView("quiz");
+                resetState();
+              }}
+              className="flex min-h-40 flex-col text-left p-5 sm:p-6 bg-white border border-slate-200 rounded-2xl hover:border-blue-500 hover:shadow-lg transition-all group focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <div className="p-3 bg-blue-50 text-blue-600 rounded-xl group-hover:bg-blue-600 group-hover:text-white transition-colors mb-4 w-fit">
+                <ListChecks size={28} />
+              </div>
+              <h3 className="font-bold text-xl text-slate-800 mb-1">
+                选择题闯关
+              </h3>
+              <span className="mt-auto text-blue-600 text-sm font-semibold flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                开始挑战 <ChevronRight size={16} />
+              </span>
+            </button>
+
+            <button
+              onClick={() => {
+                setView("flashcard");
+                resetState();
+              }}
+              className="flex min-h-40 flex-col text-left p-5 sm:p-6 bg-white border border-slate-200 rounded-2xl hover:border-emerald-500 hover:shadow-lg transition-all group focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            >
+              <div className="p-3 bg-emerald-50 text-emerald-600 rounded-xl group-hover:bg-emerald-600 group-hover:text-white transition-colors mb-4 w-fit">
+                <CreditCard size={28} />
+              </div>
+              <h3 className="font-bold text-xl text-slate-800 mb-1">
+                简答题抽认卡
+              </h3>
+              <span className="mt-auto text-emerald-600 text-sm font-semibold flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                开始背诵 <ChevronRight size={16} />
+              </span>
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    if (view === "quiz") {
+      return (
+        <div className="max-w-2xl mx-auto pt-1 px-0 sm:pt-4 sm:px-4 md:pt-8">
+          {/* 导航头 */}
+          <div className="flex items-center justify-between gap-2 mb-4 sm:mb-6">
+            <button
+              onClick={() => setView("menu")}
+              className="min-h-11 shrink-0 text-slate-500 hover:text-slate-800 transition-colors flex items-center gap-1 font-medium"
+            >
+              <ChevronLeft size={18} /> 返回主页
+            </button>
+
+            <div className="flex min-w-0 items-center gap-2 sm:gap-3">
+              <button
+                onClick={() => setShowNavModal(true)}
+                className="min-h-11 px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-sm font-semibold transition-colors flex items-center gap-1"
+              >
+                <Layers size={16} /> <span className="hidden sm:inline">跳转题目</span><span className="sm:hidden">题目</span>
+              </button>
+              <div className="whitespace-nowrap px-3 py-2 bg-blue-50 text-blue-700 rounded-xl text-sm font-bold">
+                <span className="hidden sm:inline">进度: </span>{currentIdx + 1} / {mcqs.length}
+              </div>
+            </div>
+          </div>
+
+          {/* 进度条 */}
+          <div className="w-full h-2 bg-slate-200 rounded-full mb-5 sm:mb-8 overflow-hidden">
+            <div
+              className="h-full bg-blue-600 transition-all duration-300"
+              style={{ width: `${((currentIdx + 1) / mcqs.length) * 100}%` }}
+            ></div>
+          </div>
+
+          {!showResult ? (
+            <div className="mobile-question-scroll">
+              <div className="mb-4 sm:mb-6 bg-white rounded-2xl p-4 sm:p-6 border border-slate-200 shadow-sm">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-xs font-bold text-blue-600 uppercase tracking-wider">
+                    QUESTION {currentIdx + 1}
+                  </span>
+                  <span
+                    className={`px-2 py-0.5 rounded-full text-xs font-bold ${
+                      getCorrectAnswers(mcqs[currentIdx]).length > 1
+                        ? "bg-violet-100 text-violet-700"
+                        : "bg-blue-100 text-blue-700"
+                    }`}
+                  >
+                    {getCorrectAnswers(mcqs[currentIdx]).length > 1
+                      ? "多选题"
+                      : "单选题"}
+                  </span>
+                </div>
+                <h2 className="text-lg sm:text-xl font-bold text-slate-800 leading-relaxed break-words">
+                  {mcqs[currentIdx].q}
+                </h2>
+                {getCorrectAnswers(mcqs[currentIdx]).length > 1 && (
+                  <p className="text-sm text-slate-500 mt-3">
+                    可选择多个答案，选好后点击“提交答案”
+                  </p>
+                )}
+              </div>
+              <div className="grid gap-3">
+                {mcqs[currentIdx].a.map((opt, i) => {
+                  const correctAnswers = getCorrectAnswers(mcqs[currentIdx]);
+                  const isSelected = selectedOptions.includes(i);
+                  const isCorrectOption = correctAnswers.includes(i);
+                  let style =
+                    "border-slate-200 bg-white hover:border-slate-300 hover:shadow-sm";
+                  if (isAnswerSubmitted) {
+                    if (isCorrectOption) {
+                      style =
+                        "border-emerald-500 bg-emerald-50 text-emerald-800 font-semibold";
+                    } else if (isSelected) {
+                      style =
+                        "border-rose-500 bg-rose-50 text-rose-800 font-semibold";
+                    } else {
+                      style = "border-slate-100 bg-slate-50 text-slate-400";
+                    }
+                  } else if (isSelected) {
+                    style =
+                      "border-violet-500 bg-violet-50 text-violet-800 font-semibold shadow-sm";
+                  }
+                  return (
+                    <button
+                      key={i}
+                      onClick={() => handleQuizAnswer(i)}
+                      aria-pressed={isSelected}
+                      disabled={isAnswerSubmitted}
+                      className={`min-h-14 p-4 sm:p-5 text-left border-2 rounded-xl transition-all duration-200 flex items-center justify-between break-words focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${style}`}
+                    >
+                      <span className="leading-relaxed">
+                        {String.fromCharCode(65 + i)}. {opt}
+                      </span>
+                      {isAnswerSubmitted && isCorrectOption && (
+                        <CheckCircle2 className="text-emerald-500 shrink-0 ml-3" />
+                      )}
+                      {isAnswerSubmitted && isSelected && !isCorrectOption && (
+                        <XCircle className="text-rose-500 shrink-0 ml-3" />
+                      )}
+                      {!isAnswerSubmitted &&
+                        isSelected &&
+                        correctAnswers.length > 1 && (
+                          <CheckCircle2 className="text-violet-500 shrink-0 ml-3" />
+                        )}
+                    </button>
+                  );
+                })}
+              </div>
+              {getCorrectAnswers(mcqs[currentIdx]).length > 1 &&
+                !isAnswerSubmitted && (
+                  <button
+                    onClick={() => submitQuizAnswer(selectedOptions)}
+                    disabled={selectedOptions.length === 0}
+                    className="mt-5 w-full px-6 py-3 bg-violet-600 text-white rounded-xl font-bold hover:bg-violet-700 transition-colors shadow-md disabled:bg-slate-300 disabled:cursor-not-allowed disabled:shadow-none"
+                  >
+                    提交答案
+                    {selectedOptions.length > 0 &&
+                      `（已选 ${selectedOptions.length} 项）`}
+                  </button>
+                )}
+            </div>
+          ) : (
+            <div className="text-center py-8 sm:py-12 px-4 sm:px-6 bg-white rounded-2xl sm:rounded-3xl shadow-sm border border-slate-200">
+              <Trophy
+                size={72}
+                className="mx-auto text-yellow-500 mb-4 animate-bounce"
+              />
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-800 mb-2">
+                测试完成!
+              </h2>
+              <p className="text-slate-500 mb-6">
+                您的正确率达到了{" "}
+                <span className="text-blue-600 font-bold text-2xl">
+                  {Math.round((score / mcqs.length) * 100)}%
+                </span>
+              </p>
+
+              <div className="bg-slate-50 border border-slate-100 rounded-xl p-4 mb-8 text-sm grid grid-cols-2 gap-4 sm:gap-8 w-full">
+                <div>
+                  正确题数:{" "}
+                  <span className="font-bold text-emerald-600">{score}</span>
+                </div>
+                <div>
+                  错误题数:{" "}
+                  <span className="font-bold text-rose-500">
+                    {mcqs.length - score}
+                  </span>
+                </div>
+              </div>
+
+              {wrongAnswers.length > 0 && (
+                <div className="text-left mb-8 max-h-72 overflow-y-auto border border-slate-200 rounded-xl p-4 bg-slate-50">
+                  <h3 className="font-bold text-slate-700 mb-3 border-b pb-2">
+                    错题汇总
+                  </h3>
+                  <div className="space-y-4">
+                    {wrongAnswers.map((item, idx) => (
+                      <div key={idx} className="text-xs">
+                        <p className="font-semibold text-slate-800">
+                          {idx + 1}. {item.q}
+                        </p>
+                        <p className="text-rose-600 mt-1">
+                          您的回答: {item.userLetter} (错误)
+                        </p>
+                        <p className="text-emerald-600">
+                          正确答案: {item.correctLetter}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div className="flex flex-col-reverse sm:flex-row gap-3 sm:gap-4 justify-center">
+                <button
+                  onClick={resetState}
+                  className="min-h-12 w-full sm:w-auto px-6 py-3 bg-slate-100 text-slate-700 rounded-xl sm:rounded-full font-bold hover:bg-slate-200 transition-colors"
+                >
+                  重新测试
+                </button>
+                <button
+                  onClick={() => {
+                    resetState();
+                    setView("menu");
+                  }}
+                  className="min-h-12 w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-xl sm:rounded-full font-bold hover:bg-blue-700 transition-colors shadow-md"
+                >
+                  返回主页
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* 选择题快速导航模态框 */}
+          {showNavModal && (
+            <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
+              <div className="bg-white rounded-t-2xl sm:rounded-2xl max-w-lg w-full max-h-[85dvh] overflow-hidden flex flex-col shadow-2xl">
+                <div className="p-4 sm:p-5 border-b flex justify-between items-center bg-slate-50">
+                  <h3 className="font-bold text-slate-800 flex items-center gap-2">
+                    <Layers size={18} className="text-blue-500" />{" "}
+                    选择题目录跳转
+                  </h3>
+                  <button
+                    onClick={() => setShowNavModal(false)}
+                    aria-label="关闭题目目录"
+                    className="inline-flex h-11 w-11 items-center justify-center rounded-xl text-slate-500 hover:bg-slate-200 text-2xl font-normal"
+                  >
+                    &times;
+                  </button>
+                </div>
+                <div className="p-4 sm:p-6 pb-[max(1rem,env(safe-area-inset-bottom))] overflow-y-auto grid grid-cols-5 sm:grid-cols-6 gap-2">
+                  {mcqs.map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => jumpToQuestion(i)}
+                      className={`min-h-11 py-2 text-sm font-bold rounded-lg border transition-all ${currentIdx === i ? "bg-blue-600 border-blue-600 text-white" : "border-slate-200 hover:border-blue-500 text-slate-700 hover:bg-slate-50"}`}
+                    >
+                      {i + 1}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    if (view === "flashcard") {
+      return (
+        <div className="max-w-2xl mx-auto pt-1 px-0 sm:pt-4 sm:px-4 md:pt-8">
+          {/* 导航头 */}
+          <div className="flex items-center justify-between gap-2 mb-4 sm:mb-6">
+            <button
+              onClick={() => setView("menu")}
+              className="min-h-11 shrink-0 text-slate-500 hover:text-slate-800 transition-colors flex items-center gap-1 font-medium"
+            >
+              <ChevronLeft size={18} /> 返回主页
+            </button>
+
+            <div className="flex min-w-0 items-center gap-2 sm:gap-3">
+              <button
+                onClick={() => setShowNavModal(true)}
+                className="min-h-11 px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-sm font-semibold transition-colors flex items-center gap-1"
+              >
+                <Layers size={16} /> <span className="hidden sm:inline">选卡列表</span><span className="sm:hidden">选卡</span>
+              </button>
+              <div className="whitespace-nowrap px-3 py-2 bg-emerald-50 text-emerald-700 rounded-xl text-sm font-bold">
+                <span className="hidden sm:inline">卡片: </span>{currentIdx + 1} / {flashcards.length}
+              </div>
+            </div>
+          </div>
+
+          {/* 进度条 */}
+          <div className="w-full h-2 bg-slate-200 rounded-full mb-5 sm:mb-8 overflow-hidden">
+            <div
+              className="h-full bg-emerald-600 transition-all duration-300"
+              style={{
+                width: `${((currentIdx + 1) / flashcards.length) * 100}%`,
+              }}
+            ></div>
+          </div>
+
+          {/* 翻转卡片结构 */}
+          <div
+            className={`flip-card ${flipped ? "flipped" : ""} w-full`}
+            onClick={() => setFlipped(!flipped)}
+          >
+            <div className="flip-card-inner">
+              {/* 卡片正面 (问题) */}
+              <div className="flip-card-front bg-white border border-slate-200 text-slate-800 flex flex-col justify-between">
+                <div className="p-3 bg-emerald-50 text-emerald-500 rounded-full mt-4 self-center">
+                  <Lightbulb size={28} />
+                </div>
+                <div className="my-auto min-h-0 w-full overflow-y-auto overscroll-contain px-2 py-2 scrollbar-hide sm:px-4">
+                  <span className="text-xs font-bold text-slate-400 block mb-2">
+                    QUESTION {currentIdx + 1}
+                  </span>
+                  <h3 className="text-lg sm:text-xl font-bold leading-relaxed break-words">
+                    {flashcards[currentIdx].q}
+                  </h3>
+                </div>
+                <p className="text-slate-400 text-xs font-medium pb-4 flex items-center gap-1 animate-pulse">
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"
+                    />
+                  </svg>
+                  点击卡片翻看参考答案
+                </p>
+              </div>
+
+              {/* 卡片背面 (要点解析) */}
+              <div className="flip-card-back bg-slate-900 text-white border border-slate-800 text-left items-start overflow-y-auto scrollbar-hide flex flex-col justify-between">
+                <div className="w-full">
+                  <h4 className="text-emerald-400 font-bold mb-4 flex items-center gap-2 border-b border-slate-800 pb-2">
+                    <CheckCircle2 size={18} /> 核心要点 / 答案分析
+                  </h4>
+                  <p className="text-base leading-relaxed text-slate-200 whitespace-pre-wrap font-medium">
+                    {flashcards[currentIdx].a}
+                  </p>
+                </div>
+                <p className="pt-6 text-slate-500 text-xs text-center w-full mt-auto">
+                  点击卡片返回问题
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* 控制按钮 */}
+          <div className="flex items-center justify-between gap-2 sm:gap-4 mt-5 sm:mt-8">
+            <button
+              disabled={currentIdx === 0}
+              onClick={() => {
+                setCurrentIdx(currentIdx - 1);
+                setFlipped(false);
+              }}
+              className="min-h-12 flex flex-1 sm:flex-none items-center justify-center gap-1 sm:gap-2 px-3 sm:px-6 py-3 bg-white text-slate-600 hover:text-slate-800 border rounded-xl font-bold shadow-sm transition-all disabled:opacity-30 disabled:pointer-events-none"
+            >
+              <ChevronLeft size={20} /> 上一题
+            </button>
+            <button
+              onClick={() => {
+                if (currentIdx < flashcards.length - 1) {
+                  setCurrentIdx(currentIdx + 1);
+                  setFlipped(false);
+                } else {
+                  setView("menu");
+                }
+              }}
+              className="min-h-12 flex flex-1 sm:flex-none items-center justify-center gap-1 sm:gap-2 px-3 sm:px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-bold shadow-sm transition-all"
+            >
+              {currentIdx === flashcards.length - 1 ? "完成复习" : "下一题"}{" "}
+              <ChevronRight size={20} />
+            </button>
+          </div>
+
+          {/* 简答题快速导航模态框 */}
+          {showNavModal && (
+            <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
+              <div className="bg-white rounded-t-2xl sm:rounded-2xl max-w-lg w-full max-h-[85dvh] overflow-hidden flex flex-col shadow-2xl">
+                <div className="p-4 sm:p-5 border-b flex justify-between items-center bg-slate-50">
+                  <h3 className="font-bold text-slate-800 flex items-center gap-2">
+                    <Layers size={18} className="text-emerald-500" />{" "}
+                    简答题卡片目录
+                  </h3>
+                  <button
+                    onClick={() => setShowNavModal(false)}
+                    aria-label="关闭卡片目录"
+                    className="inline-flex h-11 w-11 items-center justify-center rounded-xl text-slate-500 hover:bg-slate-200 text-2xl font-normal"
+                  >
+                    &times;
+                  </button>
+                </div>
+                <div className="p-4 sm:p-6 pb-[max(1rem,env(safe-area-inset-bottom))] overflow-y-auto grid grid-cols-5 sm:grid-cols-6 gap-2">
+                  {flashcards.map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => jumpToQuestion(i)}
+                      className={`min-h-11 py-2 text-sm font-bold rounded-lg border transition-all ${currentIdx === i ? "bg-emerald-600 border-emerald-600 text-white" : "border-slate-200 hover:border-emerald-500 text-slate-700 hover:bg-slate-50"}`}
+                    >
+                      {i + 1}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+  }
+
+  // 渲染 React 页面
+  const root = ReactDOM.createRoot(document.getElementById("root"));
+  root.render(<App />);
+</script>
+</main>
+    </div>
+    <script>
+      (() => {
+        const shell = document.querySelector(".sidebar-shell");
+        const openButton = document.querySelector(".js-sidebar-open");
+        const closeButtons = document.querySelectorAll(
+          ".js-sidebar-close, .js-sidebar-backdrop",
+        );
+        const siteLink = document.querySelector(".js-site-link");
+        const mobileTitle = document.querySelector(".js-mobile-site-title");
+
+        if (!shell || !openButton) return;
+
+        if (siteLink && mobileTitle) {
+          mobileTitle.textContent = siteLink.textContent.trim();
+        }
+
+        const setSidebarOpen = (isOpen) => {
+          shell.classList.toggle("is-open", isOpen);
+          shell.setAttribute("aria-hidden", String(!isOpen));
+          shell.inert = !isOpen;
+          openButton.setAttribute("aria-expanded", String(isOpen));
+
+          if (isOpen) {
+            shell.querySelector(".js-sidebar-close")?.focus();
+          } else {
+            openButton.focus();
+          }
+        };
+
+        openButton.addEventListener("click", () => setSidebarOpen(true));
+        closeButtons.forEach((button) =>
+          button.addEventListener("click", () => setSidebarOpen(false)),
+        );
+        shell.querySelectorAll("nav a").forEach((link) =>
+          link.addEventListener("click", () => setSidebarOpen(false)),
+        );
+        document.addEventListener("keydown", (event) => {
+          if (event.key === "Escape" && shell.classList.contains("is-open")) {
+            setSidebarOpen(false);
+          }
+        });
+        const syncSidebarWithViewport = () => {
+          if (window.innerWidth >= 768) {
+            shell.classList.remove("is-open");
+            shell.setAttribute("aria-hidden", "false");
+            shell.inert = false;
+            openButton.setAttribute("aria-expanded", "false");
+          } else if (!shell.classList.contains("is-open")) {
+            shell.setAttribute("aria-hidden", "true");
+            shell.inert = true;
+          }
+        };
+
+        window.addEventListener("resize", syncSidebarWithViewport);
+        syncSidebarWithViewport();
+      })();
+    </script>
+  </body>
+</html>
