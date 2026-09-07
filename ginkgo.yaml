@@ -1,0 +1,32 @@
+website:
+  title: "ZJUBMS Ginkgo"
+
+nav:
+  - 细胞与生物分子 I:
+      - 2025-2026秋期末回忆卷: docs/Cells_and_Biomolecules_I/2025-2026_Autumn_Final.md
+  - 细胞与生物分子 II:
+      - 2024-2025秋冬期末回忆卷: docs/molecular_cell_biology_2/exams/2024-2025-final-exam-recall.md
+      - 2024-2025秋冬小测卷: docs/molecular_cell_biology_2/quizzes/2024-2025-quizzes.md
+  - 医学生命基础:
+      - 2024-2025秋冬期末回忆卷: docs/Medical_Life_Fundamentals/2024-2025_Winter_Final.md
+  - 基础医学科学研究技能 I:
+      - 2024-2025夏期末回忆卷: docs/BMS_Science_Skills_I/2024-2025_Spring_Final.md
+      - 2024-2025冬期末回忆卷: docs/BMS_Science_Skills_I/2024-2025_Winter_Final.md
+  - 普通化学实验（甲）:
+      - 2024-2025秋冬期末回忆卷: docs/General_Chemistry_Experiment_A/普化实验甲回忆卷.md
+  - 脑与脑机融合系统:
+      - 2024-2025夏期末回忆卷: docs/brain_and_brain_machine_integrated_systems/2024-2025-final-exam-recall.md
+  - 实验动物与伦理学:
+      - 2024-2025秋期末回忆卷: docs/experimental_animals_and_ethics/2024-2025-final-exam-recall.md
+  - 遗传与发育 I:
+      - 2024-2025冬期末回忆卷: docs/genetics_and_developmental_biology_1/exams/2024-2025-final-exam-recall.md
+  - 遗传与发育 II:
+      - 2024-2025春期末回忆卷: docs/genetics_and_developmental_biology_2/exams/2024-2025-final-exam-recall.md
+  - 感染与免疫学:
+      - 2025-2026秋冬小测卷: docs/infectious_diseases_and_immunity/quizzes/quizzes.md
+  - 医学大数据与应用: 
+      - 2024-2025冬期末回忆卷: docs/medical_big_data_and_application/exams/2024-2025-final-exam-recall.md
+  - 医学生物物理学:
+      - 2024-2025春期末回忆卷: docs/medical_biophysics/exams/2024-2025-final-exam-recall.md
+  - 医学科学素养 II:
+      - 2025-2026秋期末回忆卷: docs/medical_science_literacy_2/exams/2025-2026-final-exam-recall.md
