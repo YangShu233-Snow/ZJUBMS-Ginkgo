@@ -3,9 +3,32 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ginkgo Examples</title>
+    <title>ZJUBMS Ginkgo</title>
     <link rel="icon" type="image/svg+xml" href="../favicon.svg">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                50: "#eef8f4",
+                100: "#d7eee5",
+                200: "#afe0d0",
+                300: "#7ccab4",
+                400: "#48aa8f",
+                500: "#278b70",
+                600: "#176f58",
+                700: "#105a46",
+                800: "#054b35",
+                900: "#063d2f",
+                950: "#02241c",
+              },
+            },
+          },
+        },
+      };
+    </script>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -29,11 +52,17 @@
         width: 100%;
         height: 100%;
         text-align: center;
+        -webkit-transform: rotateY(0deg);
+        transform: rotateY(0deg);
         transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        -webkit-transform-style: preserve-3d;
         transform-style: preserve-3d;
+        transform-origin: center;
+        will-change: transform;
         cursor: pointer;
       }
       .flip-card.flipped .flip-card-inner {
+        -webkit-transform: rotateY(180deg);
         transform: rotateY(180deg);
       }
       .flip-card-front,
@@ -54,6 +83,7 @@
           0 8px 10px -6px rgba(0, 0, 0, 0.05);
       }
       .flip-card-back {
+        -webkit-transform: rotateY(180deg);
         transform: rotateY(180deg);
       }
       .scrollbar-hide::-webkit-scrollbar {
@@ -137,7 +167,6 @@
         }
       }
       @media (prefers-reduced-motion: reduce) {
-        .flip-card-inner,
         .sidebar-shell aside,
         .js-sidebar-backdrop {
           transition-duration: 0.01ms !important;
@@ -149,7 +178,7 @@
     <div class="flex h-full w-full flex-col md:flex-row">
       <!-- 移动端顶部导航 -->
       <header class="flex h-14 shrink-0 items-center gap-3 border-b border-slate-200 bg-white px-3 md:hidden">
-        <button type="button" class="js-sidebar-open inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-slate-600 hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500" aria-label="打开目录" aria-controls="site-sidebar" aria-expanded="false">
+        <button type="button" class="js-sidebar-open inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-slate-600 hover:bg-brand-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500" aria-label="打开目录" aria-controls="site-sidebar" aria-expanded="false">
           <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
             <path d="M4 6h16M4 12h16M4 18h16"></path>
           </svg>
@@ -165,8 +194,8 @@
       <aside id="site-sidebar" class="absolute inset-y-0 left-0 flex h-full w-[min(20rem,75vw)] shrink-0 flex-col border-r border-slate-200 bg-white shadow-2xl transition-transform ease-out md:static md:w-60 md:shadow-none">
   <!-- 网站标题 -->
   <div class="flex min-h-14 items-center gap-2 border-b border-slate-100 p-3 md:p-4">
-    <a href="../index.html" class="js-site-link min-w-0 flex-1 truncate text-lg font-bold">Ginkgo Examples</a>
-    <button type="button" class="js-sidebar-close inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-2xl font-normal text-slate-500 hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 md:hidden" aria-label="关闭目录">
+    <a href="../index.html" class="js-site-link min-w-0 flex-1 truncate text-lg font-bold text-slate-900">ZJUBMS Ginkgo</a>
+    <button type="button" class="js-sidebar-close inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-2xl font-normal text-slate-500 hover:bg-brand-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 md:hidden" aria-label="关闭目录">
       ×
     </button>
   </div>
@@ -175,22 +204,22 @@
   <nav class="js-menu-container flex-1 space-y-3 overflow-y-auto p-4 pb-[max(1rem,env(safe-area-inset-bottom))] md:space-y-4">
     <!--  -->
   <div class="js-tpl-category-item space-y-1 md:space-y-2">
-      <div class="js-category-title px-2 text-sm font-bold tracking-wide text-slate-600 md:text-xs md:uppercase md:tracking-wider md:text-slate-400">人体结构与功能学<!-- 分类名占位 -->
-      </div>
-      <div class="js-link-container ml-3 space-y-0.5 border-l-2 border-slate-200 pl-2 md:space-y-1 md:border-l md:border-slate-100">
-        <!-- 子链接将会被 append 到这里 -->
-      <a href="../%E4%BA%BA%E4%BD%93%E7%BB%93%E6%9E%84%E4%B8%8E%E5%8A%9F%E8%83%BD%E5%AD%A6/2024-2025%E6%98%A5%E5%A4%8F%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025春夏期末回忆卷<!-- 链接文本占位 -->
-    </a>
-  </div>
-    </div>
-  <div class="js-tpl-category-item space-y-1 md:space-y-2">
       <div class="js-category-title px-2 text-sm font-bold tracking-wide text-slate-600 md:text-xs md:uppercase md:tracking-wider md:text-slate-400">细胞与生物分子 I<!-- 分类名占位 -->
       </div>
       <div class="js-link-container ml-3 space-y-0.5 border-l-2 border-slate-200 pl-2 md:space-y-1 md:border-l md:border-slate-100">
         <!-- 子链接将会被 append 到这里 -->
-      <a href="../%E7%BB%86%E8%83%9E%E4%B8%8E%E7%94%9F%E7%89%A9%E5%88%86%E5%AD%90%20I/2024-2025%E7%A7%8B%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="block w-full text-left px-3 py-1.5 text-xs rounded-md transition-all bg-blue-50 text-blue-600 font-bold">2024-2025秋回忆卷<!-- 链接文本占位 -->
+      <a href="../%E7%BB%86%E8%83%9E%E4%B8%8E%E7%94%9F%E7%89%A9%E5%88%86%E5%AD%90%20I/2025-2026%E7%A7%8B%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2025-2026秋期末回忆卷<!-- 链接文本占位 -->
     </a>
-  <a href="../%E7%BB%86%E8%83%9E%E4%B8%8E%E7%94%9F%E7%89%A9%E5%88%86%E5%AD%90%20I/2023-2024%E7%A7%8B%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2023-2024秋回忆卷<!-- 链接文本占位 -->
+  </div>
+    </div>
+  <div class="js-tpl-category-item space-y-1 md:space-y-2">
+      <div class="js-category-title px-2 text-sm font-bold tracking-wide text-slate-600 md:text-xs md:uppercase md:tracking-wider md:text-slate-400">细胞与生物分子 II<!-- 分类名占位 -->
+      </div>
+      <div class="js-link-container ml-3 space-y-0.5 border-l-2 border-slate-200 pl-2 md:space-y-1 md:border-l md:border-slate-100">
+        <!-- 子链接将会被 append 到这里 -->
+      <a href="../%E7%BB%86%E8%83%9E%E4%B8%8E%E7%94%9F%E7%89%A9%E5%88%86%E5%AD%90%20II/2024-2025%E7%A7%8B%E5%86%AC%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025秋冬期末回忆卷<!-- 链接文本占位 -->
+    </a>
+  <a href="../%E7%BB%86%E8%83%9E%E4%B8%8E%E7%94%9F%E7%89%A9%E5%88%86%E5%AD%90%20II/2024-2025%E7%A7%8B%E5%86%AC%E5%B0%8F%E6%B5%8B%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025秋冬小测卷<!-- 链接文本占位 -->
     </a>
   </div>
     </div>
@@ -199,7 +228,72 @@
       </div>
       <div class="js-link-container ml-3 space-y-0.5 border-l-2 border-slate-200 pl-2 md:space-y-1 md:border-l md:border-slate-100">
         <!-- 子链接将会被 append 到这里 -->
-      <a href="../%E5%8C%BB%E5%AD%A6%E7%94%9F%E5%91%BD%E5%9F%BA%E7%A1%80/2024-2025%E7%A7%8B%E5%86%AC%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7%EF%BC%88%E8%80%81%E5%B8%88%E7%89%88%EF%BC%89.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025秋冬期末回忆卷（老师版）<!-- 链接文本占位 -->
+      <a href="../%E5%8C%BB%E5%AD%A6%E7%94%9F%E5%91%BD%E5%9F%BA%E7%A1%80/2024-2025%E7%A7%8B%E5%86%AC%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025秋冬期末回忆卷<!-- 链接文本占位 -->
+    </a>
+  </div>
+    </div>
+  <div class="js-tpl-category-item space-y-1 md:space-y-2">
+      <div class="js-category-title px-2 text-sm font-bold tracking-wide text-slate-600 md:text-xs md:uppercase md:tracking-wider md:text-slate-400">基础医学科学研究技能 I<!-- 分类名占位 -->
+      </div>
+      <div class="js-link-container ml-3 space-y-0.5 border-l-2 border-slate-200 pl-2 md:space-y-1 md:border-l md:border-slate-100">
+        <!-- 子链接将会被 append 到这里 -->
+      <a href="../%E5%9F%BA%E7%A1%80%E5%8C%BB%E5%AD%A6%E7%A7%91%E5%AD%A6%E7%A0%94%E7%A9%B6%E6%8A%80%E8%83%BD%20I/2024-2025%E5%A4%8F%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025夏期末回忆卷<!-- 链接文本占位 -->
+    </a>
+  <a href="../%E5%9F%BA%E7%A1%80%E5%8C%BB%E5%AD%A6%E7%A7%91%E5%AD%A6%E7%A0%94%E7%A9%B6%E6%8A%80%E8%83%BD%20I/2024-2025%E5%86%AC%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025冬期末回忆卷<!-- 链接文本占位 -->
+    </a>
+  </div>
+    </div>
+  <div class="js-tpl-category-item space-y-1 md:space-y-2">
+      <div class="js-category-title px-2 text-sm font-bold tracking-wide text-slate-600 md:text-xs md:uppercase md:tracking-wider md:text-slate-400">普通化学实验（甲）<!-- 分类名占位 -->
+      </div>
+      <div class="js-link-container ml-3 space-y-0.5 border-l-2 border-slate-200 pl-2 md:space-y-1 md:border-l md:border-slate-100">
+        <!-- 子链接将会被 append 到这里 -->
+      <a href="../%E6%99%AE%E9%80%9A%E5%8C%96%E5%AD%A6%E5%AE%9E%E9%AA%8C%EF%BC%88%E7%94%B2%EF%BC%89/2024-2025%E7%A7%8B%E5%86%AC%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025秋冬期末回忆卷<!-- 链接文本占位 -->
+    </a>
+  </div>
+    </div>
+  <div class="js-tpl-category-item space-y-1 md:space-y-2">
+      <div class="js-category-title px-2 text-sm font-bold tracking-wide text-slate-600 md:text-xs md:uppercase md:tracking-wider md:text-slate-400">脑与脑机融合系统<!-- 分类名占位 -->
+      </div>
+      <div class="js-link-container ml-3 space-y-0.5 border-l-2 border-slate-200 pl-2 md:space-y-1 md:border-l md:border-slate-100">
+        <!-- 子链接将会被 append 到这里 -->
+      <a href="../%E8%84%91%E4%B8%8E%E8%84%91%E6%9C%BA%E8%9E%8D%E5%90%88%E7%B3%BB%E7%BB%9F/2024-2025%E5%A4%8F%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg bg-brand-50 px-3 py-3 text-left text-sm font-bold text-brand-800 transition-all hover:bg-brand-100 md:min-h-0 md:py-1.5 md:text-xs">2024-2025夏期末回忆卷<!-- 链接文本占位 -->
+    </a>
+  </div>
+    </div>
+  <div class="js-tpl-category-item space-y-1 md:space-y-2">
+      <div class="js-category-title px-2 text-sm font-bold tracking-wide text-slate-600 md:text-xs md:uppercase md:tracking-wider md:text-slate-400">实验动物与伦理学<!-- 分类名占位 -->
+      </div>
+      <div class="js-link-container ml-3 space-y-0.5 border-l-2 border-slate-200 pl-2 md:space-y-1 md:border-l md:border-slate-100">
+        <!-- 子链接将会被 append 到这里 -->
+      <a href="../%E5%AE%9E%E9%AA%8C%E5%8A%A8%E7%89%A9%E4%B8%8E%E4%BC%A6%E7%90%86%E5%AD%A6/2024-2025%E7%A7%8B%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025秋期末回忆卷<!-- 链接文本占位 -->
+    </a>
+  </div>
+    </div>
+  <div class="js-tpl-category-item space-y-1 md:space-y-2">
+      <div class="js-category-title px-2 text-sm font-bold tracking-wide text-slate-600 md:text-xs md:uppercase md:tracking-wider md:text-slate-400">遗传与发育 I<!-- 分类名占位 -->
+      </div>
+      <div class="js-link-container ml-3 space-y-0.5 border-l-2 border-slate-200 pl-2 md:space-y-1 md:border-l md:border-slate-100">
+        <!-- 子链接将会被 append 到这里 -->
+      <a href="../%E9%81%97%E4%BC%A0%E4%B8%8E%E5%8F%91%E8%82%B2%20I/2024-2025%E5%86%AC%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025冬期末回忆卷<!-- 链接文本占位 -->
+    </a>
+  </div>
+    </div>
+  <div class="js-tpl-category-item space-y-1 md:space-y-2">
+      <div class="js-category-title px-2 text-sm font-bold tracking-wide text-slate-600 md:text-xs md:uppercase md:tracking-wider md:text-slate-400">遗传与发育 II<!-- 分类名占位 -->
+      </div>
+      <div class="js-link-container ml-3 space-y-0.5 border-l-2 border-slate-200 pl-2 md:space-y-1 md:border-l md:border-slate-100">
+        <!-- 子链接将会被 append 到这里 -->
+      <a href="../%E9%81%97%E4%BC%A0%E4%B8%8E%E5%8F%91%E8%82%B2%20II/2024-2025%E6%98%A5%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025春期末回忆卷<!-- 链接文本占位 -->
+    </a>
+  </div>
+    </div>
+  <div class="js-tpl-category-item space-y-1 md:space-y-2">
+      <div class="js-category-title px-2 text-sm font-bold tracking-wide text-slate-600 md:text-xs md:uppercase md:tracking-wider md:text-slate-400">感染与免疫学<!-- 分类名占位 -->
+      </div>
+      <div class="js-link-container ml-3 space-y-0.5 border-l-2 border-slate-200 pl-2 md:space-y-1 md:border-l md:border-slate-100">
+        <!-- 子链接将会被 append 到这里 -->
+      <a href="../%E6%84%9F%E6%9F%93%E4%B8%8E%E5%85%8D%E7%96%AB%E5%AD%A6/2025-2026%E7%A7%8B%E5%86%AC%E5%B0%8F%E6%B5%8B%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2025-2026秋冬小测卷<!-- 链接文本占位 -->
     </a>
   </div>
     </div>
@@ -208,7 +302,25 @@
       </div>
       <div class="js-link-container ml-3 space-y-0.5 border-l-2 border-slate-200 pl-2 md:space-y-1 md:border-l md:border-slate-100">
         <!-- 子链接将会被 append 到这里 -->
-      <a href="../%E5%8C%BB%E5%AD%A6%E5%A4%A7%E6%95%B0%E6%8D%AE%E4%B8%8E%E5%BA%94%E7%94%A8/2024-2025%E5%A4%8F%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025夏回忆卷<!-- 链接文本占位 -->
+      <a href="../%E5%8C%BB%E5%AD%A6%E5%A4%A7%E6%95%B0%E6%8D%AE%E4%B8%8E%E5%BA%94%E7%94%A8/2024-2025%E5%86%AC%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025冬期末回忆卷<!-- 链接文本占位 -->
+    </a>
+  </div>
+    </div>
+  <div class="js-tpl-category-item space-y-1 md:space-y-2">
+      <div class="js-category-title px-2 text-sm font-bold tracking-wide text-slate-600 md:text-xs md:uppercase md:tracking-wider md:text-slate-400">医学生物物理学<!-- 分类名占位 -->
+      </div>
+      <div class="js-link-container ml-3 space-y-0.5 border-l-2 border-slate-200 pl-2 md:space-y-1 md:border-l md:border-slate-100">
+        <!-- 子链接将会被 append 到这里 -->
+      <a href="../%E5%8C%BB%E5%AD%A6%E7%94%9F%E7%89%A9%E7%89%A9%E7%90%86%E5%AD%A6/2024-2025%E6%98%A5%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025春期末回忆卷<!-- 链接文本占位 -->
+    </a>
+  </div>
+    </div>
+  <div class="js-tpl-category-item space-y-1 md:space-y-2">
+      <div class="js-category-title px-2 text-sm font-bold tracking-wide text-slate-600 md:text-xs md:uppercase md:tracking-wider md:text-slate-400">医学科学素养 II<!-- 分类名占位 -->
+      </div>
+      <div class="js-link-container ml-3 space-y-0.5 border-l-2 border-slate-200 pl-2 md:space-y-1 md:border-l md:border-slate-100">
+        <!-- 子链接将会被 append 到这里 -->
+      <a href="../%E5%8C%BB%E5%AD%A6%E7%A7%91%E5%AD%A6%E7%B4%A0%E5%85%BB%20II/2025-2026%E7%A7%8B%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2025-2026秋期末回忆卷<!-- 链接文本占位 -->
     </a>
   </div>
     </div>
@@ -238,8 +350,8 @@
       <!-- 右侧主体内容区 -->
       <main class=".js-quiz-container min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-contain p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:p-5 md:p-8"><div id="root"></div>
 
-<script>const mcqs = [{"q": "生物膜的功能不包括以下哪一项？", "a": ["物质转运", "能量转换", "信息传递", " 蛋白质合成", "细胞识别"], "c": [3]}, {"q": "下列哪种模型被公认为最新的生物膜结构模型？", "a": ["单位膜模型", "流动镶嵌模型", "板块模型", "晶格模型", " 脂筏模型"], "c": [4]}, {"q": "生物膜的化学组分主要包括", "a": ["脂质、蛋白质和糖类", " 脂质、蛋白质和核酸", "蛋白质、核酸和糖类", "脂质、核酸和糖类", "蛋白质、脂质和水"], "c": [1]}, {"q": "负责蛋白质折叠和质量控制的细胞器是", "a": ["溶酶体", "高尔基体", " 内质网", "线粒体", "过氧化物酶体"], "c": [2]}, {"q": "溶酶体酶主要在哪里合成？", "a": ["高尔基体", "线粒体", "细胞质基质", " 粗面内质网", "核糖体"], "c": [3]}, {"q": "囊泡与靶膜融合过程依赖于哪种蛋白？", "a": [" SNARE蛋白", "马达蛋白", "网格蛋白", "COPI蛋白", "COPII蛋白"], "c": [0]}, {"q": "囊泡从内质网运输到高尔基体主要依赖于哪种蛋白？", "a": ["网格蛋白", " COPII蛋白", "COPI蛋白", "发动蛋白", "融合蛋白"], "c": [1]}, {"q": "关于细胞骨架特征的描述，错误的是", "a": ["具有动态不稳定性", "参与细胞运动和分裂", "由蛋白质单体组装而成", "为细胞提供结构支持", " 所有细胞骨架纤维的直径均相同"], "c": [4]}, {"q": "下列关于氨基聚糖和蛋白聚糖功能的描述，正确的是", "a": ["氨基聚糖主要参与血液流动", "蛋白聚糖主要负责组织弹性", " 蛋白聚糖参与调控细胞分化和信号转导", "氨基聚糖调控细胞分化", "两者功能完全相同"], "c": [2]}, {"q": "下列关于核仁功能的描述，正确的是", "a": ["核仁是合成5SrRNA的主要场所", " 5SrRNA在核仁外合成，核仁主要合成18S和28S rRNA", "核仁是合成所有RNA的场所", "核仁与蛋白质合成无关", "核仁仅存在于原核细胞中"], "c": [1]}, {"q": "下列哪位诺贝尔奖获得者的研究内容与G蛋白无关？", "a": [" 选项A（根据回忆，具体人名缺失）", "选项B（根据回忆，具体人名缺失）", "选项C（根据回忆，具体人名缺失）", "选项D（根据回忆，具体人名缺失）", "选项E（根据回忆，具体人名缺失）"], "c": [0]}, {"q": "脂水解酶参与下列哪个信号通路？", "a": ["MAPK通路", " PI3K-AKT通路", "JAK-STAT通路", "TGF-β通路", "Notch通路"], "c": [1]}, {"q": "FAK（粘着斑激酶）与细胞运动的关系是", "a": ["FAK抑制细胞运动", " FAK促进细胞运动，参与粘着斑的组装与解聚", "FAK与细胞运动无关", "FAK仅在静止细胞中表达", "FAK抑制细胞迁移"], "c": [1]}, {"q": "下列哪项与肿瘤侵袭转移的关系最小？", "a": ["侵袭性伪足", "细胞外基质降解", " 层粘连蛋白（laminin）", "细胞骨架重排", "基质金属蛋白酶"], "c": [2]}, {"q": "下列哪个信号通路中有蛋白水解酶（蛋白酶体）的参与？", "a": ["MAPK通路", " Wnt/β-catenin通路", "PI3K-AKT通路", "JAK-STAT通路", "钙离子信号通路"], "c": [1]}, {"q": "Wnt信号通路中，下列哪种物质参与信号传递？", "a": [" β-catenin", "NF-κB", "STAT3", "Smad", "Notch"], "c": [0]}, {"q": "下列哪项不属于多能干细胞？", "a": ["胚胎四细胞期细胞", "胚胎干细胞", "诱导多能干细胞（iPS）", " 成体组织干细胞（如造血干细胞）", "早期胚胎细胞"], "c": [3]}, {"q": "检测细胞死活常用的技术是", "a": ["Western blot", "PCR", " 台盼蓝染色", "免疫荧光", "ELISA"], "c": [2]}, {"q": "关于ERK（细胞外信号调节激酶）的描述，正确的是", "a": ["ERK是G蛋白偶联受体的直接效应器", "ERK的激活不依赖于磷酸化", " ERK是MAPK通路中的重要成员，参与细胞增殖与分化", "ERK主要存在于细胞核中", "ERK的活性不受生长因子调控"], "c": [2]}, {"q": "关于信号转导的描述，错误的是", "a": ["信号分子可作为第一信使", " 受体可作为第二信使", "第二信使包括cAMP、IP3等", "G蛋白参与信号转导", "蛋白激酶在信号转导中发挥作用"], "c": [1]}];
-const flashcards = [{"q": "生物膜的功能不包括以下哪一项？", "a": "生物膜的功能不包括以下哪一项？"}, {"q": "下列哪种模型被公认为最新的生物膜结构模型？", "a": "下列哪种模型被公认为最新的生物膜结构模型？"}, {"q": "生物膜的化学组分主要包括", "a": "生物膜的化学组分主要包括"}, {"q": "负责蛋白质折叠和质量控制的细胞器是", "a": "负责蛋白质折叠和质量控制的细胞器是"}, {"q": "溶酶体酶主要在哪里合成？", "a": "溶酶体酶主要在哪里合成？"}, {"q": "囊泡与靶膜融合过程依赖于哪种蛋白？", "a": "囊泡与靶膜融合过程依赖于哪种蛋白？"}, {"q": "囊泡从内质网运输到高尔基体主要依赖于哪种蛋白？", "a": "囊泡从内质网运输到高尔基体主要依赖于哪种蛋白？"}, {"q": "关于细胞骨架特征的描述，错误的是", "a": "关于细胞骨架特征的描述，错误的是"}, {"q": "下列关于氨基聚糖和蛋白聚糖功能的描述，正确的是", "a": "下列关于氨基聚糖和蛋白聚糖功能的描述，正确的是"}, {"q": "下列关于核仁功能的描述，正确的是", "a": "下列关于核仁功能的描述，正确的是"}, {"q": "下列哪位诺贝尔奖获得者的研究内容与G蛋白无关？", "a": "下列哪位诺贝尔奖获得者的研究内容与G蛋白无关？"}, {"q": "脂水解酶参与下列哪个信号通路？", "a": "脂水解酶参与下列哪个信号通路？"}, {"q": "FAK（粘着斑激酶）与细胞运动的关系是", "a": "FAK（粘着斑激酶）与细胞运动的关系是"}, {"q": "下列哪项与肿瘤侵袭转移的关系最小？", "a": "下列哪项与肿瘤侵袭转移的关系最小？"}, {"q": "下列哪个信号通路中有蛋白水解酶（蛋白酶体）的参与？", "a": "下列哪个信号通路中有蛋白水解酶（蛋白酶体）的参与？"}, {"q": "Wnt信号通路中，下列哪种物质参与信号传递？", "a": "Wnt信号通路中，下列哪种物质参与信号传递？"}, {"q": "下列哪项不属于多能干细胞？", "a": "下列哪项不属于多能干细胞？"}, {"q": "检测细胞死活常用的技术是", "a": "检测细胞死活常用的技术是"}, {"q": "关于ERK（细胞外信号调节激酶）的描述，正确的是", "a": "关于ERK（细胞外信号调节激酶）的描述，正确的是"}, {"q": "关于信号转导的描述，错误的是", "a": "关于信号转导的描述，错误的是"}];</script>
+<script>const mcqs = [];
+const flashcards = [{"q": "举出四个神经工程的研究领域，并简要说明其应用。", "a": "神经工程的研究领域包括：① 神经修复与再生，例如利用神经导管和干细胞促进受损神经再生，应用于周围神经损伤治疗；② 神经调控技术，如深部脑刺激（DBS）和经颅磁刺激（TMS），用于治疗帕金森病、抑郁症等精神神经疾病；③ 脑机接口（BCI），通过解码大脑信号控制外部设备，帮助运动障碍患者实现交流和环境控制；④ 神经成像与信号处理，如功能性磁共振成像（fMRI）和脑电图（EEG），用于研究脑功能、诊断神经系统疾病以及构建神经解码模型。"}, {"q": "功能可塑性、非侵入式神经调控技术。", "a": "功能可塑性是指神经系统在发育、学习、损伤或经验积累过程中，其结构和功能发生适应性改变的能力，具体表现为突触可塑性、皮层功能重组等，是神经康复和认知训练的重要基础。非侵入式神经调控技术是指无需开颅或植入电极，通过体外设备作用于中枢或外周神经系统以调节其兴奋性的方法，主要包括经颅磁刺激（TMS）和经颅直流电刺激（tDCS）。TMS利用时变磁场在脑内诱导感应电流，从而激活或抑制特定皮层区域；tDCS则通过微弱直流电改变神经元静息膜电位，调节皮层兴奋性。这类技术具有安全、无创、可重复等优点，广泛应用于抑郁症、慢性疼痛、卒中后康复及认知增强等领域。"}, {"q": "脑信号获取，声、光、电、磁获取的原理和技术。", "a": "声学方法（如功能性超声成像）利用超声波通过颅骨并检测脑组织微血管中血流的声学反射变化，间接反映神经活动带来的血流动力学改变，具有较好的时空分辨率和便携性，但穿透深度和空间分辨率受限。光学方法（如功能性近红外光谱，fNIRS）利用近红外光穿透颅骨和脑组织，通过检测氧合血红蛋白和脱氧血红蛋白对特定波长光的吸收差异，测量皮层血氧代谢变化，从而推断神经元活动，具有便携、运动容忍度高的特点，但只能探测浅层皮层且空间分辨率较低。电学方法（如脑电图，EEG）通过头皮电极记录大脑皮层锥体神经元突触后电位产生的头皮电位变化，具有毫秒级时间分辨率，但空间分辨率较差，易受容积传导和肌电干扰。磁学方法（如脑磁图，MEG）利用超导量子干涉仪（SQUID）检测神经元电流产生的微弱磁场变化，具有与EEG相当的时间分辨率，且空间定位优于EEG，但对环境磁场屏蔽要求极高，设备昂贵且不可移动。"}, {"q": "脑机接口技术硬件及其作用、电极优缺点对比。", "a": "脑机接口（BCI）系统的基本硬件包括：信号采集电极（用于捕获脑电或脑磁信号）、前置放大器（将微伏级信号放大）、滤波器（去除工频和生理噪声）、模数转换器（将模拟信号数字化）以及计算机处理单元（执行特征提取和分类算法）。此外，还包括反馈输出设备（如屏幕、机械臂或刺激器）。电极是BCI中最重要的硬件，其优缺点对比如下：侵入式电极（如微电极阵列）直接植入皮层内，可记录高信噪比的单细胞或局部场电位，时空分辨率极高，但存在手术风险、免疫排斥和长期稳定性问题；半侵入式电极（如皮层电图，ECoG）置于硬膜下或硬膜外，信号质量介于侵入式与非侵入式之间，创伤较小，但仍需开颅；非侵入式电极（如EEG干/湿电极）佩戴于头皮表面，安全无创，易于使用，但信号微弱且易受噪声干扰，空间分辨率较低，且需要复杂的信号处理算法。"}, {"q": "简述三类神经假体并各举一例；选择各类神经假体的一个代表性产品，详细说明其技术原理和应用。", "a": "神经假体按功能可分为感觉神经假体（如人工耳蜗）、运动神经假体（如深部脑刺激器）和认知/生理调节神经假体（如迷走神经刺激器）。代表性产品及其原理应用如下：① 感觉类——人工耳蜗（Cochlear™ Nucleus® 系统）：工作原理为体外麦克风采集声音，经言语处理器将声音分解为多个频率通道并提取包络特征，通过射频线圈传输至体内植入体，植入体解码后通过电极阵列按频率-位置映射刺激耳蜗内不同区域的听神经，恢复听觉感知；应用于重度至极重度感音神经性耳聋患者。② 运动类——深部脑刺激器（Medtronic® Activa® PC）：由植入锁骨下区的脉冲发生器、延伸导线和植入丘脑底核或苍白球内的四触点电极组成。发生器输出高频电脉冲，通过电极抑制异常神经放电，调节基底节环路功能，从而改善帕金森病的震颤、僵直和运动迟缓症状，也用于肌张力障碍和强迫症。③ 认知/调节类——迷走神经刺激器（LivaNova® VNS Therapy®）：将螺旋电极缠绕于颈部迷走神经，连接至胸部皮下脉冲发生器。发生器定期发出电刺激，通过迷走神经传入纤维投射至孤束核，继而广泛影响脑干、边缘系统和皮层，调节神经递质释放；主要用于药物难治性癫痫和抑郁症，近年来也探索用于慢性偏头痛和卒中康复。"}];</script>
 
 <script type="text/babel">
   const { useState, useEffect } = React;
@@ -433,6 +545,37 @@ const flashcards = [{"q": "生物膜的功能不包括以下哪一项？", "a": 
     </svg>
   );
 
+  const RichContent = ({ value, imageClassName = "max-h-72" }) => {
+    const content =
+      typeof value === "string"
+        ? { text: value, images: [] }
+        : { text: value?.text || "", images: value?.images || [] };
+
+    return (
+      <div className="min-w-0 space-y-3">
+        {content.text && (
+          <div className="whitespace-pre-wrap break-words">{content.text}</div>
+        )}
+        {content.images.map((image, index) => (
+          <figure key={`${image.src}-${index}`} className="space-y-1.5">
+            <img
+              src={image.src}
+              alt={image.alt || ""}
+              loading="lazy"
+              decoding="async"
+              className={`mx-auto w-auto max-w-full rounded-xl object-contain ${imageClassName}`}
+            />
+            {image.caption && (
+              <figcaption className="text-center text-xs font-normal opacity-70">
+                {image.caption}
+              </figcaption>
+            )}
+          </figure>
+        ))}
+      </div>
+    );
+  };
+
   function App() {
     const [view, setView] = useState("menu"); // 'menu', 'quiz', 'flashcard'
     const [currentIdx, setCurrentIdx] = useState(0);
@@ -445,6 +588,8 @@ const flashcards = [{"q": "生物膜的功能不包括以下哪一项？", "a": 
 
     // 答错记录追踪（供最后结果页查看分析）
     const [wrongAnswers, setWrongAnswers] = useState([]);
+    const hasMcqs = mcqs.length > 0;
+    const hasFlashcards = flashcards.length > 0;
 
     const resetState = () => {
       setCurrentIdx(0);
@@ -533,53 +678,59 @@ const flashcards = [{"q": "生物膜的功能不包括以下哪一项？", "a": 
       return (
         <div className="max-w-2xl mx-auto pt-4 px-0 sm:pt-10 sm:px-4 md:pt-16">
           <div className="text-center mb-7 sm:mb-12">
-            <div className="inline-flex p-3 sm:p-4 bg-blue-50 text-blue-600 rounded-2xl sm:rounded-3xl mb-4">
+            <div className="inline-flex p-3 sm:p-4 bg-brand-50 text-brand-800 rounded-2xl sm:rounded-3xl mb-4">
               <BookOpen size={40} />
             </div>
             <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-3 break-words">
-              细胞与生物分子Ⅰ 2024-2025秋季学期期末测试
+              2024-2025 学年夏学期脑与脑机融合期末回忆卷
             </h1>
             <p className="text-base sm:text-lg text-slate-500 leading-relaxed">
-              <p>根据回忆整理的期末考试题，部分内容已按上下文补全。</p><p>Made by 23基础同学</p>
+              <p></p><p>Made by 李建树</p>
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 gap-3 sm:gap-6 mb-8">
-            <button
-              onClick={() => {
-                setView("quiz");
-                resetState();
-              }}
-              className="flex min-h-40 flex-col text-left p-5 sm:p-6 bg-white border border-slate-200 rounded-2xl hover:border-blue-500 hover:shadow-lg transition-all group focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <div className="p-3 bg-blue-50 text-blue-600 rounded-xl group-hover:bg-blue-600 group-hover:text-white transition-colors mb-4 w-fit">
-                <ListChecks size={28} />
-              </div>
-              <h3 className="font-bold text-xl text-slate-800 mb-1">
-                选择题闯关
-              </h3>
-              <span className="mt-auto text-blue-600 text-sm font-semibold flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-                开始挑战 <ChevronRight size={16} />
-              </span>
-            </button>
+          <div
+            className={`grid gap-3 sm:gap-6 mb-8 ${hasMcqs && hasFlashcards ? "sm:grid-cols-2" : "grid-cols-1"}`}
+          >
+            {hasMcqs && (
+              <button
+                onClick={() => {
+                  setView("quiz");
+                  resetState();
+                }}
+                className="flex min-h-40 flex-col text-left p-5 sm:p-6 bg-white border border-slate-200 rounded-2xl hover:border-brand-500 hover:shadow-lg transition-all group focus:outline-none focus:ring-2 focus:ring-brand-500"
+              >
+                <div className="p-3 bg-brand-50 text-brand-800 rounded-xl group-hover:bg-brand-800 group-hover:text-white transition-colors mb-4 w-fit">
+                  <ListChecks size={28} />
+                </div>
+                <h3 className="font-bold text-xl text-slate-800 mb-1">
+                  选择题闯关
+                </h3>
+                <span className="mt-auto text-brand-800 text-sm font-semibold flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                  开始挑战 <ChevronRight size={16} />
+                </span>
+              </button>
+            )}
 
-            <button
-              onClick={() => {
-                setView("flashcard");
-                resetState();
-              }}
-              className="flex min-h-40 flex-col text-left p-5 sm:p-6 bg-white border border-slate-200 rounded-2xl hover:border-emerald-500 hover:shadow-lg transition-all group focus:outline-none focus:ring-2 focus:ring-emerald-500"
-            >
-              <div className="p-3 bg-emerald-50 text-emerald-600 rounded-xl group-hover:bg-emerald-600 group-hover:text-white transition-colors mb-4 w-fit">
-                <CreditCard size={28} />
-              </div>
-              <h3 className="font-bold text-xl text-slate-800 mb-1">
-                简答题抽认卡
-              </h3>
-              <span className="mt-auto text-emerald-600 text-sm font-semibold flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-                开始背诵 <ChevronRight size={16} />
-              </span>
-            </button>
+            {hasFlashcards && (
+              <button
+                onClick={() => {
+                  setView("flashcard");
+                  resetState();
+                }}
+                className="flex min-h-40 flex-col text-left p-5 sm:p-6 bg-white border border-slate-200 rounded-2xl hover:border-brand-500 hover:shadow-lg transition-all group focus:outline-none focus:ring-2 focus:ring-brand-500"
+              >
+                <div className="p-3 bg-brand-50 text-brand-800 rounded-xl group-hover:bg-brand-800 group-hover:text-white transition-colors mb-4 w-fit">
+                  <CreditCard size={28} />
+                </div>
+                <h3 className="font-bold text-xl text-slate-800 mb-1">
+                  简答题抽认卡
+                </h3>
+                <span className="mt-auto text-brand-800 text-sm font-semibold flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                  开始背诵 <ChevronRight size={16} />
+                </span>
+              </button>
+            )}
           </div>
         </div>
       );
@@ -604,7 +755,7 @@ const flashcards = [{"q": "生物膜的功能不包括以下哪一项？", "a": 
               >
                 <Layers size={16} /> <span className="hidden sm:inline">跳转题目</span><span className="sm:hidden">题目</span>
               </button>
-              <div className="whitespace-nowrap px-3 py-2 bg-blue-50 text-blue-700 rounded-xl text-sm font-bold">
+              <div className="whitespace-nowrap px-3 py-2 bg-brand-50 text-brand-800 rounded-xl text-sm font-bold">
                 <span className="hidden sm:inline">进度: </span>{currentIdx + 1} / {mcqs.length}
               </div>
             </div>
@@ -613,7 +764,7 @@ const flashcards = [{"q": "生物膜的功能不包括以下哪一项？", "a": 
           {/* 进度条 */}
           <div className="w-full h-2 bg-slate-200 rounded-full mb-5 sm:mb-8 overflow-hidden">
             <div
-              className="h-full bg-blue-600 transition-all duration-300"
+              className="h-full bg-brand-800 transition-all duration-300"
               style={{ width: `${((currentIdx + 1) / mcqs.length) * 100}%` }}
             ></div>
           </div>
@@ -622,24 +773,20 @@ const flashcards = [{"q": "生物膜的功能不包括以下哪一项？", "a": 
             <div className="mobile-question-scroll">
               <div className="mb-4 sm:mb-6 bg-white rounded-2xl p-4 sm:p-6 border border-slate-200 shadow-sm">
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="text-xs font-bold text-blue-600 uppercase tracking-wider">
+                  <span className="text-xs font-bold text-brand-800 uppercase tracking-wider">
                     QUESTION {currentIdx + 1}
                   </span>
                   <span
-                    className={`px-2 py-0.5 rounded-full text-xs font-bold ${
-                      getCorrectAnswers(mcqs[currentIdx]).length > 1
-                        ? "bg-violet-100 text-violet-700"
-                        : "bg-blue-100 text-blue-700"
-                    }`}
+                    className="px-2 py-0.5 rounded-full bg-brand-100 text-xs font-bold text-brand-900"
                   >
                     {getCorrectAnswers(mcqs[currentIdx]).length > 1
                       ? "多选题"
                       : "单选题"}
                   </span>
                 </div>
-                <h2 className="text-lg sm:text-xl font-bold text-slate-800 leading-relaxed break-words">
-                  {mcqs[currentIdx].q}
-                </h2>
+                <div className="text-lg sm:text-xl font-bold text-slate-800 leading-relaxed">
+                  <RichContent value={mcqs[currentIdx].q} />
+                </div>
                 {getCorrectAnswers(mcqs[currentIdx]).length > 1 && (
                   <p className="text-sm text-slate-500 mt-3">
                     可选择多个答案，选好后点击“提交答案”
@@ -665,7 +812,7 @@ const flashcards = [{"q": "生物膜的功能不包括以下哪一项？", "a": 
                     }
                   } else if (isSelected) {
                     style =
-                      "border-violet-500 bg-violet-50 text-violet-800 font-semibold shadow-sm";
+                      "border-brand-500 bg-brand-50 text-brand-900 font-semibold shadow-sm";
                   }
                   return (
                     <button
@@ -673,11 +820,16 @@ const flashcards = [{"q": "生物膜的功能不包括以下哪一项？", "a": 
                       onClick={() => handleQuizAnswer(i)}
                       aria-pressed={isSelected}
                       disabled={isAnswerSubmitted}
-                      className={`min-h-14 p-4 sm:p-5 text-left border-2 rounded-xl transition-all duration-200 flex items-center justify-between break-words focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${style}`}
+                      className={`min-h-14 p-4 sm:p-5 text-left border-2 rounded-xl transition-all duration-200 flex items-center justify-between break-words focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2 ${style}`}
                     >
-                      <span className="leading-relaxed">
-                        {String.fromCharCode(65 + i)}. {opt}
-                      </span>
+                      <div className="flex min-w-0 flex-1 items-start gap-1 leading-relaxed">
+                        <span className="shrink-0">
+                          {String.fromCharCode(65 + i)}.
+                        </span>
+                        <div className="min-w-0 flex-1">
+                          <RichContent value={opt} imageClassName="max-h-48" />
+                        </div>
+                      </div>
                       {isAnswerSubmitted && isCorrectOption && (
                         <CheckCircle2 className="text-emerald-500 shrink-0 ml-3" />
                       )}
@@ -687,7 +839,7 @@ const flashcards = [{"q": "生物膜的功能不包括以下哪一项？", "a": 
                       {!isAnswerSubmitted &&
                         isSelected &&
                         correctAnswers.length > 1 && (
-                          <CheckCircle2 className="text-violet-500 shrink-0 ml-3" />
+                          <CheckCircle2 className="text-brand-500 shrink-0 ml-3" />
                         )}
                     </button>
                   );
@@ -698,7 +850,7 @@ const flashcards = [{"q": "生物膜的功能不包括以下哪一项？", "a": 
                   <button
                     onClick={() => submitQuizAnswer(selectedOptions)}
                     disabled={selectedOptions.length === 0}
-                    className="mt-5 w-full px-6 py-3 bg-violet-600 text-white rounded-xl font-bold hover:bg-violet-700 transition-colors shadow-md disabled:bg-slate-300 disabled:cursor-not-allowed disabled:shadow-none"
+                    className="mt-5 w-full px-6 py-3 bg-brand-800 text-white rounded-xl font-bold hover:bg-brand-900 transition-colors shadow-md disabled:bg-slate-300 disabled:cursor-not-allowed disabled:shadow-none"
                   >
                     提交答案
                     {selectedOptions.length > 0 &&
@@ -717,7 +869,7 @@ const flashcards = [{"q": "生物膜的功能不包括以下哪一项？", "a": 
               </h2>
               <p className="text-slate-500 mb-6">
                 您的正确率达到了{" "}
-                <span className="text-blue-600 font-bold text-2xl">
+                <span className="text-brand-800 font-bold text-2xl">
                   {Math.round((score / mcqs.length) * 100)}%
                 </span>
               </p>
@@ -743,9 +895,15 @@ const flashcards = [{"q": "生物膜的功能不包括以下哪一项？", "a": 
                   <div className="space-y-4">
                     {wrongAnswers.map((item, idx) => (
                       <div key={idx} className="text-xs">
-                        <p className="font-semibold text-slate-800">
-                          {idx + 1}. {item.q}
-                        </p>
+                        <div className="flex items-start gap-1 font-semibold text-slate-800">
+                          <span className="shrink-0">{idx + 1}.</span>
+                          <div className="min-w-0 flex-1">
+                            <RichContent
+                              value={item.q}
+                              imageClassName="max-h-32"
+                            />
+                          </div>
+                        </div>
                         <p className="text-rose-600 mt-1">
                           您的回答: {item.userLetter} (错误)
                         </p>
@@ -770,7 +928,7 @@ const flashcards = [{"q": "生物膜的功能不包括以下哪一项？", "a": 
                     resetState();
                     setView("menu");
                   }}
-                  className="min-h-12 w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-xl sm:rounded-full font-bold hover:bg-blue-700 transition-colors shadow-md"
+                  className="min-h-12 w-full sm:w-auto px-6 py-3 bg-brand-800 text-white rounded-xl sm:rounded-full font-bold hover:bg-brand-900 transition-colors shadow-md"
                 >
                   返回主页
                 </button>
@@ -784,7 +942,7 @@ const flashcards = [{"q": "生物膜的功能不包括以下哪一项？", "a": 
               <div className="bg-white rounded-t-2xl sm:rounded-2xl max-w-lg w-full max-h-[85dvh] overflow-hidden flex flex-col shadow-2xl">
                 <div className="p-4 sm:p-5 border-b flex justify-between items-center bg-slate-50">
                   <h3 className="font-bold text-slate-800 flex items-center gap-2">
-                    <Layers size={18} className="text-blue-500" />{" "}
+                    <Layers size={18} className="text-brand-600" />{" "}
                     选择题目录跳转
                   </h3>
                   <button
@@ -800,7 +958,7 @@ const flashcards = [{"q": "生物膜的功能不包括以下哪一项？", "a": 
                     <button
                       key={i}
                       onClick={() => jumpToQuestion(i)}
-                      className={`min-h-11 py-2 text-sm font-bold rounded-lg border transition-all ${currentIdx === i ? "bg-blue-600 border-blue-600 text-white" : "border-slate-200 hover:border-blue-500 text-slate-700 hover:bg-slate-50"}`}
+                      className={`min-h-11 py-2 text-sm font-bold rounded-lg border transition-all ${currentIdx === i ? "bg-brand-800 border-brand-800 text-white" : "border-slate-200 hover:border-brand-500 text-slate-700 hover:bg-brand-50"}`}
                     >
                       {i + 1}
                     </button>
@@ -832,7 +990,7 @@ const flashcards = [{"q": "生物膜的功能不包括以下哪一项？", "a": 
               >
                 <Layers size={16} /> <span className="hidden sm:inline">选卡列表</span><span className="sm:hidden">选卡</span>
               </button>
-              <div className="whitespace-nowrap px-3 py-2 bg-emerald-50 text-emerald-700 rounded-xl text-sm font-bold">
+              <div className="whitespace-nowrap px-3 py-2 bg-brand-50 text-brand-800 rounded-xl text-sm font-bold">
                 <span className="hidden sm:inline">卡片: </span>{currentIdx + 1} / {flashcards.length}
               </div>
             </div>
@@ -841,7 +999,7 @@ const flashcards = [{"q": "生物膜的功能不包括以下哪一项？", "a": 
           {/* 进度条 */}
           <div className="w-full h-2 bg-slate-200 rounded-full mb-5 sm:mb-8 overflow-hidden">
             <div
-              className="h-full bg-emerald-600 transition-all duration-300"
+              className="h-full bg-brand-800 transition-all duration-300"
               style={{
                 width: `${((currentIdx + 1) / flashcards.length) * 100}%`,
               }}
@@ -851,21 +1009,29 @@ const flashcards = [{"q": "生物膜的功能不包括以下哪一项？", "a": 
           {/* 翻转卡片结构 */}
           <div
             className={`flip-card ${flipped ? "flipped" : ""} w-full`}
-            onClick={() => setFlipped(!flipped)}
+            onClick={() => setFlipped((isFlipped) => !isFlipped)}
           >
-            <div className="flip-card-inner">
+            <div
+              className="flip-card-inner"
+              style={{
+                transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)",
+              }}
+            >
               {/* 卡片正面 (问题) */}
               <div className="flip-card-front bg-white border border-slate-200 text-slate-800 flex flex-col justify-between">
-                <div className="p-3 bg-emerald-50 text-emerald-500 rounded-full mt-4 self-center">
+                <div className="p-3 bg-brand-50 text-brand-600 rounded-full mt-4 self-center">
                   <Lightbulb size={28} />
                 </div>
                 <div className="my-auto min-h-0 w-full overflow-y-auto overscroll-contain px-2 py-2 scrollbar-hide sm:px-4">
                   <span className="text-xs font-bold text-slate-400 block mb-2">
                     QUESTION {currentIdx + 1}
                   </span>
-                  <h3 className="text-lg sm:text-xl font-bold leading-relaxed break-words">
-                    {flashcards[currentIdx].q}
-                  </h3>
+                  <div className="text-lg sm:text-xl font-bold leading-relaxed">
+                    <RichContent
+                      value={flashcards[currentIdx].q}
+                      imageClassName="max-h-48"
+                    />
+                  </div>
                 </div>
                 <p className="text-slate-400 text-xs font-medium pb-4 flex items-center gap-1 animate-pulse">
                   <svg
@@ -886,14 +1052,17 @@ const flashcards = [{"q": "生物膜的功能不包括以下哪一项？", "a": 
               </div>
 
               {/* 卡片背面 (要点解析) */}
-              <div className="flip-card-back bg-slate-900 text-white border border-slate-800 text-left items-start overflow-y-auto scrollbar-hide flex flex-col justify-between">
+              <div className="flip-card-back bg-brand-950 text-white border border-brand-900 text-left items-start overflow-y-auto scrollbar-hide flex flex-col justify-between">
                 <div className="w-full">
-                  <h4 className="text-emerald-400 font-bold mb-4 flex items-center gap-2 border-b border-slate-800 pb-2">
+                  <h4 className="text-brand-300 font-bold mb-4 flex items-center gap-2 border-b border-brand-900 pb-2">
                     <CheckCircle2 size={18} /> 核心要点 / 答案分析
                   </h4>
-                  <p className="text-base leading-relaxed text-slate-200 whitespace-pre-wrap font-medium">
-                    {flashcards[currentIdx].a}
-                  </p>
+                  <div className="text-base leading-relaxed text-slate-200 font-medium">
+                    <RichContent
+                      value={flashcards[currentIdx].a}
+                      imageClassName="max-h-48"
+                    />
+                  </div>
                 </div>
                 <p className="pt-6 text-slate-500 text-xs text-center w-full mt-auto">
                   点击卡片返回问题
@@ -923,7 +1092,7 @@ const flashcards = [{"q": "生物膜的功能不包括以下哪一项？", "a": 
                   setView("menu");
                 }
               }}
-              className="min-h-12 flex flex-1 sm:flex-none items-center justify-center gap-1 sm:gap-2 px-3 sm:px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-bold shadow-sm transition-all"
+              className="min-h-12 flex flex-1 sm:flex-none items-center justify-center gap-1 sm:gap-2 px-3 sm:px-6 py-3 bg-brand-800 hover:bg-brand-900 text-white rounded-xl font-bold shadow-sm transition-all"
             >
               {currentIdx === flashcards.length - 1 ? "完成复习" : "下一题"}{" "}
               <ChevronRight size={20} />
@@ -936,7 +1105,7 @@ const flashcards = [{"q": "生物膜的功能不包括以下哪一项？", "a": 
               <div className="bg-white rounded-t-2xl sm:rounded-2xl max-w-lg w-full max-h-[85dvh] overflow-hidden flex flex-col shadow-2xl">
                 <div className="p-4 sm:p-5 border-b flex justify-between items-center bg-slate-50">
                   <h3 className="font-bold text-slate-800 flex items-center gap-2">
-                    <Layers size={18} className="text-emerald-500" />{" "}
+                    <Layers size={18} className="text-brand-600" />{" "}
                     简答题卡片目录
                   </h3>
                   <button
@@ -952,7 +1121,7 @@ const flashcards = [{"q": "生物膜的功能不包括以下哪一项？", "a": 
                     <button
                       key={i}
                       onClick={() => jumpToQuestion(i)}
-                      className={`min-h-11 py-2 text-sm font-bold rounded-lg border transition-all ${currentIdx === i ? "bg-emerald-600 border-emerald-600 text-white" : "border-slate-200 hover:border-emerald-500 text-slate-700 hover:bg-slate-50"}`}
+                      className={`min-h-11 py-2 text-sm font-bold rounded-lg border transition-all ${currentIdx === i ? "bg-brand-800 border-brand-800 text-white" : "border-slate-200 hover:border-brand-500 text-slate-700 hover:bg-brand-50"}`}
                     >
                       {i + 1}
                     </button>

@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZJUBMS Ginkgo</title>
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                50: "#eef8f4",
+                100: "#d7eee5",
+                200: "#afe0d0",
+                300: "#7ccab4",
+                400: "#48aa8f",
+                500: "#278b70",
+                600: "#176f58",
+                700: "#105a46",
+                800: "#054b35",
+                900: "#063d2f",
+                950: "#02241c",
+              },
+            },
+          },
+        },
+      };
+    </script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+      body {
+        font-family:
+          "Inter",
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          Roboto,
+          sans-serif;
+      }
+      .flip-card {
+        perspective: 1000px;
+        height: clamp(320px, 55dvh, 380px);
+      }
+      .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        -webkit-transform: rotateY(0deg);
+        transform: rotateY(0deg);
+        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        -webkit-transform-style: preserve-3d;
+        transform-style: preserve-3d;
+        transform-origin: center;
+        will-change: transform;
+        cursor: pointer;
+      }
+      .flip-card.flipped .flip-card-inner {
+        -webkit-transform: rotateY(180deg);
+        transform: rotateY(180deg);
+      }
+      .flip-card-front,
+      .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 2rem;
+        border-radius: 1.5rem;
+        box-shadow:
+          0 10px 25px -5px rgba(0, 0, 0, 0.05),
+          0 8px 10px -6px rgba(0, 0, 0, 0.05);
+      }
+      .flip-card-back {
+        -webkit-transform: rotateY(180deg);
+        transform: rotateY(180deg);
+      }
+      .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+      }
+      .sidebar-shell {
+        visibility: hidden;
+        transition: visibility 0s linear 450ms;
+      }
+      .sidebar-shell aside {
+        transform: translateX(-100%);
+        transition-duration: 360ms;
+      }
+      .js-sidebar-backdrop {
+        opacity: 0;
+        -webkit-backdrop-filter: blur(0);
+        backdrop-filter: blur(0);
+        transition:
+          opacity 450ms ease,
+          -webkit-backdrop-filter 450ms ease,
+          backdrop-filter 450ms ease;
+      }
+      .sidebar-shell.is-open {
+        visibility: visible;
+        transition-delay: 0s;
+      }
+      .sidebar-shell.is-open aside {
+        transform: translateX(0);
+      }
+      .sidebar-shell.is-open .js-sidebar-backdrop {
+        opacity: 1;
+        -webkit-backdrop-filter: blur(2px);
+        backdrop-filter: blur(2px);
+      }
+      @media (min-width: 768px) {
+        .sidebar-shell {
+          visibility: visible;
+        }
+        .sidebar-shell aside {
+          transform: none;
+        }
+      }
+      @media (max-width: 767px) {
+        .sidebar-shell nav a {
+          display: flex;
+          min-height: 36px;
+          align-items: center;
+          padding-top: 0.5rem;
+          padding-bottom: 0.5rem;
+          font-size: 0.8125rem;
+          line-height: 1.25rem;
+        }
+        .sidebar-shell .js-link-container {
+          position: relative;
+          border-left: 0;
+        }
+        .sidebar-shell .js-link-container::before {
+          position: absolute;
+          top: 0.375rem;
+          bottom: 0.375rem;
+          left: 0;
+          width: 2px;
+          border-radius: 9999px;
+          background: rgb(226 232 240);
+          content: "";
+        }
+        .mobile-question-scroll {
+          max-height: calc(100dvh - 10.75rem);
+          overflow-y: auto;
+          overscroll-behavior: contain;
+          padding-right: 0.125rem;
+          padding-bottom: max(0.25rem, env(safe-area-inset-bottom));
+          -webkit-overflow-scrolling: touch;
+          scrollbar-color: rgb(203 213 225) transparent;
+          scrollbar-width: thin;
+        }
+        .flip-card-front,
+        .flip-card-back {
+          padding: 1rem;
+          border-radius: 1rem;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .sidebar-shell aside,
+        .js-sidebar-backdrop {
+          transition-duration: 0.01ms !important;
+        }
+      }
+    </style>
+  </head>
+  <body class="h-screen h-[100dvh] overflow-hidden bg-slate-50 text-slate-800">
+    <div class="flex h-full w-full flex-col md:flex-row">
+      <!-- 移动端顶部导航 -->
+      <header class="flex h-14 shrink-0 items-center gap-3 border-b border-slate-200 bg-white px-3 md:hidden">
+        <button type="button" class="js-sidebar-open inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-slate-600 hover:bg-brand-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500" aria-label="打开目录" aria-controls="site-sidebar" aria-expanded="false">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <path d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
+        <div class="js-mobile-site-title truncate font-bold text-slate-900">
+          Site Name
+        </div>
+      </header>
+
+      <!-- 引入侧边栏子组件 -->
+      <div class=".js-asider-container sidebar-shell fixed inset-0 z-50 md:static md:z-auto md:h-full md:w-60 md:shrink-0" aria-hidden="true" inert>
+        <button type="button" class="js-sidebar-backdrop absolute inset-0 bg-slate-900/50 md:hidden" aria-label="关闭目录"></button>
+      <aside id="site-sidebar" class="absolute inset-y-0 left-0 flex h-full w-[min(20rem,75vw)] shrink-0 flex-col border-r border-slate-200 bg-white shadow-2xl transition-transform ease-out md:static md:w-60 md:shadow-none">
+  <!-- 网站标题 -->
+  <div class="flex min-h-14 items-center gap-2 border-b border-slate-100 p-3 md:p-4">
+    <a href="../index.html" class="js-site-link min-w-0 flex-1 truncate text-lg font-bold text-slate-900">ZJUBMS Ginkgo</a>
+    <button type="button" class="js-sidebar-close inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-2xl font-normal text-slate-500 hover:bg-brand-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 md:hidden" aria-label="关闭目录">
+      ×
+    </button>
+  </div>
+
+  <!-- 动态菜单挂载的目标容器 -->
+  <nav class="js-menu-container flex-1 space-y-3 overflow-y-auto p-4 pb-[max(1rem,env(safe-area-inset-bottom))] md:space-y-4">
+    <!--  -->
+  <div class="js-tpl-category-item space-y-1 md:space-y-2">
+      <div class="js-category-title px-2 text-sm font-bold tracking-wide text-slate-600 md:text-xs md:uppercase md:tracking-wider md:text-slate-400">细胞与生物分子 I<!-- 分类名占位 -->
+      </div>
+      <div class="js-link-container ml-3 space-y-0.5 border-l-2 border-slate-200 pl-2 md:space-y-1 md:border-l md:border-slate-100">
+        <!-- 子链接将会被 append 到这里 -->
+      <a href="../%E7%BB%86%E8%83%9E%E4%B8%8E%E7%94%9F%E7%89%A9%E5%88%86%E5%AD%90%20I/2025-2026%E7%A7%8B%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2025-2026秋期末回忆卷<!-- 链接文本占位 -->
+    </a>
+  </div>
+    </div>
+  <div class="js-tpl-category-item space-y-1 md:space-y-2">
+      <div class="js-category-title px-2 text-sm font-bold tracking-wide text-slate-600 md:text-xs md:uppercase md:tracking-wider md:text-slate-400">细胞与生物分子 II<!-- 分类名占位 -->
+      </div>
+      <div class="js-link-container ml-3 space-y-0.5 border-l-2 border-slate-200 pl-2 md:space-y-1 md:border-l md:border-slate-100">
+        <!-- 子链接将会被 append 到这里 -->
+      <a href="../%E7%BB%86%E8%83%9E%E4%B8%8E%E7%94%9F%E7%89%A9%E5%88%86%E5%AD%90%20II/2024-2025%E7%A7%8B%E5%86%AC%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025秋冬期末回忆卷<!-- 链接文本占位 -->
+    </a>
+  <a href="../%E7%BB%86%E8%83%9E%E4%B8%8E%E7%94%9F%E7%89%A9%E5%88%86%E5%AD%90%20II/2024-2025%E7%A7%8B%E5%86%AC%E5%B0%8F%E6%B5%8B%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025秋冬小测卷<!-- 链接文本占位 -->
+    </a>
+  </div>
+    </div>
+  <div class="js-tpl-category-item space-y-1 md:space-y-2">
+      <div class="js-category-title px-2 text-sm font-bold tracking-wide text-slate-600 md:text-xs md:uppercase md:tracking-wider md:text-slate-400">医学生命基础<!-- 分类名占位 -->
+      </div>
+      <div class="js-link-container ml-3 space-y-0.5 border-l-2 border-slate-200 pl-2 md:space-y-1 md:border-l md:border-slate-100">
+        <!-- 子链接将会被 append 到这里 -->
+      <a href="../%E5%8C%BB%E5%AD%A6%E7%94%9F%E5%91%BD%E5%9F%BA%E7%A1%80/2024-2025%E7%A7%8B%E5%86%AC%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025秋冬期末回忆卷<!-- 链接文本占位 -->
+    </a>
+  </div>
+    </div>
+  <div class="js-tpl-category-item space-y-1 md:space-y-2">
+      <div class="js-category-title px-2 text-sm font-bold tracking-wide text-slate-600 md:text-xs md:uppercase md:tracking-wider md:text-slate-400">基础医学科学研究技能 I<!-- 分类名占位 -->
+      </div>
+      <div class="js-link-container ml-3 space-y-0.5 border-l-2 border-slate-200 pl-2 md:space-y-1 md:border-l md:border-slate-100">
+        <!-- 子链接将会被 append 到这里 -->
+      <a href="../%E5%9F%BA%E7%A1%80%E5%8C%BB%E5%AD%A6%E7%A7%91%E5%AD%A6%E7%A0%94%E7%A9%B6%E6%8A%80%E8%83%BD%20I/2024-2025%E5%A4%8F%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025夏期末回忆卷<!-- 链接文本占位 -->
+    </a>
+  <a href="../%E5%9F%BA%E7%A1%80%E5%8C%BB%E5%AD%A6%E7%A7%91%E5%AD%A6%E7%A0%94%E7%A9%B6%E6%8A%80%E8%83%BD%20I/2024-2025%E5%86%AC%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025冬期末回忆卷<!-- 链接文本占位 -->
+    </a>
+  </div>
+    </div>
+  <div class="js-tpl-category-item space-y-1 md:space-y-2">
+      <div class="js-category-title px-2 text-sm font-bold tracking-wide text-slate-600 md:text-xs md:uppercase md:tracking-wider md:text-slate-400">普通化学实验（甲）<!-- 分类名占位 -->
+      </div>
+      <div class="js-link-container ml-3 space-y-0.5 border-l-2 border-slate-200 pl-2 md:space-y-1 md:border-l md:border-slate-100">
+        <!-- 子链接将会被 append 到这里 -->
+      <a href="../%E6%99%AE%E9%80%9A%E5%8C%96%E5%AD%A6%E5%AE%9E%E9%AA%8C%EF%BC%88%E7%94%B2%EF%BC%89/2024-2025%E7%A7%8B%E5%86%AC%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025秋冬期末回忆卷<!-- 链接文本占位 -->
+    </a>
+  </div>
+    </div>
+  <div class="js-tpl-category-item space-y-1 md:space-y-2">
+      <div class="js-category-title px-2 text-sm font-bold tracking-wide text-slate-600 md:text-xs md:uppercase md:tracking-wider md:text-slate-400">脑与脑机融合系统<!-- 分类名占位 -->
+      </div>
+      <div class="js-link-container ml-3 space-y-0.5 border-l-2 border-slate-200 pl-2 md:space-y-1 md:border-l md:border-slate-100">
+        <!-- 子链接将会被 append 到这里 -->
+      <a href="../%E8%84%91%E4%B8%8E%E8%84%91%E6%9C%BA%E8%9E%8D%E5%90%88%E7%B3%BB%E7%BB%9F/2024-2025%E5%A4%8F%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025夏期末回忆卷<!-- 链接文本占位 -->
+    </a>
+  </div>
+    </div>
+  <div class="js-tpl-category-item space-y-1 md:space-y-2">
+      <div class="js-category-title px-2 text-sm font-bold tracking-wide text-slate-600 md:text-xs md:uppercase md:tracking-wider md:text-slate-400">实验动物与伦理学<!-- 分类名占位 -->
+      </div>
+      <div class="js-link-container ml-3 space-y-0.5 border-l-2 border-slate-200 pl-2 md:space-y-1 md:border-l md:border-slate-100">
+        <!-- 子链接将会被 append 到这里 -->
+      <a href="../%E5%AE%9E%E9%AA%8C%E5%8A%A8%E7%89%A9%E4%B8%8E%E4%BC%A6%E7%90%86%E5%AD%A6/2024-2025%E7%A7%8B%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025秋期末回忆卷<!-- 链接文本占位 -->
+    </a>
+  </div>
+    </div>
+  <div class="js-tpl-category-item space-y-1 md:space-y-2">
+      <div class="js-category-title px-2 text-sm font-bold tracking-wide text-slate-600 md:text-xs md:uppercase md:tracking-wider md:text-slate-400">遗传与发育 I<!-- 分类名占位 -->
+      </div>
+      <div class="js-link-container ml-3 space-y-0.5 border-l-2 border-slate-200 pl-2 md:space-y-1 md:border-l md:border-slate-100">
+        <!-- 子链接将会被 append 到这里 -->
+      <a href="../%E9%81%97%E4%BC%A0%E4%B8%8E%E5%8F%91%E8%82%B2%20I/2024-2025%E5%86%AC%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025冬期末回忆卷<!-- 链接文本占位 -->
+    </a>
+  </div>
+    </div>
+  <div class="js-tpl-category-item space-y-1 md:space-y-2">
+      <div class="js-category-title px-2 text-sm font-bold tracking-wide text-slate-600 md:text-xs md:uppercase md:tracking-wider md:text-slate-400">遗传与发育 II<!-- 分类名占位 -->
+      </div>
+      <div class="js-link-container ml-3 space-y-0.5 border-l-2 border-slate-200 pl-2 md:space-y-1 md:border-l md:border-slate-100">
+        <!-- 子链接将会被 append 到这里 -->
+      <a href="../%E9%81%97%E4%BC%A0%E4%B8%8E%E5%8F%91%E8%82%B2%20II/2024-2025%E6%98%A5%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025春期末回忆卷<!-- 链接文本占位 -->
+    </a>
+  </div>
+    </div>
+  <div class="js-tpl-category-item space-y-1 md:space-y-2">
+      <div class="js-category-title px-2 text-sm font-bold tracking-wide text-slate-600 md:text-xs md:uppercase md:tracking-wider md:text-slate-400">感染与免疫学<!-- 分类名占位 -->
+      </div>
+      <div class="js-link-container ml-3 space-y-0.5 border-l-2 border-slate-200 pl-2 md:space-y-1 md:border-l md:border-slate-100">
+        <!-- 子链接将会被 append 到这里 -->
+      <a href="../%E6%84%9F%E6%9F%93%E4%B8%8E%E5%85%8D%E7%96%AB%E5%AD%A6/2025-2026%E7%A7%8B%E5%86%AC%E5%B0%8F%E6%B5%8B%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg bg-brand-50 px-3 py-3 text-left text-sm font-bold text-brand-800 transition-all hover:bg-brand-100 md:min-h-0 md:py-1.5 md:text-xs">2025-2026秋冬小测卷<!-- 链接文本占位 -->
+    </a>
+  </div>
+    </div>
+  <div class="js-tpl-category-item space-y-1 md:space-y-2">
+      <div class="js-category-title px-2 text-sm font-bold tracking-wide text-slate-600 md:text-xs md:uppercase md:tracking-wider md:text-slate-400">医学大数据与应用<!-- 分类名占位 -->
+      </div>
+      <div class="js-link-container ml-3 space-y-0.5 border-l-2 border-slate-200 pl-2 md:space-y-1 md:border-l md:border-slate-100">
+        <!-- 子链接将会被 append 到这里 -->
+      <a href="../%E5%8C%BB%E5%AD%A6%E5%A4%A7%E6%95%B0%E6%8D%AE%E4%B8%8E%E5%BA%94%E7%94%A8/2024-2025%E5%86%AC%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025冬期末回忆卷<!-- 链接文本占位 -->
+    </a>
+  </div>
+    </div>
+  <div class="js-tpl-category-item space-y-1 md:space-y-2">
+      <div class="js-category-title px-2 text-sm font-bold tracking-wide text-slate-600 md:text-xs md:uppercase md:tracking-wider md:text-slate-400">医学生物物理学<!-- 分类名占位 -->
+      </div>
+      <div class="js-link-container ml-3 space-y-0.5 border-l-2 border-slate-200 pl-2 md:space-y-1 md:border-l md:border-slate-100">
+        <!-- 子链接将会被 append 到这里 -->
+      <a href="../%E5%8C%BB%E5%AD%A6%E7%94%9F%E7%89%A9%E7%89%A9%E7%90%86%E5%AD%A6/2024-2025%E6%98%A5%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025春期末回忆卷<!-- 链接文本占位 -->
+    </a>
+  </div>
+    </div>
+  <div class="js-tpl-category-item space-y-1 md:space-y-2">
+      <div class="js-category-title px-2 text-sm font-bold tracking-wide text-slate-600 md:text-xs md:uppercase md:tracking-wider md:text-slate-400">医学科学素养 II<!-- 分类名占位 -->
+      </div>
+      <div class="js-link-container ml-3 space-y-0.5 border-l-2 border-slate-200 pl-2 md:space-y-1 md:border-l md:border-slate-100">
+        <!-- 子链接将会被 append 到这里 -->
+      <a href="../%E5%8C%BB%E5%AD%A6%E7%A7%91%E5%AD%A6%E7%B4%A0%E5%85%BB%20II/2025-2026%E7%A7%8B%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2025-2026秋期末回忆卷<!-- 链接文本占位 -->
+    </a>
+  </div>
+    </div>
+  </nav>
+
+  <!-- 分类外壳母版 -->
+  <template class="js-tpl-category">
+    <div class="js-tpl-category-item space-y-1 md:space-y-2">
+      <div class="js-category-title px-2 text-sm font-bold tracking-wide text-slate-600 md:text-xs md:uppercase md:tracking-wider md:text-slate-400">
+        <!-- 分类名占位 -->
+      </div>
+      <div class="js-link-container ml-3 space-y-0.5 border-l-2 border-slate-200 pl-2 md:space-y-1 md:border-l md:border-slate-100">
+        <!-- 子链接将会被 append 到这里 -->
+      </div>
+    </div>
+  </template>
+
+  <!-- 2. 链接母版 -->
+  <template class="js-tpl-link">
+    <a href="#" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">
+      <!-- 链接文本占位 -->
+    </a>
+  </template>
+</aside>
+</div>
+
+      <!-- 右侧主体内容区 -->
+      <main class=".js-quiz-container min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-contain p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:p-5 md:p-8"><div id="root"></div>
+
+<script>const mcqs = [{"q": "Which of the following antigens is most likely to be a hapten?", "a": ["Red blood cells", "Penicillin", "Serum albumin", "Staphylococcus Aureus", "Lipopolysaccharide"], "c": [1]}, {"q": "Properties of adaptive immune response include:", "a": ["Specialization", "Specificity", "Memory", "Nonreactive to self antigens", "All of the above"], "c": [4]}, {"q": "Which of the following description is not true about Innate immunity?", "a": ["It provides the early line of defense against microbes.", "It consists of cellular and biochemical defense mechanisms that are in place even before infection and are poised to respond rapidly to infections.", "The components of innate immunity include physical and chemical barriers", "Cytokines regulate and coordinate many of the activities of the cells of innate immunity.", "The mechanisms of innate immunity can specifically distinguish fine differences between microbes."], "c": [4]}, {"q": "Which is NOT CORRECT for the adjuvants?", "a": ["An adjuvant is a substance that can induce specific immune response.", "Adjuvants can be used in enhancing the production of antibodies from immunized animals", "The most commonly used adjuvants include aluminum hydroxide and paraffin oil", "Some adjuvants can extend the presence of antigen in the blood", "Some adjuvants can be used to change the immune response to particular cells type of immune system"], "c": [0]}, {"q": "Which of the following factors would make it MORE LIKELY that an antigen would induce tolerance rather than immunogenicity?", "a": ["A soluble nature, rather than a particulate nature", "Administration at an intermediate dose (not too low and not too high)", "Subcutaneous rather than oral administration", "Immunocompetence rather than immunosuppression of the host", "Adult administration rather than fetal or neonatal administration"], "c": [0]}, {"q": "下列不属于革兰氏染色的步骤？", "a": ["结晶紫初染", "碘液媒染", "丙酮脱色", "番红复染"], "c": [2]}, {"q": "青霉素的作用机制是", "a": ["破坏肽聚糖结构", "抑制核糖体功能", "抑制DNA解链", "水解肽聚糖糖苷键"], "c": [0]}, {"q": "细菌的特殊结构不包括", "a": ["芽孢", "液泡", "荚膜", "鞭毛"], "c": [1]}, {"q": "哪个结构是革兰阳性细菌细胞壁特有的？", "a": ["肽聚糖", "磷壁酸", "脂多糖", "脂蛋白"], "c": [1]}, {"q": "LPS的核心多糖结构不包括哪个单糖？", "a": ["葡萄糖", "半乳糖", "海藻糖", "庚糖"], "c": [2]}, {"q": "Which of the following can be used to quantitate the infectious titers of viruses?", "a": ["Plaque assay", "Electron microscopy", "Hemagglutination", "Polymerase chain reaction", "Enzyme immunoassay"], "c": [0]}, {"q": "Viruses usually initiate infection by first interacting with receptors on the surface of cells. Which of the following statements is most accurate about cellular receptors for viruses?", "a": ["Cellular receptors for viruses have no cellular function.", "All viruses within a given family use the same cellular receptor.", "All cells in a susceptible host express the viral receptor.", "Successful infection of a cell by a virus may involve interaction with more than one type of receptor.", "The interaction between a receptor and a viral protein is usually nonspecific."], "c": [3]}, {"q": "Some viruses encode a viral RNA-dependent RNA polymerase. Which of the following states a principle about viral RNA polymerases?", "a": ["All RNA viruses carry RNA polymerase molecules inside virus particles because they are needed to initiate the next infectious cycle.", "Antibodies against the viral RNA polymerase neutralize virus infectivity.", "The viral RNA polymerase protein also serves as a major core structural protein in the virus particle.", "All RNA viruses encode for a viral RNA-dependent RNA polymerase.", "Negative-strand RNA viruses encode their own RNA-dependent RNA polymerase because eukaryotic cells lack such enzymes."], "c": [4]}, {"q": "Which one of the following states a principle regarding viral nucleic acid?", "a": ["A virions contains both RNA and DNA.", "All viral genomes must make mRNA that can be translated by host ribosomes.", "Purified viral nucleic acid from any virus is infectious.", "Viral genome sizes are similar among known human viruses.", "Viral DNA genomes are always double-stranded."], "c": [1]}, {"q": "Virus-infected cells often develop morphologic changes referred to as cytopathic effects. Which of the following statements about cytopathic effects is most accurate?", "a": ["They can always reveal the species of the viruses.", "They are rarely associated with cell death.", "They include morphologic changes of the viral particles.", "They may be used to quantify infectious virus.", "They can only be seen with an electron microscope."], "c": [3]}, {"q": "Small viruses are in the same size range as which of the following?", "a": ["Staphylococcus species", "Serum globulin", "Red blood cells", "Eukaryotic ribosomes", "Mitochondria"], "c": [3]}, {"q": "Which of the following statements regarding virus morphology is true?", "a": ["All RNA viruses are spherical in shape.", "Some viruses contain flagella.", "Some viruses with DNA genomes contain a primitive nucleus.", "All viruses have envelopes that protect the viral capsids.", "All viruses have at least one protein layer that protects the nucleic acid."], "c": [4]}, {"q": "Which one of the following is true about diseases caused by viruses?", "a": ["One virus type induces a single disease syndrome.", "Many viral infections are subclinical and do not produce clinical disease.", "The type of disease produced by a virus can be predicted by the morphology of that virus.", "Recovery from the disease means elimination of the virus from the body.", "Diseases caused by viruses always have short incubation periods."], "c": [1]}, {"q": "Which one of the following statements describes an advantage of inactivated-virus vaccines over attenuated live-virus vaccines?", "a": ["Inactivated-virus vaccines induce a broader range of immune responses than do attenuated live-virus vaccines.", "Inactivated-virus vaccines more closely mimic natural infections than do attenuated live-virus vaccines.", "Inactivated-virus vaccines theoretically pose no risk that vaccine virus might be transmitted to susceptible contacts.", "Inactivated-virus vaccines are efficacious against respiratory virus infections because they induce good mucosal immunity.", "Inactivated-virus vaccines require only a single dose whereas attenuated live-virus vaccines require multiple doses."], "c": [2]}, {"q": "A patient has recurring blisters on his lip. A herpesvirus was detected in the blisters. What kind of infection is typical of this virus?", "a": ["Abortive infection", "Inapparent infection", "Chronic infection", "Slow infection", "Latent infection"], "c": [4]}, {"q": "下列哪个不是细菌生长曲线的4个时期", "a": ["迟缓期", "对数生长期", "跳跃期", "衰亡期"], "c": [2]}, {"q": "不是营养物质进入细菌和排出的方式：", "a": ["转导", "简单扩散", "协助扩散", "主动运输"], "c": [0]}, {"q": "下列哪些不是主要碳源？", "a": ["糖类", "醇类", "脂类", "黄豆粉"], "c": [3]}, {"q": "下列不是细菌营养类型", "a": ["光能无机自养型", "光能有机异养型", "化能无机异养型", "化能有机异养型"], "c": [2]}, {"q": "检测细菌是否产乙酰甲基甲醇用何种生化实验验证？", "a": ["吲哚实验", "枸橼酸盐实验", "甲基红实验", "VP实验"], "c": [3]}, {"q": "下列哪个不是常见质粒？", "a": ["F质粒", "R质粒", "YAC 质粒", "Col质粒"], "c": [2]}, {"q": "噬菌体溶菌周期不包括", "a": ["整合", "吸附", "合成", "穿入"], "c": [0]}, {"q": "下列哪一个不是质粒的形态", "a": ["CCC", "OC", "L", "R"], "c": [3]}, {"q": "不是基因转移的主要方式为", "a": ["转化", "重组", "转导", "接合"], "c": [1]}, {"q": "不是微生物变异现象的是", "a": ["细菌L型", "抗原变异", "二分裂加速", "产生耐药性"], "c": [2]}, {"q": "哪种程度的菌群失调由生理性波动转变为病理性波动？", "a": ["一度失调", "轻度失调", "二度失调", "重度失调"], "c": [2]}, {"q": "微生物感染的类型不包括哪一种？", "a": ["暴露感染", "隐形感染", "潜伏感染", "显形感染"], "c": [0]}, {"q": "全身感染症状不包括哪一种？", "a": ["菌血症", "败血症", "脓毒血症", "菌毒血症"], "c": [3]}, {"q": "下列哪一种不是机体的固有免疫?", "a": ["屏障结构", "吞噬作用", "抗体作用", "体液系统"], "c": [2]}, {"q": "细菌侵袭力于下列哪一个因素无关？", "a": ["黏附素", "荚膜", "生物膜", "芽孢"], "c": [3]}, {"q": "哪一种不是按使用途径划分的培养基的种类", "a": ["鉴别培养基", "厌氧培养基", "合成培养基", "选择培养基"], "c": [2]}, {"q": "病原菌检验不属于明确检验的是？", "a": ["镜检", "分离菌株", "生化实验", "血清学实验"], "c": [0]}, {"q": "腺病毒载体疫苗属于", "a": ["灭活疫苗", "重组疫苗", "核酸疫苗", "亚单位疫苗"], "c": [1]}, {"q": "庆大霉素的作用机制", "a": ["影响细胞壁合成", "影响蛋白质合成", "抑制细胞膜合成", "抑制DNA复制"], "c": [1]}, {"q": "下列哪一种方法是消毒而不是灭菌？", "a": ["电离辐射", "干烤", "紫外线照射", "高压蒸汽处理"], "c": [2]}, {"q": "Polymorphism of major histocompatibility genes", "a": ["occurs in Class II genes but not in Class I genes", "allows the MHC molecule to bind to either CD4 or CD8", "results in variability in peptide binding among MHC molecules", "occurs as a result of different gene rearrangements in each different cell of an individual", "determines whether antigen is processed by the endocytic or the endogenous pathway"], "c": [2]}, {"q": "Products of TAP-1 and TAP-2 genes", "a": ["Bind b2m.", "Prevent peptide binding to MHC molecules.", "Are part of the proteasome.", "Transport peptides into the endoplasmic reticulum for binding to MHC class I.", "Transport peptides into endoplasmic reticulum for binding to MHC class II."], "c": [3]}, {"q": "How many genes does MHC class II have?", "a": ["2 (HLA-DP alpha/beta)", "2 (HLA-DQ alpha/beta)", "4 (HLA-DP alpha/beta, HLA-DQ alpha/beta)", "4 (HLA-DQ alpha/beta, HLA-DR alpha/beta)", "6 (HLA-DP alpha/beta, HLA-DQ alpha/beta, HLA-DR alpha/beta)"], "c": [4]}, {"q": "Interactions between are not restricted by MHC molecules.", "a": ["Th cell \u0026 dendritic cell", "NK cell \u0026 target cell", "Tc cell \u0026 target cell", "Macrophage \u0026 Th cell", "Th cell \u0026 B cell"], "c": [1]}, {"q": "The peptide from HIV reverse transcriptase binds to which class of MHC, how long is that peptide, and is the cleft closed or open on the ends?", "a": ["Class I, 8-11 aa, closed", "Class I, 8-11 aa, opened", "Class II, 11-15 aa, closed", "Class II, 11-15 aa, opened", "None of them"], "c": [0]}, {"q": "Each binding groove is specific for just one peptide fragment", "a": ["true", "False"], "c": [1]}, {"q": "Certain MHC haplotypes are associated with autoimmune disease. Match the disease with the HLA type: Ankylosing spondylitis", "a": ["DQ2", "DR2", "DR3", "DR4", "B27"], "c": [4]}, {"q": "Which of the following cytokines promote the differentiation of Th1 helper and inhibit the development of Th2 helper cells?", "a": ["IFN-γ", "IL-4", "TNF-α", "IFN-α", "IL-1"], "c": [0]}, {"q": "Viral replication within cells is inhibited directly by", "a": ["IFN-α", "TNF-α", "IL-1", "IL-4", "IL-13"], "c": [0]}, {"q": "Cytokines responsible for immunosuppression include", "a": ["IL-1", "IL-2", "IFN-γ", "TGF-β", "TNF-α"], "c": [3]}, {"q": "下面那项不是APC?", "a": ["B细胞", "T 细胞", "红细胞", "上皮细胞", "成纤维细胞"], "c": [2]}, {"q": "下面哪种细胞不是专职APC?", "a": ["B细胞", "T 细胞", "树突状细胞", "单核细胞", "巨噬细胞"], "c": [1]}, {"q": "下面哪种细胞器参与内源性抗原提呈途径?", "a": ["溶酶体", "吞噬体", "内体", "核小体", "蛋白酶体"], "c": [4]}, {"q": "下面哪种细胞器参与外源性抗原提呈途径?", "a": ["高尔基体", "内质网", "多聚核糖体", "吞噬溶酶体", "核小体"], "c": [3]}, {"q": "下面哪种细胞抗原提呈能力最强?", "a": ["B细胞", "T 细胞", "树突状细胞", "单核细胞", "巨噬细胞"], "c": [2]}, {"q": "下面哪种细胞识别MHC II类分子提呈的抗原肽?", "a": ["B1细胞", "B2 细胞", "CD4 +T细胞", "CD8+T细胞", "NK 细胞"], "c": [2]}, {"q": "下面哪种细胞可有效的摄取并提呈可溶性抗原?", "a": ["B细胞", "T 细胞", "树突状细胞", "单核细胞", "巨噬细胞"], "c": [0]}, {"q": "下面哪项是NK细胞抑制性受体?", "a": ["NKp30", "NKp44", "NKp46", "CD16", "LAIR-1"], "c": [4]}, {"q": "下面哪项是NK细胞活化性受体?", "a": ["NKG2D", "SIGLEC7", "TIGIT", "NKG2A", "KIR2DL1"], "c": [0]}, {"q": "NK细胞不识别下面哪个MHC分子?", "a": ["HLA-A", "HLA-B", "HLA-C", "HLA-D", "HLA-E"], "c": [3]}, {"q": "Which of the following sentences is not correct when describing T cell immune response?", "a": ["T cell activation requires antigen recognition", "Naïve T cell activation happens in secondary lymphoid organs", "Naïve T cells enter lymph nodes mainly through lymphatic vessel.", "Naïve T cells circulate from the bloodstream into lymph nodes.", "A naïve T cell recognizes its specific antigen presented by DCs in lymph nodes."], "c": [2]}, {"q": "Which of the following signals is not required for the activation of naïve T cells?", "a": ["Antigen recognition", "CD28 co-stimulation", "IL2 signal", "TCR activation", "CTLA4"], "c": [4]}, {"q": "Which molecule doesn’t belong to signal #2 for T cell activation?", "a": ["TCR", "CD28", "OX40", "4-1BB", "ICOS"], "c": [0]}, {"q": "IL-2 signal is critical for T cell proliferation. Which of the following descriptions is not correct?", "a": ["IL-2 expression is induced by T cell activation.", "The upregulation of high-affinity CD25 allows a better response of activated T cells to IL-2 signal.", "CD28 co-stimulation increases IL-2 expression.", "Effector T cells constitutively express high level of CD25 for survival signals.", "Regulatory CD4+ T cells often express and reply on high level of CD25."], "c": [3]}, {"q": "Which of the followings does not describe T cell response upon activation properly?", "a": ["Changes in surface molecules, such as CD69 and CD40L, happens upon activation.", "CD25 expression is induced and, when engaged with IL2, contributes to T cell proliferation.", "T cells undergo clonal expansion.", "Upon activation by cognate antigens, naïve T cells immediately migrate out of lymph nodes and travel to infected tissues.", "Naïve T cell differentiate into effector cells in lymph nodes."], "c": [3]}, {"q": "T cell response involves multiple steps, including a) antigen recognition in lymph nodes, b) naïve T cell activation in lymph nodes, c) effector T cell contraction to reach homeostasis, d) effector T cell eliminate antigens in infected tissues, e) T cell clonal expansion and differentiation into effector T cells. Which describes the correct order of T cell response?", "a": ["a-b-d-e-c", "b-a-c-d-e", "a-b-e-d-c", "b-a-e-d-c", "b-c-d-e-a"], "c": [2]}, {"q": "Which of the followings is not a co-stimulatory molecule for T cell activation?", "a": ["CD28", "ICOS", "OX40", "4-1BB", "CTLA4"], "c": [4]}, {"q": "Regarding Th1 subset, which of the followings is not correct?", "a": ["Th1 cells mainly respond to intracellular microbes.", "Th1 cells mainly respond to extracellular microbes.", "IL-12 and IFN-γ promote Th1 differentiation.", "T-bet is the master regulator of Th1 subset.", "IL-4 suppresses Th1 differentiation."], "c": [1]}, {"q": "Regarding Th2 subset, which of the followings is not correct?", "a": ["Th2 cells mainly respond to intracellular microbes.", "Th2 cells mainly respond to extracellular microbes.", "Mast cells provide IL-4 signal for Th2 differentiation.", "GATA3 is the master regulator of Th2 subset.", "STAT6 transduces IL-4 signal and in turn promotes IL-4 production by Th2 cells."], "c": [0]}, {"q": "Regarding Th17 subset, which of the followings is not correct?", "a": ["Th17 cells respond to fungi infection.", "TGF-β promotes Treg differentiation, thus inhibiting Th17 differentiation.", "Th17 cells produce IL-21, which further amplifies Th17 cells.", "IL-23 stabilizes Th17 cell phenotype.", "RORγt induction directs Th17 lineage commitment."], "c": [1]}, {"q": "The egress of T cells from lymph node is mainly mediated by the gradient of __?", "a": ["CTLA4", "CXCL10", "CD28", "S1P", "CCL21"], "c": [3]}, {"q": "Which of the following descriptions is not correct?", "a": ["S1P is higher in blood and lymph and lower in lymphoid tissues.", "Effector T cells in lymph enter the bloodstream at the subclavian vein.", "T cells migrate from blood into infected or damaged tissues.", "T cells migrate from lymphatic vessels directly into infected or damaged tissues.", "Selectins, chemokine receptors and integrin are important for T cell recruitment to infected tissues."], "c": [3]}, {"q": "Which of the following descriptions about cell-mediated immunity is not correct?", "a": ["T cells can transfer cell-mediated immunity.", "Serum can transfer cell-mediated immunity.", "Cell-mediated immune response is responsible for killing the infected cells before virus replication and spreading.", "T cells can provide protection against intracellular and extracellular pathogens and also assist in the elimination of tumor cells.", "The two major classes of T cells, CD4+ and CD8+, function in different and complementary ways in cell-mediated immune reactions."], "c": [1]}, {"q": "Which molecule is not required for Th1 differentiation?", "a": ["IL-12", "IFN-γ", "STAT4", "T-bet", "GATA3"], "c": [4]}, {"q": "IFN-γ mediates the major functions of Th1 cells. Which of the followings is not correct?", "a": ["IFN-γ stimulates expression of MHC, antigen processing machinery and B7 costimulators by dendritic cells", "IFN-γ activates macrophages to ingest and destroy microbes.", "IFN-γ production is enhanced by IL-12 and IL-18.", "IFN-γ contribute to an alternative macrophage activation (M2).", "Promotes Th1 and inhibits Th2/Th17 differentiation."], "c": [3]}, {"q": "Igα/Igβ signaling in B cells is similar to CD3 signaling in T cells. Their signaling involves activation of _____ on their cytoplasmic tail.", "a": ["NFκB", "ITAM", "Rho", "Phospholipase C", "B7"], "c": [1]}, {"q": "Which of the following is not true regarding T cell-dependent (TD) antigens?", "a": ["Induce isotype switching", "Induce affinity maturation", "Possess immunological memory", "Always induce polyclonal activation of B cells", "Are usually soluble proteins"], "c": [3]}, {"q": "In addition to the primary signal generated for antigen binding to B cell receptor, the T cell-dependent B cell activation requires a secondary signal. The second signal is provided by _____", "a": ["Igα/Igβ", "B cell CD40 interaction with T cell CD40L", "CD8 interaction with MHC molecule", "CD21 interaction with C3dg", "B cell CD86 with T cell CD28"], "c": [1]}, {"q": "Which of the following cell surface marker constitutively expressed on B cells that deliver a negative signal for B cell activations?", "a": ["CD22", "CD40", "Igα", "Igβ", "CD21"], "c": [0]}, {"q": "Hyper IgM syndrome is a rare immunodeficiency characterized by normal or elevated serum IgM levels with absence of IgG, IgA, and IgE, resulting in a profound susceptibility to bacterial infections. Which of the following condition may present as Hyper IgM syndrome?", "a": ["RAG gene deficiency", "X-linked CD40 ligand deficiency", "C1INH deficiency", "X-linked BTK deficiency", "MHCII deficiency"], "c": [1]}, {"q": "Regarding positive selection and negative selection in the central tolerance, which of the following statement is wrong?", "a": ["Double positive T cells that can recognize self-peptide/MHCs are selected for proliferation during positive selection.", "Negative selection eliminates T cell clones that don’t recognize self-peptide/MHCs.", "TCR binding affinity with self-peptide/MHC complex dictates the outcome of negative selection.", "Positive selection assures TCR to recognize self-peptide/MHC complex.", "B cells in the bone marrow don’t undergo positive selection."], "c": [1]}, {"q": "A majority of double-positive T cells in the thymus are eliminated during T cell development, possibly due to that these cells ().", "a": ["Can not complete VDJ rearrangement", "Expresses T cell receptors that bind with high affinity to self-peptide/MHC", "Specifically express AIRE gene", "Lack co-stimulatory signals", "Can not complete receptor editing"], "c": [1]}, {"q": "Which of the following molecules is responsible for inducing T cell apoptosis in activation-induced cell death (AICD)?", "a": ["FOXP3", "CTLA4", "AIRE", "FAS", "NKG2D"], "c": [3]}, {"q": "Which protein or family proteins are responsible for mediating T cell apoptosis during positive selection and negative selection?", "a": ["BCL2 family proteins", "CD28 superfamily proteins", "AIRE", "FAS", "MHC class I"], "c": [0]}, {"q": "The defect of which gene will cause the failture of central tolerance?", "a": ["FOXP3", "CTLA4", "AIRE", "FAS", "BCL2"], "c": [2]}, {"q": "To induce immune tolerance, the following approches can be used, except ().", "a": ["Changing the route of antigen administration, for example vein inejction", "Bone marrow or thymus transplantation to mimic central tolerance", "Promoting Treg generation", "Blocking inhibitory receptors", "Mutiple and small-dose injection of antigens"], "c": [3]}, {"q": "Peripheral tolerance is achiveved through multiple mechanisms, except ().", "a": ["T cell anergy", "Activation-induced cell death (AICD)", "Treg suppression", "Immune ignorance", "Negative selection"], "c": [4]}, {"q": "The effector mechanism of type IV autoimmune disease is ().", "a": ["IgG, IgM antibodies against cell surface antigens", "IgG, IgM antibodies against extracellular matrix antigens", "IgG, IgM antibodies against circullaring antigens", "CD4+ and CD8+ T cells", "IgE antibody"], "c": [3]}, {"q": "Which of the followings is considered as a type IV autoimmune disease?", "a": ["Type I diabetes", "Graves’ disease", "Myashenia gravis", "Ashma", "Systemic lupus erythematosus"], "c": [0]}, {"q": "The following mechanisms are proposed for triggering autoimmune diseases, except ().", "a": ["Release of sequestered antigens upon physical accident or infection", "Inappropriate expression of class II MHC molecules on non-APCs", "Viral infection causing bystander activation of T cells", "Viral infection providing epitope mimicry to activate self-reactive T cells", "Susceptible MHC allotypes rendering insufficient negative selection"], "c": [4]}, {"q": "Which of the following is the most important feature of type Ⅲ hypersensitivity", "a": ["Macrophage infiltration", "Lymphocyte infiltration", "Eosinophil infiltration", "Neutrophil infiltration", "Mast cell infiltration"], "c": [3]}, {"q": "Which one is NOT TRUE for type I hypersensitivity", "a": ["Mediated by IgE", "React and disappear slowly", "Obvious individual difference and genetic correlation", "Cause dysfunction rather than severe tissue and cell damage occurs", "Allergens give rise to type I hypersensitivity"], "c": [1]}, {"q": "Which cell types produces IgE", "a": ["Macrophages", "Mast cells", "B lymphocytes", "Basophils", "Hepatocytes"], "c": [2]}, {"q": "Which of the followings is the main cell type that participates in the type I hypersensitivity", "a": ["T lymphocytes", "NK cells", "Macrophages", "Mast cells", "NKT cells"], "c": [3]}, {"q": "Which of following examples of diseases is NOT caused by cell- or tissue-specific antibodies", "a": ["Goodpasture syndrome", "Asthma", "Autoimmune hemolytic anemia", "Myasthenia gravis", "Grave’s disease"], "c": [1]}, {"q": "Bacteremia associated with a gastrointestinal infection is most likely to occur with which of the following?", "a": ["S. typhi", "V. cholerae", "Shigella boydii", "V. parahaemolyticus", "C. jejuni"], "c": [0]}, {"q": "A 27-year-old woman is admitted to the hospital because of fever, with increasing anorexia, headache, weakness, and altered mental status of 2 days’ duration. She works for an airline as a cabin attendant, flying between the Indian subcontinent and other places in Southeast Asia and the West Coast of the United States. Ten days before admission, she had a diarrheal illness that lasted for about 36 hours. She has been constipated for the past 3 days. Her temperature is 39°C, heart rate is 68 beats/min, blood pressure is 120/80 mm Hg, and respirations are 18 breaths/min. She knows who she is and where she is but does not know the date. She is picking at the bedclothes. Rose spots are seen on her trunk. The remainder of the physical examination is normal. Blood cultures are done, and an intravenousline is placed. The most likely cause of her illness is", "a": ["Enterotoxigenic E. coli (ETEC)", "S. sonnei", "S. enterica subspecies enterica serotype Typhimurium (Salmonella Typhimurium)", "S. enterica subspecies enterica serotype Typhi (Salmonella Typhi)", "Enteroinvasive E. coli (EIEC)"], "c": [3]}, {"q": "Blood cultures from the patient in Question 2 grow a nonlactose-fermenting Gram-negative bacillus. Which of the following is likely to be a constituent of this organism?", "a": ["O antigen 157, H antigen 7 (O157:H7)", "Vi antigen (capsule; virulence antigen)", "O antigen 139 (O139)", "Urease", "K1 (capsular type 1)"], "c": [1]}, {"q": "An 18-year-old woman in rural India develops profuse (8 L/d) diarrhea. She has no symptoms other than the diarrhea and the manifestations of the fluid and electrolyte loss caused by the diarrhea. The most likely cause of her diarrhea is", "a": ["C. jejuni", "Enterotoxigenic E. coli", "S. typhimurium", "V. cholerae", "S. dysenteriae"], "c": [3]}, {"q": "抗生素相关腹泻的主要致病菌是（）", "a": ["破伤风梭菌", "肉毒梭菌", "产气荚膜梭菌", "艰难梭菌", "脆弱拟杆菌"], "c": [3]}, {"q": "The natural immunity can be acquired by", "a": ["inoculated by vaccine", "injecting adjuvant", "injecting antitoxin", "the antibody across placenta", "infusion of activated lymphocytes"], "c": [3]}, {"q": "Which of the following antibody is used for treatment of specified tumor patients?", "a": ["anti-IFN-", "anti-CD45", "anti-TNF-α", "anti-PD-1", "anti-CD3"], "c": [3]}, {"q": "Which of the following reagent is not an immune inhibitor", "a": ["cyclosporin A", "FK506", "BCG", "rapamycin", "glucocorticosteroid"], "c": [2]}, {"q": "An adjuvant is a substance that", "a": ["increases the size of the immunogen", "enhances the immunogenicity of haptens", "increases the chemical complexity of the immunogen", "enhances the immune response to the immunogen", "enhances immunologic cross-reactivity"], "c": [3]}, {"q": "How is it a mother who is breast feeding positively affects her baby's immune system?", "a": ["she gives her baby antigens she has produced in her breast milk", "she gives her baby antibodies she has produced in her breast milk", "she gives her baby permanent antibodies she has produced", "she gives her baby immune cells to fight incoming invaders"], "c": [1]}, {"q": "Once vaccinated, you have had a primary exposure to specific antigens. If you ever encounter this antigen again, you will mount a rapid immune response due to:", "a": ["cytotoxic T cells", "antibodies", "memory cells", "antigen presenting cells", "Phagocytes"], "c": [2]}, {"q": "Which of the following cytokines can mediate anti-virus effect", "a": ["IL-1", "IL-6", "IL-8", "IFN-", "GM-CSF"], "c": [3]}, {"q": "目前我们国家使用的乙肝疫苗属于哪一种类型的疫苗", "a": ["灭活疫苗", "减毒活疫苗", "结合疫苗", "基因重组蛋白疫苗", "核酸疫苗"], "c": [3]}, {"q": "能直接杀伤肿瘤细胞的细胞因子是：", "a": ["IFN-γ", "TGF-β", "TNF", "CSF", "IL-2"], "c": [2]}, {"q": "免疫增强药物可用于下列哪些疾病的治疗", "a": ["肿瘤和自身免疫病", "肿瘤和过敏反应", "免疫缺陷病和过敏反应性疾病", "肿瘤和免疫缺陷病", "自身免疫病和过敏反应性疾病"], "c": [3]}, {"q": "转续宿主是指：", "a": ["幼虫或成虫寄生的宿主", "寄生虫无性生殖阶段寄生的宿主", "寄生虫幼虫寄生的非正常宿主", "寄生虫成虫寄生的动物宿主", "寄生虫有性阶段寄生的宿主"], "c": [2]}, {"q": "机会致病寄生虫是指：", "a": ["偶然致病的体外寄生虫", "暂时性寄生人体的寄生虫", "偶然机会引起疾病的寄生虫", "在宿主免疫功能低下时致病的寄生虫", "在常见寄生部位外引起疾病的寄生虫"], "c": [3]}, {"q": "人兽共患病中的动物宿主，在人体寄生虫病的流行病学上被称为：", "a": ["中间宿主", "保虫宿主", "转续宿主", "带虫者", "终宿主"], "c": [1]}, {"q": "蛔虫卵对外界环境的抵抗力强，主要原因是其卵壳具有哪一层结构？", "a": ["受精膜", "壳质层", "蛔甙层", "蛋白质膜", "卵黄膜"], "c": [2]}, {"q": "寄生虫的幼虫或无性阶段寄生的宿主称为：", "a": ["终宿主", "中间宿主", "保虫宿主", "转续宿主", "带虫者"], "c": [1]}, {"q": "蛔虫引起并发症是由于：", "a": ["幼虫在人体内移行", "游窜、钻孔习性", "幼虫在肺部发育", "寄生于小肠", "消耗宿主营养"], "c": [1]}, {"q": "蛔虫最常见的并发症是：", "a": ["蛔虫性阑尾炎", "胆道蛔虫症", "上消化道出血", "胆结石", "肠穿孔"], "c": [1]}, {"q": "蛲虫病常用的实验室诊断方法是", "a": ["饱和盐水浮聚法", "自然沉淀法", "粪便直接涂片法", "透明胶带法", "改良加藤法"], "c": [3]}, {"q": "蛲虫的感染阶段是：", "a": ["新鲜产出虫卵", "丝状蚴", "微丝蚴", "感染期虫卵", "杆状蚴"], "c": [3]}, {"q": "蛔虫病最常用的治疗药物是：", "a": ["阿苯达唑或甲苯咪唑", "左旋咪唑", "吡喹酮", "甲硝唑", "氯喹"], "c": [0]}, {"q": "生食肉类可能感染的寄生虫是", "a": ["牛带绦虫", "日本血吸虫", "细粒棘球绦虫", "布氏姜片吸虫", "似蚓蛔线虫"], "c": [0]}, {"q": "细粒棘球绦虫对人体的感染阶段是：", "a": ["囊尾蚴", "囊蚴", "棘球蚴", "虫卵", "六钩蚴"], "c": [3]}, {"q": "确诊猪带/牛带绦虫病的诊断方法是：", "a": ["粪便直接涂片法", "水洗沉淀法", "粪便查孕节", "饱和盐水浮聚法", "棉签拭子法"], "c": [2]}, {"q": "牛带绦虫对人体的感染阶段是：", "a": ["囊尾蚴", "虫卵", "棘球蚴", "虫卵和囊尾蚴", "六钩蚴"], "c": [0]}, {"q": "猪带绦虫对人体最主要的危害是：", "a": ["吸收大量的营养", "代谢产物的毒素作用", "六钩蚴穿过组织时的破坏作用", "囊尾蚴寄生组织器官所造成的损害", "成虫形成的占位性病变"], "c": [3]}, {"q": "细粒棘球绦虫在人体内最常见的寄生部位是：", "a": ["脑部", "肠道", "肝脏", "腹腔", "肺"], "c": [2]}, {"q": "华支睾吸虫感染人的主要方式是：", "a": ["生食某些螺类", "生食蔬菜", "生食淡水鱼、虾", "生食某些水生植物", "半生食野猪肉"], "c": [2]}, {"q": "华支睾吸虫成虫的寄生部位是：", "a": ["肺部", "肠系膜静脉", "肝胆管", "小肠", "盲肠"], "c": [2]}, {"q": "华支睾吸虫的感染阶段是：", "a": ["毛蚴", "囊蚴", "虫卵", "尾蚴", "胞蚴"], "c": [1]}, {"q": "华支睾吸虫的分布与其他吸虫相比更广泛，主要原因之一是：", "a": ["水源丰富", "人群卫生习惯", "需要温暖气候", "对宿主种类的要求特异性不高", "成虫寿命长"], "c": [3]}, {"q": "日本血吸虫对人体危害最大的阶段是：", "a": ["尾蚴", "童虫", "成虫", "虫卵", "囊蚴"], "c": [3]}, {"q": "在流行病学上作为溶组织内阿米巴原虫的主要传染源是：", "a": ["急性阿米巴痢疾患者", "阿米巴肝脓肿患者", "无症状带虫者", "动物宿主", "阿米巴肺脓肿患者"], "c": [2]}, {"q": "通常在恶性疟患者的外周血中可检测到：", "a": ["成熟裂殖体", "大滋养体", "子孢子", "配子体", "未成熟裂殖体"], "c": [3]}, {"q": "肠阿米巴病的典型病理变化是：", "a": ["细胞内寄生的增生性破坏", "外毒素引起的局部或全身炎症反应", "生成肉芽肿", "肠壁烧瓶样的溃疡", "腺瘤样增生"], "c": [3]}, {"q": "肠外阿米巴病最常见于：", "a": ["肝脏", "脑", "肺脏", "脾脏", "皮肤"], "c": [0]}, {"q": "误饮入被人新鲜粪便污染的水，可能感染：", "a": ["Ascaris lumbricoides", "Echinococcus granulosus", "Clonorchis sinensis", "Entamoeba histolytica", "Enterobius vermicularis"], "c": [3]}, {"q": "以贫血为主要致病作用的寄生虫是", "a": ["Schistosoma japonicum", "Plasmodium vivax", "Clonorchis sinensis", "Entamoeba histolytica", "Wuchereria bancrofti"], "c": [1]}, {"q": "最有可能检测出溶组织内阿米巴包囊的检验物是：", "a": ["成形粪便", "肠壁溃疡灶活组织", "黏液血便", "肝脓肿穿刺液", "肺脓肿患者痰液"], "c": [0]}, {"q": "疟疾的再燃是由于：", "a": ["肝脏内残存的疟原虫进入血流", "血液内有残存的红内期疟原虫", "迟发型子孢子进入血流", "速发型子孢子进入血流", "被阳性按蚊再次叮咬"], "c": [1]}, {"q": "可在肝细胞内寄生的寄生虫是：", "a": ["Entamoeba histolytica", "Clonorchis sinensis", "Plasmodium vivax", "Echinococcus granulosus", "Schistosoma japonicum"], "c": [2]}, {"q": "间日疟原虫的感染阶段是：", "a": ["配子体", "滋养体", "卵囊", "裂殖体", "子孢子"], "c": [4]}, {"q": "对于乙肝病毒，下列说法错误的是", "a": ["对于乙肝病毒感染，HBcAb、HBsAb、HBeAb均具有保护作用", "乙肝病毒难以治愈的决定性主要原因是因为cccDNA存在于细胞核中", "可以通过紫外照射或70%无水乙醇灭活HBV", "采用乙肝病毒聚合酶的抑制剂可以帮助控制乙肝", "乙肝病毒的主要传播途径有血液传播、母婴传播、性传播、唾液传播、粪口传播", "（注意：此题原答案标记为ACE，但选项只有A-E，故标记A、C、E为正确？但原答案写了ACE，但根据题干“下列说法错误的是”，应选择错误的选项。原答案给了ACE，所以A、C、E是错误的。所以我们标记A、C、E为[x]。）"], "c": [0]}, {"q": "乙肝五项，也称“两对半”不包括哪一项的检测？", "a": ["HBcAb", "HBsAb", "HBeAb", "HBsAg", "HBcAg", "HBeAg"], "c": [4]}, {"q": "关于埃博拉病毒，下列说法错误的是哪几项？", "a": ["埃博拉病毒的潜伏期平均约两周", "埃博拉病毒的临床症状有高热、头痛、肌痛、呕吐、腹泻、全身出疹等", "埃博拉病毒可以通过体液传播，也可以通过空气传播", "埃博拉病毒的处理和检测可以在高于P2等级的任何实验室进行", "出血热病毒的典型症状包括发热、皮肤和粘膜出现瘀点或瘀斑、不同脏器的损害和出血", "（原答案CD，故C、D错误）"], "c": [2, 3]}, {"q": "【多选题】关于虫媒病毒，下列说法错误的是哪几项？", "a": ["可以通过节肢动物叮咬传播给脊椎动物和人类，并且对节肢动物同样具有致病性", "乙脑病毒最重要的中间/扩散宿主是幼猪", "感染一种血清型的登革热后，再次感染另一个血清型会出现抗体依赖性增强作用而导致疾病更严重", "孕妇在怀孕早期感染寨卡病毒可致小头畸形或死产", "登革病毒、寨卡病毒、乙型脑炎病毒、发热伴血小板减少综合征病毒均属于黄病毒科", "（原答案AE，故A、E错误）"], "c": [0, 4]}, {"q": "关于大流行性流感和季节性流感的区别，错误的选项是？", "a": ["高危的人群有所不同", "基于HA和NA的病毒亚型不同", "通常由不同的病毒抗原性变异的方式产生", "病毒的分离培养及检测诊断的方法相同", "季节性有所不同"], "c": [3]}, {"q": "以下关于呼吸道病毒的描述有哪项是正确的？", "a": ["腮腺炎病毒和呼吸道合胞病毒都导致病毒血症", "人群中引起大爆发的冠状病毒严重时引发急性呼吸窘迫综合征", "腮腺炎病毒、麻疹病毒和呼吸道合胞病毒感染后免疫力持久", "人类冠状病毒、鼻病毒和流感病毒感染通常表现为普通感冒", "依据典型的流感临床症状可以确定病因为特定型别的流感病毒感染"], "c": [1]}, {"q": "以下关于风疹病毒与麻疹病毒的说法哪几项是正确的？", "a": ["两种病毒都是正链RNA病毒", "两种病毒感染都导致全身出疹的症状", "麻疹病毒感染导致胎儿畸形或发育缺陷", "两种病毒表面的主要抗原是相同的", "风疹病毒感染前驱期表现为结膜炎、鼻炎和咳嗽等"], "c": [1]}, {"q": "肠道病毒的主要成员之一脊髓灰质炎病毒引起的症状不包括以下哪些？", "a": ["脊髓前角灰质损伤", "引起肠胃不适", "致死性的呼吸困难", "手足口等多个部位出疹", "下肢无力乃至瘫痪"], "c": [3]}, {"q": "【多选题】为什么针对季节性流感需要更换新的疫苗病毒株？", "a": ["病毒对特异性抗病毒药物产生抵抗", "新冠病毒疫情期间人群中流感病毒的感染率低", "病毒的抗原性转变", "病毒的抗原性漂移", "人群对新出现的流感病毒免疫保护力不足"], "c": [3, 4]}];
+const flashcards = [];</script>
+
+<script type="text/babel">
+  const { useState, useEffect } = React;
+
+  // 自定义 SVG 图标组件，替代有 bug 的 Lucide-React 库，解决 Infinity 冲突
+  const CheckCircle2 = ({ size = 24, className = "" }) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      <circle cx="12" cy="12" r="10" />
+      <path d="m9 12 2 2 4-4" />
+    </svg>
+  );
+
+  const XCircle = ({ size = 24, className = "" }) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      <circle cx="12" cy="12" r="10" />
+      <path d="m15 9-6 6" />
+      <path d="m9 9 6 6" />
+    </svg>
+  );
+
+  const CreditCard = ({ size = 24, className = "" }) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      <rect width="20" height="14" x="2" y="5" rx="2" />
+      <line x1="2" x2="22" y1="10" y2="10" />
+    </svg>
+  );
+
+  const ListChecks = ({ size = 24, className = "" }) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      <path d="m3 17 2 2 4-4" />
+      <path d="m3 7 2 2 4-4" />
+      <path d="M13 6h8" />
+      <path d="M13 12h8" />
+      <path d="M13 18h8" />
+      <path d="m3 12 2 2 4-4" />
+    </svg>
+  );
+
+  const Trophy = ({ size = 24, className = "" }) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
+      <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
+      <path d="M4 22h16" />
+      <path d="M10 14.66V17c0 .55-.45 1-1 1H4v2h16v-2h-5c-.55 0-1-.45-1-1v-2.34" />
+      <path d="M12 2a6 6 0 0 1 6 6v3.5c0 1.63-1.22 3.14-2.85 3.3a6 6 0 0 1-6.3-5.96V8a6 6 0 0 1 6-6Z" />
+    </svg>
+  );
+
+  const ChevronRight = ({ size = 24, className = "" }) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      <path d="m9 18 6-6-6-6" />
+    </svg>
+  );
+
+  const ChevronLeft = ({ size = 24, className = "" }) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      <path d="m15 18-6-6 6-6" />
+    </svg>
+  );
+
+  const Lightbulb = ({ size = 24, className = "" }) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .6 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5" />
+      <path d="M9 18h6" />
+      <path d="M10 22h4" />
+    </svg>
+  );
+
+  const BookOpen = ({ size = 24, className = "" }) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+      <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+    </svg>
+  );
+
+  const Layers = ({ size = 24, className = "" }) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      <path d="m12 3-10 5L12 13l10-5-10-5Z" />
+      <path d="m2 17 10 5 10-5" />
+      <path d="m2 12 10 5 10-5" />
+    </svg>
+  );
+
+  const RichContent = ({ value, imageClassName = "max-h-72" }) => {
+    const content =
+      typeof value === "string"
+        ? { text: value, images: [] }
+        : { text: value?.text || "", images: value?.images || [] };
+
+    return (
+      <div className="min-w-0 space-y-3">
+        {content.text && (
+          <div className="whitespace-pre-wrap break-words">{content.text}</div>
+        )}
+        {content.images.map((image, index) => (
+          <figure key={`${image.src}-${index}`} className="space-y-1.5">
+            <img
+              src={image.src}
+              alt={image.alt || ""}
+              loading="lazy"
+              decoding="async"
+              className={`mx-auto w-auto max-w-full rounded-xl object-contain ${imageClassName}`}
+            />
+            {image.caption && (
+              <figcaption className="text-center text-xs font-normal opacity-70">
+                {image.caption}
+              </figcaption>
+            )}
+          </figure>
+        ))}
+      </div>
+    );
+  };
+
+  function App() {
+    const [view, setView] = useState("menu"); // 'menu', 'quiz', 'flashcard'
+    const [currentIdx, setCurrentIdx] = useState(0);
+    const [score, setScore] = useState(0);
+    const [showResult, setShowResult] = useState(false);
+    const [selectedOptions, setSelectedOptions] = useState([]);
+    const [isAnswerSubmitted, setIsAnswerSubmitted] = useState(false);
+    const [flipped, setFlipped] = useState(false);
+    const [showNavModal, setShowNavModal] = useState(false); // 题目跳转导航面板显隐状态
+
+    // 答错记录追踪（供最后结果页查看分析）
+    const [wrongAnswers, setWrongAnswers] = useState([]);
+    const hasMcqs = mcqs.length > 0;
+    const hasFlashcards = flashcards.length > 0;
+
+    const resetState = () => {
+      setCurrentIdx(0);
+      setScore(0);
+      setShowResult(false);
+      setSelectedOptions([]);
+      setIsAnswerSubmitted(false);
+      setFlipped(false);
+      setWrongAnswers([]);
+    };
+
+    // 将旧版单值 c 和新版列表 c 统一为答案索引列表。
+    const getCorrectAnswers = (question) =>
+      Array.isArray(question.c) ? question.c : [question.c];
+
+    const submitQuizAnswer = (userAnswers) => {
+      if (isAnswerSubmitted || userAnswers.length === 0) return;
+
+      const correctAnswers = getCorrectAnswers(mcqs[currentIdx]);
+      const sortedUserAnswers = [...userAnswers].sort((a, b) => a - b);
+      const sortedCorrectAnswers = [...correctAnswers].sort((a, b) => a - b);
+      const isCorrect =
+        sortedUserAnswers.length === sortedCorrectAnswers.length &&
+        sortedUserAnswers.every(
+          (answer, index) => answer === sortedCorrectAnswers[index],
+        );
+
+      setSelectedOptions(userAnswers);
+      setIsAnswerSubmitted(true);
+      if (isCorrect) {
+        setScore((currentScore) => currentScore + 1);
+      } else {
+        setWrongAnswers((answers) => [
+          ...answers,
+          {
+            ...mcqs[currentIdx],
+            userAnswers,
+            userLetter: sortedUserAnswers
+              .map((answer) => String.fromCharCode(65 + answer))
+              .join("、"),
+            correctLetter: sortedCorrectAnswers
+              .map((answer) => String.fromCharCode(65 + answer))
+              .join("、"),
+          },
+        ]);
+      }
+
+      setTimeout(() => {
+        if (currentIdx < mcqs.length - 1) {
+          setCurrentIdx((index) => index + 1);
+          setSelectedOptions([]);
+          setIsAnswerSubmitted(false);
+        } else {
+          setShowResult(true);
+        }
+      }, 1400);
+    };
+
+    const handleQuizAnswer = (idx) => {
+      if (isAnswerSubmitted) return;
+
+      const isMultipleChoice =
+        getCorrectAnswers(mcqs[currentIdx]).length > 1;
+      if (!isMultipleChoice) {
+        submitQuizAnswer([idx]);
+        return;
+      }
+
+      setSelectedOptions((options) =>
+        options.includes(idx)
+          ? options.filter((option) => option !== idx)
+          : [...options, idx],
+      );
+    };
+
+    // 跳转到指定题目
+    const jumpToQuestion = (idx) => {
+      setCurrentIdx(idx);
+      setSelectedOptions([]);
+      setIsAnswerSubmitted(false);
+      setFlipped(false);
+      setShowNavModal(false);
+    };
+
+    if (view === "menu") {
+      return (
+        <div className="max-w-2xl mx-auto pt-4 px-0 sm:pt-10 sm:px-4 md:pt-16">
+          <div className="text-center mb-7 sm:mb-12">
+            <div className="inline-flex p-3 sm:p-4 bg-brand-50 text-brand-800 rounded-2xl sm:rounded-3xl mb-4">
+              <BookOpen size={40} />
+            </div>
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-3 break-words">
+              2025-2026 学年秋冬学期感染与免疫学小测
+            </h1>
+            <p className="text-base sm:text-lg text-slate-500 leading-relaxed">
+              <p>2025-2026 学年秋冬学期感染与免疫学三次小测题目及答案，共150题，全部为选择题。</p><p>Made by 李建树</p>
+            </p>
+          </div>
+
+          <div
+            className={`grid gap-3 sm:gap-6 mb-8 ${hasMcqs && hasFlashcards ? "sm:grid-cols-2" : "grid-cols-1"}`}
+          >
+            {hasMcqs && (
+              <button
+                onClick={() => {
+                  setView("quiz");
+                  resetState();
+                }}
+                className="flex min-h-40 flex-col text-left p-5 sm:p-6 bg-white border border-slate-200 rounded-2xl hover:border-brand-500 hover:shadow-lg transition-all group focus:outline-none focus:ring-2 focus:ring-brand-500"
+              >
+                <div className="p-3 bg-brand-50 text-brand-800 rounded-xl group-hover:bg-brand-800 group-hover:text-white transition-colors mb-4 w-fit">
+                  <ListChecks size={28} />
+                </div>
+                <h3 className="font-bold text-xl text-slate-800 mb-1">
+                  选择题闯关
+                </h3>
+                <span className="mt-auto text-brand-800 text-sm font-semibold flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                  开始挑战 <ChevronRight size={16} />
+                </span>
+              </button>
+            )}
+
+            {hasFlashcards && (
+              <button
+                onClick={() => {
+                  setView("flashcard");
+                  resetState();
+                }}
+                className="flex min-h-40 flex-col text-left p-5 sm:p-6 bg-white border border-slate-200 rounded-2xl hover:border-brand-500 hover:shadow-lg transition-all group focus:outline-none focus:ring-2 focus:ring-brand-500"
+              >
+                <div className="p-3 bg-brand-50 text-brand-800 rounded-xl group-hover:bg-brand-800 group-hover:text-white transition-colors mb-4 w-fit">
+                  <CreditCard size={28} />
+                </div>
+                <h3 className="font-bold text-xl text-slate-800 mb-1">
+                  简答题抽认卡
+                </h3>
+                <span className="mt-auto text-brand-800 text-sm font-semibold flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                  开始背诵 <ChevronRight size={16} />
+                </span>
+              </button>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    if (view === "quiz") {
+      return (
+        <div className="max-w-2xl mx-auto pt-1 px-0 sm:pt-4 sm:px-4 md:pt-8">
+          {/* 导航头 */}
+          <div className="flex items-center justify-between gap-2 mb-4 sm:mb-6">
+            <button
+              onClick={() => setView("menu")}
+              className="min-h-11 shrink-0 text-slate-500 hover:text-slate-800 transition-colors flex items-center gap-1 font-medium"
+            >
+              <ChevronLeft size={18} /> 返回主页
+            </button>
+
+            <div className="flex min-w-0 items-center gap-2 sm:gap-3">
+              <button
+                onClick={() => setShowNavModal(true)}
+                className="min-h-11 px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-sm font-semibold transition-colors flex items-center gap-1"
+              >
+                <Layers size={16} /> <span className="hidden sm:inline">跳转题目</span><span className="sm:hidden">题目</span>
+              </button>
+              <div className="whitespace-nowrap px-3 py-2 bg-brand-50 text-brand-800 rounded-xl text-sm font-bold">
+                <span className="hidden sm:inline">进度: </span>{currentIdx + 1} / {mcqs.length}
+              </div>
+            </div>
+          </div>
+
+          {/* 进度条 */}
+          <div className="w-full h-2 bg-slate-200 rounded-full mb-5 sm:mb-8 overflow-hidden">
+            <div
+              className="h-full bg-brand-800 transition-all duration-300"
+              style={{ width: `${((currentIdx + 1) / mcqs.length) * 100}%` }}
+            ></div>
+          </div>
+
+          {!showResult ? (
+            <div className="mobile-question-scroll">
+              <div className="mb-4 sm:mb-6 bg-white rounded-2xl p-4 sm:p-6 border border-slate-200 shadow-sm">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-xs font-bold text-brand-800 uppercase tracking-wider">
+                    QUESTION {currentIdx + 1}
+                  </span>
+                  <span
+                    className="px-2 py-0.5 rounded-full bg-brand-100 text-xs font-bold text-brand-900"
+                  >
+                    {getCorrectAnswers(mcqs[currentIdx]).length > 1
+                      ? "多选题"
+                      : "单选题"}
+                  </span>
+                </div>
+                <div className="text-lg sm:text-xl font-bold text-slate-800 leading-relaxed">
+                  <RichContent value={mcqs[currentIdx].q} />
+                </div>
+                {getCorrectAnswers(mcqs[currentIdx]).length > 1 && (
+                  <p className="text-sm text-slate-500 mt-3">
+                    可选择多个答案，选好后点击“提交答案”
+                  </p>
+                )}
+              </div>
+              <div className="grid gap-3">
+                {mcqs[currentIdx].a.map((opt, i) => {
+                  const correctAnswers = getCorrectAnswers(mcqs[currentIdx]);
+                  const isSelected = selectedOptions.includes(i);
+                  const isCorrectOption = correctAnswers.includes(i);
+                  let style =
+                    "border-slate-200 bg-white hover:border-slate-300 hover:shadow-sm";
+                  if (isAnswerSubmitted) {
+                    if (isCorrectOption) {
+                      style =
+                        "border-emerald-500 bg-emerald-50 text-emerald-800 font-semibold";
+                    } else if (isSelected) {
+                      style =
+                        "border-rose-500 bg-rose-50 text-rose-800 font-semibold";
+                    } else {
+                      style = "border-slate-100 bg-slate-50 text-slate-400";
+                    }
+                  } else if (isSelected) {
+                    style =
+                      "border-brand-500 bg-brand-50 text-brand-900 font-semibold shadow-sm";
+                  }
+                  return (
+                    <button
+                      key={i}
+                      onClick={() => handleQuizAnswer(i)}
+                      aria-pressed={isSelected}
+                      disabled={isAnswerSubmitted}
+                      className={`min-h-14 p-4 sm:p-5 text-left border-2 rounded-xl transition-all duration-200 flex items-center justify-between break-words focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2 ${style}`}
+                    >
+                      <div className="flex min-w-0 flex-1 items-start gap-1 leading-relaxed">
+                        <span className="shrink-0">
+                          {String.fromCharCode(65 + i)}.
+                        </span>
+                        <div className="min-w-0 flex-1">
+                          <RichContent value={opt} imageClassName="max-h-48" />
+                        </div>
+                      </div>
+                      {isAnswerSubmitted && isCorrectOption && (
+                        <CheckCircle2 className="text-emerald-500 shrink-0 ml-3" />
+                      )}
+                      {isAnswerSubmitted && isSelected && !isCorrectOption && (
+                        <XCircle className="text-rose-500 shrink-0 ml-3" />
+                      )}
+                      {!isAnswerSubmitted &&
+                        isSelected &&
+                        correctAnswers.length > 1 && (
+                          <CheckCircle2 className="text-brand-500 shrink-0 ml-3" />
+                        )}
+                    </button>
+                  );
+                })}
+              </div>
+              {getCorrectAnswers(mcqs[currentIdx]).length > 1 &&
+                !isAnswerSubmitted && (
+                  <button
+                    onClick={() => submitQuizAnswer(selectedOptions)}
+                    disabled={selectedOptions.length === 0}
+                    className="mt-5 w-full px-6 py-3 bg-brand-800 text-white rounded-xl font-bold hover:bg-brand-900 transition-colors shadow-md disabled:bg-slate-300 disabled:cursor-not-allowed disabled:shadow-none"
+                  >
+                    提交答案
+                    {selectedOptions.length > 0 &&
+                      `（已选 ${selectedOptions.length} 项）`}
+                  </button>
+                )}
+            </div>
+          ) : (
+            <div className="text-center py-8 sm:py-12 px-4 sm:px-6 bg-white rounded-2xl sm:rounded-3xl shadow-sm border border-slate-200">
+              <Trophy
+                size={72}
+                className="mx-auto text-yellow-500 mb-4 animate-bounce"
+              />
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-800 mb-2">
+                测试完成!
+              </h2>
+              <p className="text-slate-500 mb-6">
+                您的正确率达到了{" "}
+                <span className="text-brand-800 font-bold text-2xl">
+                  {Math.round((score / mcqs.length) * 100)}%
+                </span>
+              </p>
+
+              <div className="bg-slate-50 border border-slate-100 rounded-xl p-4 mb-8 text-sm grid grid-cols-2 gap-4 sm:gap-8 w-full">
+                <div>
+                  正确题数:{" "}
+                  <span className="font-bold text-emerald-600">{score}</span>
+                </div>
+                <div>
+                  错误题数:{" "}
+                  <span className="font-bold text-rose-500">
+                    {mcqs.length - score}
+                  </span>
+                </div>
+              </div>
+
+              {wrongAnswers.length > 0 && (
+                <div className="text-left mb-8 max-h-72 overflow-y-auto border border-slate-200 rounded-xl p-4 bg-slate-50">
+                  <h3 className="font-bold text-slate-700 mb-3 border-b pb-2">
+                    错题汇总
+                  </h3>
+                  <div className="space-y-4">
+                    {wrongAnswers.map((item, idx) => (
+                      <div key={idx} className="text-xs">
+                        <div className="flex items-start gap-1 font-semibold text-slate-800">
+                          <span className="shrink-0">{idx + 1}.</span>
+                          <div className="min-w-0 flex-1">
+                            <RichContent
+                              value={item.q}
+                              imageClassName="max-h-32"
+                            />
+                          </div>
+                        </div>
+                        <p className="text-rose-600 mt-1">
+                          您的回答: {item.userLetter} (错误)
+                        </p>
+                        <p className="text-emerald-600">
+                          正确答案: {item.correctLetter}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div className="flex flex-col-reverse sm:flex-row gap-3 sm:gap-4 justify-center">
+                <button
+                  onClick={resetState}
+                  className="min-h-12 w-full sm:w-auto px-6 py-3 bg-slate-100 text-slate-700 rounded-xl sm:rounded-full font-bold hover:bg-slate-200 transition-colors"
+                >
+                  重新测试
+                </button>
+                <button
+                  onClick={() => {
+                    resetState();
+                    setView("menu");
+                  }}
+                  className="min-h-12 w-full sm:w-auto px-6 py-3 bg-brand-800 text-white rounded-xl sm:rounded-full font-bold hover:bg-brand-900 transition-colors shadow-md"
+                >
+                  返回主页
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* 选择题快速导航模态框 */}
+          {showNavModal && (
+            <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
+              <div className="bg-white rounded-t-2xl sm:rounded-2xl max-w-lg w-full max-h-[85dvh] overflow-hidden flex flex-col shadow-2xl">
+                <div className="p-4 sm:p-5 border-b flex justify-between items-center bg-slate-50">
+                  <h3 className="font-bold text-slate-800 flex items-center gap-2">
+                    <Layers size={18} className="text-brand-600" />{" "}
+                    选择题目录跳转
+                  </h3>
+                  <button
+                    onClick={() => setShowNavModal(false)}
+                    aria-label="关闭题目目录"
+                    className="inline-flex h-11 w-11 items-center justify-center rounded-xl text-slate-500 hover:bg-slate-200 text-2xl font-normal"
+                  >
+                    &times;
+                  </button>
+                </div>
+                <div className="p-4 sm:p-6 pb-[max(1rem,env(safe-area-inset-bottom))] overflow-y-auto grid grid-cols-5 sm:grid-cols-6 gap-2">
+                  {mcqs.map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => jumpToQuestion(i)}
+                      className={`min-h-11 py-2 text-sm font-bold rounded-lg border transition-all ${currentIdx === i ? "bg-brand-800 border-brand-800 text-white" : "border-slate-200 hover:border-brand-500 text-slate-700 hover:bg-brand-50"}`}
+                    >
+                      {i + 1}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    if (view === "flashcard") {
+      return (
+        <div className="max-w-2xl mx-auto pt-1 px-0 sm:pt-4 sm:px-4 md:pt-8">
+          {/* 导航头 */}
+          <div className="flex items-center justify-between gap-2 mb-4 sm:mb-6">
+            <button
+              onClick={() => setView("menu")}
+              className="min-h-11 shrink-0 text-slate-500 hover:text-slate-800 transition-colors flex items-center gap-1 font-medium"
+            >
+              <ChevronLeft size={18} /> 返回主页
+            </button>
+
+            <div className="flex min-w-0 items-center gap-2 sm:gap-3">
+              <button
+                onClick={() => setShowNavModal(true)}
+                className="min-h-11 px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-sm font-semibold transition-colors flex items-center gap-1"
+              >
+                <Layers size={16} /> <span className="hidden sm:inline">选卡列表</span><span className="sm:hidden">选卡</span>
+              </button>
+              <div className="whitespace-nowrap px-3 py-2 bg-brand-50 text-brand-800 rounded-xl text-sm font-bold">
+                <span className="hidden sm:inline">卡片: </span>{currentIdx + 1} / {flashcards.length}
+              </div>
+            </div>
+          </div>
+
+          {/* 进度条 */}
+          <div className="w-full h-2 bg-slate-200 rounded-full mb-5 sm:mb-8 overflow-hidden">
+            <div
+              className="h-full bg-brand-800 transition-all duration-300"
+              style={{
+                width: `${((currentIdx + 1) / flashcards.length) * 100}%`,
+              }}
+            ></div>
+          </div>
+
+          {/* 翻转卡片结构 */}
+          <div
+            className={`flip-card ${flipped ? "flipped" : ""} w-full`}
+            onClick={() => setFlipped((isFlipped) => !isFlipped)}
+          >
+            <div
+              className="flip-card-inner"
+              style={{
+                transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)",
+              }}
+            >
+              {/* 卡片正面 (问题) */}
+              <div className="flip-card-front bg-white border border-slate-200 text-slate-800 flex flex-col justify-between">
+                <div className="p-3 bg-brand-50 text-brand-600 rounded-full mt-4 self-center">
+                  <Lightbulb size={28} />
+                </div>
+                <div className="my-auto min-h-0 w-full overflow-y-auto overscroll-contain px-2 py-2 scrollbar-hide sm:px-4">
+                  <span className="text-xs font-bold text-slate-400 block mb-2">
+                    QUESTION {currentIdx + 1}
+                  </span>
+                  <div className="text-lg sm:text-xl font-bold leading-relaxed">
+                    <RichContent
+                      value={flashcards[currentIdx].q}
+                      imageClassName="max-h-48"
+                    />
+                  </div>
+                </div>
+                <p className="text-slate-400 text-xs font-medium pb-4 flex items-center gap-1 animate-pulse">
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"
+                    />
+                  </svg>
+                  点击卡片翻看参考答案
+                </p>
+              </div>
+
+              {/* 卡片背面 (要点解析) */}
+              <div className="flip-card-back bg-brand-950 text-white border border-brand-900 text-left items-start overflow-y-auto scrollbar-hide flex flex-col justify-between">
+                <div className="w-full">
+                  <h4 className="text-brand-300 font-bold mb-4 flex items-center gap-2 border-b border-brand-900 pb-2">
+                    <CheckCircle2 size={18} /> 核心要点 / 答案分析
+                  </h4>
+                  <div className="text-base leading-relaxed text-slate-200 font-medium">
+                    <RichContent
+                      value={flashcards[currentIdx].a}
+                      imageClassName="max-h-48"
+                    />
+                  </div>
+                </div>
+                <p className="pt-6 text-slate-500 text-xs text-center w-full mt-auto">
+                  点击卡片返回问题
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* 控制按钮 */}
+          <div className="flex items-center justify-between gap-2 sm:gap-4 mt-5 sm:mt-8">
+            <button
+              disabled={currentIdx === 0}
+              onClick={() => {
+                setCurrentIdx(currentIdx - 1);
+                setFlipped(false);
+              }}
+              className="min-h-12 flex flex-1 sm:flex-none items-center justify-center gap-1 sm:gap-2 px-3 sm:px-6 py-3 bg-white text-slate-600 hover:text-slate-800 border rounded-xl font-bold shadow-sm transition-all disabled:opacity-30 disabled:pointer-events-none"
+            >
+              <ChevronLeft size={20} /> 上一题
+            </button>
+            <button
+              onClick={() => {
+                if (currentIdx < flashcards.length - 1) {
+                  setCurrentIdx(currentIdx + 1);
+                  setFlipped(false);
+                } else {
+                  setView("menu");
+                }
+              }}
+              className="min-h-12 flex flex-1 sm:flex-none items-center justify-center gap-1 sm:gap-2 px-3 sm:px-6 py-3 bg-brand-800 hover:bg-brand-900 text-white rounded-xl font-bold shadow-sm transition-all"
+            >
+              {currentIdx === flashcards.length - 1 ? "完成复习" : "下一题"}{" "}
+              <ChevronRight size={20} />
+            </button>
+          </div>
+
+          {/* 简答题快速导航模态框 */}
+          {showNavModal && (
+            <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
+              <div className="bg-white rounded-t-2xl sm:rounded-2xl max-w-lg w-full max-h-[85dvh] overflow-hidden flex flex-col shadow-2xl">
+                <div className="p-4 sm:p-5 border-b flex justify-between items-center bg-slate-50">
+                  <h3 className="font-bold text-slate-800 flex items-center gap-2">
+                    <Layers size={18} className="text-brand-600" />{" "}
+                    简答题卡片目录
+                  </h3>
+                  <button
+                    onClick={() => setShowNavModal(false)}
+                    aria-label="关闭卡片目录"
+                    className="inline-flex h-11 w-11 items-center justify-center rounded-xl text-slate-500 hover:bg-slate-200 text-2xl font-normal"
+                  >
+                    &times;
+                  </button>
+                </div>
+                <div className="p-4 sm:p-6 pb-[max(1rem,env(safe-area-inset-bottom))] overflow-y-auto grid grid-cols-5 sm:grid-cols-6 gap-2">
+                  {flashcards.map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => jumpToQuestion(i)}
+                      className={`min-h-11 py-2 text-sm font-bold rounded-lg border transition-all ${currentIdx === i ? "bg-brand-800 border-brand-800 text-white" : "border-slate-200 hover:border-brand-500 text-slate-700 hover:bg-brand-50"}`}
+                    >
+                      {i + 1}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+  }
+
+  // 渲染 React 页面
+  const root = ReactDOM.createRoot(document.getElementById("root"));
+  root.render(<App />);
+</script>
+</main>
+    </div>
+    <script>
+      (() => {
+        const shell = document.querySelector(".sidebar-shell");
+        const openButton = document.querySelector(".js-sidebar-open");
+        const closeButtons = document.querySelectorAll(
+          ".js-sidebar-close, .js-sidebar-backdrop",
+        );
+        const siteLink = document.querySelector(".js-site-link");
+        const mobileTitle = document.querySelector(".js-mobile-site-title");
+
+        if (!shell || !openButton) return;
+
+        if (siteLink && mobileTitle) {
+          mobileTitle.textContent = siteLink.textContent.trim();
+        }
+
+        const setSidebarOpen = (isOpen) => {
+          shell.classList.toggle("is-open", isOpen);
+          shell.setAttribute("aria-hidden", String(!isOpen));
+          shell.inert = !isOpen;
+          openButton.setAttribute("aria-expanded", String(isOpen));
+
+          if (isOpen) {
+            shell.querySelector(".js-sidebar-close")?.focus();
+          } else {
+            openButton.focus();
+          }
+        };
+
+        openButton.addEventListener("click", () => setSidebarOpen(true));
+        closeButtons.forEach((button) =>
+          button.addEventListener("click", () => setSidebarOpen(false)),
+        );
+        shell.querySelectorAll("nav a").forEach((link) =>
+          link.addEventListener("click", () => setSidebarOpen(false)),
+        );
+        document.addEventListener("keydown", (event) => {
+          if (event.key === "Escape" && shell.classList.contains("is-open")) {
+            setSidebarOpen(false);
+          }
+        });
+        const syncSidebarWithViewport = () => {
+          if (window.innerWidth >= 768) {
+            shell.classList.remove("is-open");
+            shell.setAttribute("aria-hidden", "false");
+            shell.inert = false;
+            openButton.setAttribute("aria-expanded", "false");
+          } else if (!shell.classList.contains("is-open")) {
+            shell.setAttribute("aria-hidden", "true");
+            shell.inert = true;
+          }
+        };
+
+        window.addEventListener("resize", syncSidebarWithViewport);
+        syncSidebarWithViewport();
+      })();
+    </script>
+  </body>
+</html>

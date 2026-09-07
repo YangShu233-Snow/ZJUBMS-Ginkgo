@@ -3,9 +3,32 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ginkgo Examples</title>
+    <title>ZJUBMS Ginkgo</title>
     <link rel="icon" type="image/svg+xml" href="../favicon.svg">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                50: "#eef8f4",
+                100: "#d7eee5",
+                200: "#afe0d0",
+                300: "#7ccab4",
+                400: "#48aa8f",
+                500: "#278b70",
+                600: "#176f58",
+                700: "#105a46",
+                800: "#054b35",
+                900: "#063d2f",
+                950: "#02241c",
+              },
+            },
+          },
+        },
+      };
+    </script>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -29,11 +52,17 @@
         width: 100%;
         height: 100%;
         text-align: center;
+        -webkit-transform: rotateY(0deg);
+        transform: rotateY(0deg);
         transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        -webkit-transform-style: preserve-3d;
         transform-style: preserve-3d;
+        transform-origin: center;
+        will-change: transform;
         cursor: pointer;
       }
       .flip-card.flipped .flip-card-inner {
+        -webkit-transform: rotateY(180deg);
         transform: rotateY(180deg);
       }
       .flip-card-front,
@@ -54,6 +83,7 @@
           0 8px 10px -6px rgba(0, 0, 0, 0.05);
       }
       .flip-card-back {
+        -webkit-transform: rotateY(180deg);
         transform: rotateY(180deg);
       }
       .scrollbar-hide::-webkit-scrollbar {
@@ -137,7 +167,6 @@
         }
       }
       @media (prefers-reduced-motion: reduce) {
-        .flip-card-inner,
         .sidebar-shell aside,
         .js-sidebar-backdrop {
           transition-duration: 0.01ms !important;
@@ -149,7 +178,7 @@
     <div class="flex h-full w-full flex-col md:flex-row">
       <!-- 移动端顶部导航 -->
       <header class="flex h-14 shrink-0 items-center gap-3 border-b border-slate-200 bg-white px-3 md:hidden">
-        <button type="button" class="js-sidebar-open inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-slate-600 hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500" aria-label="打开目录" aria-controls="site-sidebar" aria-expanded="false">
+        <button type="button" class="js-sidebar-open inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-slate-600 hover:bg-brand-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500" aria-label="打开目录" aria-controls="site-sidebar" aria-expanded="false">
           <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
             <path d="M4 6h16M4 12h16M4 18h16"></path>
           </svg>
@@ -165,8 +194,8 @@
       <aside id="site-sidebar" class="absolute inset-y-0 left-0 flex h-full w-[min(20rem,75vw)] shrink-0 flex-col border-r border-slate-200 bg-white shadow-2xl transition-transform ease-out md:static md:w-60 md:shadow-none">
   <!-- 网站标题 -->
   <div class="flex min-h-14 items-center gap-2 border-b border-slate-100 p-3 md:p-4">
-    <a href="../index.html" class="js-site-link min-w-0 flex-1 truncate text-lg font-bold">Ginkgo Examples</a>
-    <button type="button" class="js-sidebar-close inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-2xl font-normal text-slate-500 hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 md:hidden" aria-label="关闭目录">
+    <a href="../index.html" class="js-site-link min-w-0 flex-1 truncate text-lg font-bold text-slate-900">ZJUBMS Ginkgo</a>
+    <button type="button" class="js-sidebar-close inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-2xl font-normal text-slate-500 hover:bg-brand-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 md:hidden" aria-label="关闭目录">
       ×
     </button>
   </div>
@@ -175,22 +204,22 @@
   <nav class="js-menu-container flex-1 space-y-3 overflow-y-auto p-4 pb-[max(1rem,env(safe-area-inset-bottom))] md:space-y-4">
     <!--  -->
   <div class="js-tpl-category-item space-y-1 md:space-y-2">
-      <div class="js-category-title px-2 text-sm font-bold tracking-wide text-slate-600 md:text-xs md:uppercase md:tracking-wider md:text-slate-400">人体结构与功能学<!-- 分类名占位 -->
-      </div>
-      <div class="js-link-container ml-3 space-y-0.5 border-l-2 border-slate-200 pl-2 md:space-y-1 md:border-l md:border-slate-100">
-        <!-- 子链接将会被 append 到这里 -->
-      <a href="../%E4%BA%BA%E4%BD%93%E7%BB%93%E6%9E%84%E4%B8%8E%E5%8A%9F%E8%83%BD%E5%AD%A6/2024-2025%E6%98%A5%E5%A4%8F%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025春夏期末回忆卷<!-- 链接文本占位 -->
-    </a>
-  </div>
-    </div>
-  <div class="js-tpl-category-item space-y-1 md:space-y-2">
       <div class="js-category-title px-2 text-sm font-bold tracking-wide text-slate-600 md:text-xs md:uppercase md:tracking-wider md:text-slate-400">细胞与生物分子 I<!-- 分类名占位 -->
       </div>
       <div class="js-link-container ml-3 space-y-0.5 border-l-2 border-slate-200 pl-2 md:space-y-1 md:border-l md:border-slate-100">
         <!-- 子链接将会被 append 到这里 -->
-      <a href="../%E7%BB%86%E8%83%9E%E4%B8%8E%E7%94%9F%E7%89%A9%E5%88%86%E5%AD%90%20I/2024-2025%E7%A7%8B%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025秋回忆卷<!-- 链接文本占位 -->
+      <a href="../%E7%BB%86%E8%83%9E%E4%B8%8E%E7%94%9F%E7%89%A9%E5%88%86%E5%AD%90%20I/2025-2026%E7%A7%8B%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2025-2026秋期末回忆卷<!-- 链接文本占位 -->
     </a>
-  <a href="../%E7%BB%86%E8%83%9E%E4%B8%8E%E7%94%9F%E7%89%A9%E5%88%86%E5%AD%90%20I/2023-2024%E7%A7%8B%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="block w-full text-left px-3 py-1.5 text-xs rounded-md transition-all bg-blue-50 text-blue-600 font-bold">2023-2024秋回忆卷<!-- 链接文本占位 -->
+  </div>
+    </div>
+  <div class="js-tpl-category-item space-y-1 md:space-y-2">
+      <div class="js-category-title px-2 text-sm font-bold tracking-wide text-slate-600 md:text-xs md:uppercase md:tracking-wider md:text-slate-400">细胞与生物分子 II<!-- 分类名占位 -->
+      </div>
+      <div class="js-link-container ml-3 space-y-0.5 border-l-2 border-slate-200 pl-2 md:space-y-1 md:border-l md:border-slate-100">
+        <!-- 子链接将会被 append 到这里 -->
+      <a href="../%E7%BB%86%E8%83%9E%E4%B8%8E%E7%94%9F%E7%89%A9%E5%88%86%E5%AD%90%20II/2024-2025%E7%A7%8B%E5%86%AC%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025秋冬期末回忆卷<!-- 链接文本占位 -->
+    </a>
+  <a href="../%E7%BB%86%E8%83%9E%E4%B8%8E%E7%94%9F%E7%89%A9%E5%88%86%E5%AD%90%20II/2024-2025%E7%A7%8B%E5%86%AC%E5%B0%8F%E6%B5%8B%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg bg-brand-50 px-3 py-3 text-left text-sm font-bold text-brand-800 transition-all hover:bg-brand-100 md:min-h-0 md:py-1.5 md:text-xs">2024-2025秋冬小测卷<!-- 链接文本占位 -->
     </a>
   </div>
     </div>
@@ -199,7 +228,72 @@
       </div>
       <div class="js-link-container ml-3 space-y-0.5 border-l-2 border-slate-200 pl-2 md:space-y-1 md:border-l md:border-slate-100">
         <!-- 子链接将会被 append 到这里 -->
-      <a href="../%E5%8C%BB%E5%AD%A6%E7%94%9F%E5%91%BD%E5%9F%BA%E7%A1%80/2024-2025%E7%A7%8B%E5%86%AC%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7%EF%BC%88%E8%80%81%E5%B8%88%E7%89%88%EF%BC%89.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025秋冬期末回忆卷（老师版）<!-- 链接文本占位 -->
+      <a href="../%E5%8C%BB%E5%AD%A6%E7%94%9F%E5%91%BD%E5%9F%BA%E7%A1%80/2024-2025%E7%A7%8B%E5%86%AC%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025秋冬期末回忆卷<!-- 链接文本占位 -->
+    </a>
+  </div>
+    </div>
+  <div class="js-tpl-category-item space-y-1 md:space-y-2">
+      <div class="js-category-title px-2 text-sm font-bold tracking-wide text-slate-600 md:text-xs md:uppercase md:tracking-wider md:text-slate-400">基础医学科学研究技能 I<!-- 分类名占位 -->
+      </div>
+      <div class="js-link-container ml-3 space-y-0.5 border-l-2 border-slate-200 pl-2 md:space-y-1 md:border-l md:border-slate-100">
+        <!-- 子链接将会被 append 到这里 -->
+      <a href="../%E5%9F%BA%E7%A1%80%E5%8C%BB%E5%AD%A6%E7%A7%91%E5%AD%A6%E7%A0%94%E7%A9%B6%E6%8A%80%E8%83%BD%20I/2024-2025%E5%A4%8F%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025夏期末回忆卷<!-- 链接文本占位 -->
+    </a>
+  <a href="../%E5%9F%BA%E7%A1%80%E5%8C%BB%E5%AD%A6%E7%A7%91%E5%AD%A6%E7%A0%94%E7%A9%B6%E6%8A%80%E8%83%BD%20I/2024-2025%E5%86%AC%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025冬期末回忆卷<!-- 链接文本占位 -->
+    </a>
+  </div>
+    </div>
+  <div class="js-tpl-category-item space-y-1 md:space-y-2">
+      <div class="js-category-title px-2 text-sm font-bold tracking-wide text-slate-600 md:text-xs md:uppercase md:tracking-wider md:text-slate-400">普通化学实验（甲）<!-- 分类名占位 -->
+      </div>
+      <div class="js-link-container ml-3 space-y-0.5 border-l-2 border-slate-200 pl-2 md:space-y-1 md:border-l md:border-slate-100">
+        <!-- 子链接将会被 append 到这里 -->
+      <a href="../%E6%99%AE%E9%80%9A%E5%8C%96%E5%AD%A6%E5%AE%9E%E9%AA%8C%EF%BC%88%E7%94%B2%EF%BC%89/2024-2025%E7%A7%8B%E5%86%AC%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025秋冬期末回忆卷<!-- 链接文本占位 -->
+    </a>
+  </div>
+    </div>
+  <div class="js-tpl-category-item space-y-1 md:space-y-2">
+      <div class="js-category-title px-2 text-sm font-bold tracking-wide text-slate-600 md:text-xs md:uppercase md:tracking-wider md:text-slate-400">脑与脑机融合系统<!-- 分类名占位 -->
+      </div>
+      <div class="js-link-container ml-3 space-y-0.5 border-l-2 border-slate-200 pl-2 md:space-y-1 md:border-l md:border-slate-100">
+        <!-- 子链接将会被 append 到这里 -->
+      <a href="../%E8%84%91%E4%B8%8E%E8%84%91%E6%9C%BA%E8%9E%8D%E5%90%88%E7%B3%BB%E7%BB%9F/2024-2025%E5%A4%8F%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025夏期末回忆卷<!-- 链接文本占位 -->
+    </a>
+  </div>
+    </div>
+  <div class="js-tpl-category-item space-y-1 md:space-y-2">
+      <div class="js-category-title px-2 text-sm font-bold tracking-wide text-slate-600 md:text-xs md:uppercase md:tracking-wider md:text-slate-400">实验动物与伦理学<!-- 分类名占位 -->
+      </div>
+      <div class="js-link-container ml-3 space-y-0.5 border-l-2 border-slate-200 pl-2 md:space-y-1 md:border-l md:border-slate-100">
+        <!-- 子链接将会被 append 到这里 -->
+      <a href="../%E5%AE%9E%E9%AA%8C%E5%8A%A8%E7%89%A9%E4%B8%8E%E4%BC%A6%E7%90%86%E5%AD%A6/2024-2025%E7%A7%8B%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025秋期末回忆卷<!-- 链接文本占位 -->
+    </a>
+  </div>
+    </div>
+  <div class="js-tpl-category-item space-y-1 md:space-y-2">
+      <div class="js-category-title px-2 text-sm font-bold tracking-wide text-slate-600 md:text-xs md:uppercase md:tracking-wider md:text-slate-400">遗传与发育 I<!-- 分类名占位 -->
+      </div>
+      <div class="js-link-container ml-3 space-y-0.5 border-l-2 border-slate-200 pl-2 md:space-y-1 md:border-l md:border-slate-100">
+        <!-- 子链接将会被 append 到这里 -->
+      <a href="../%E9%81%97%E4%BC%A0%E4%B8%8E%E5%8F%91%E8%82%B2%20I/2024-2025%E5%86%AC%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025冬期末回忆卷<!-- 链接文本占位 -->
+    </a>
+  </div>
+    </div>
+  <div class="js-tpl-category-item space-y-1 md:space-y-2">
+      <div class="js-category-title px-2 text-sm font-bold tracking-wide text-slate-600 md:text-xs md:uppercase md:tracking-wider md:text-slate-400">遗传与发育 II<!-- 分类名占位 -->
+      </div>
+      <div class="js-link-container ml-3 space-y-0.5 border-l-2 border-slate-200 pl-2 md:space-y-1 md:border-l md:border-slate-100">
+        <!-- 子链接将会被 append 到这里 -->
+      <a href="../%E9%81%97%E4%BC%A0%E4%B8%8E%E5%8F%91%E8%82%B2%20II/2024-2025%E6%98%A5%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025春期末回忆卷<!-- 链接文本占位 -->
+    </a>
+  </div>
+    </div>
+  <div class="js-tpl-category-item space-y-1 md:space-y-2">
+      <div class="js-category-title px-2 text-sm font-bold tracking-wide text-slate-600 md:text-xs md:uppercase md:tracking-wider md:text-slate-400">感染与免疫学<!-- 分类名占位 -->
+      </div>
+      <div class="js-link-container ml-3 space-y-0.5 border-l-2 border-slate-200 pl-2 md:space-y-1 md:border-l md:border-slate-100">
+        <!-- 子链接将会被 append 到这里 -->
+      <a href="../%E6%84%9F%E6%9F%93%E4%B8%8E%E5%85%8D%E7%96%AB%E5%AD%A6/2025-2026%E7%A7%8B%E5%86%AC%E5%B0%8F%E6%B5%8B%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2025-2026秋冬小测卷<!-- 链接文本占位 -->
     </a>
   </div>
     </div>
@@ -208,7 +302,25 @@
       </div>
       <div class="js-link-container ml-3 space-y-0.5 border-l-2 border-slate-200 pl-2 md:space-y-1 md:border-l md:border-slate-100">
         <!-- 子链接将会被 append 到这里 -->
-      <a href="../%E5%8C%BB%E5%AD%A6%E5%A4%A7%E6%95%B0%E6%8D%AE%E4%B8%8E%E5%BA%94%E7%94%A8/2024-2025%E5%A4%8F%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025夏回忆卷<!-- 链接文本占位 -->
+      <a href="../%E5%8C%BB%E5%AD%A6%E5%A4%A7%E6%95%B0%E6%8D%AE%E4%B8%8E%E5%BA%94%E7%94%A8/2024-2025%E5%86%AC%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025冬期末回忆卷<!-- 链接文本占位 -->
+    </a>
+  </div>
+    </div>
+  <div class="js-tpl-category-item space-y-1 md:space-y-2">
+      <div class="js-category-title px-2 text-sm font-bold tracking-wide text-slate-600 md:text-xs md:uppercase md:tracking-wider md:text-slate-400">医学生物物理学<!-- 分类名占位 -->
+      </div>
+      <div class="js-link-container ml-3 space-y-0.5 border-l-2 border-slate-200 pl-2 md:space-y-1 md:border-l md:border-slate-100">
+        <!-- 子链接将会被 append 到这里 -->
+      <a href="../%E5%8C%BB%E5%AD%A6%E7%94%9F%E7%89%A9%E7%89%A9%E7%90%86%E5%AD%A6/2024-2025%E6%98%A5%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025春期末回忆卷<!-- 链接文本占位 -->
+    </a>
+  </div>
+    </div>
+  <div class="js-tpl-category-item space-y-1 md:space-y-2">
+      <div class="js-category-title px-2 text-sm font-bold tracking-wide text-slate-600 md:text-xs md:uppercase md:tracking-wider md:text-slate-400">医学科学素养 II<!-- 分类名占位 -->
+      </div>
+      <div class="js-link-container ml-3 space-y-0.5 border-l-2 border-slate-200 pl-2 md:space-y-1 md:border-l md:border-slate-100">
+        <!-- 子链接将会被 append 到这里 -->
+      <a href="../%E5%8C%BB%E5%AD%A6%E7%A7%91%E5%AD%A6%E7%B4%A0%E5%85%BB%20II/2025-2026%E7%A7%8B%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2025-2026秋期末回忆卷<!-- 链接文本占位 -->
     </a>
   </div>
     </div>
@@ -238,8 +350,8 @@
       <!-- 右侧主体内容区 -->
       <main class=".js-quiz-container min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-contain p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:p-5 md:p-8"><div id="root"></div>
 
-<script>const mcqs = [{"q": "NF-κB信号通路的配体是", "a": [" TNF-α", "胰岛素", "表皮生长因子", "干扰素"], "c": [0]}, {"q": "下列哪种方法可以检测细胞凋亡", "a": [" Annexin V 染色", "Western blot", "PCR", "ELISA"], "c": [0]}, {"q": "非侵入式实时观测细胞运动的方法通常采用", "a": [" 活细胞荧光显微镜", "电子显微镜", "流式细胞术", "质谱分析"], "c": [0]}, {"q": "Wnt信号通路的关键蛋白是", "a": [" β-catenin", "Ras", "MAPK", "PI3K"], "c": [0]}, {"q": "蛋白质入核过程中不需要的是", "a": ["核定位信号", "importin", " 信号肽", "Ran GTPase"], "c": [2]}, {"q": "下列哪项不是胶原蛋白的功能", "a": ["提供组织强度", "参与细胞黏附", " 催化化学反应", "维持皮肤弹性"], "c": [2]}, {"q": "关于跨膜蛋白的说法，不正确的是", "a": ["含有疏水跨膜区", "可以在膜上横向移动", " 只存在于细胞质膜", "参与信号转导"], "c": [2]}, {"q": "以下哪个不属于内膜系统", "a": ["内质网", "高尔基体", " 线粒体", "溶酶体"], "c": [2]}, {"q": "下列哪种方式不属于细胞信号通讯", "a": ["直接接触", "旁分泌", "内分泌", " 细胞吞噬"], "c": [3]}, {"q": "内膜系统中负责合成蛋白质和磷脂的细胞器是", "a": [" 内质网", "高尔基体", "溶酶体", "线粒体"], "c": [0]}, {"q": "细胞骨架的三大成分是", "a": [" 微管、微丝、中间纤维", "微管、肌球蛋白、中间纤维", "微丝、肌动蛋白、微管", "中间纤维、微丝、原纤维"], "c": [0]}, {"q": "与细胞侵袭过程无关的是", "a": ["基质金属蛋白酶", "整合素", " 有丝分裂", "细胞骨架重排"], "c": [2]}, {"q": "关于小RNA的说法，错误的是", "a": ["参与基因沉默", "长度约为20~30个核苷酸", " 可以直接翻译蛋白质", "通过碱基配对识别靶mRNA"], "c": [2]}];
-const flashcards = [{"q": "NF-κB信号通路的配体是", "a": "NF-κB信号通路的配体是"}, {"q": "下列哪种方法可以检测细胞凋亡", "a": "下列哪种方法可以检测细胞凋亡"}, {"q": "非侵入式实时观测细胞运动的方法通常采用", "a": "非侵入式实时观测细胞运动的方法通常采用"}, {"q": "Wnt信号通路的关键蛋白是", "a": "Wnt信号通路的关键蛋白是"}, {"q": "蛋白质入核过程中不需要的是", "a": "蛋白质入核过程中不需要的是"}, {"q": "下列哪项不是胶原蛋白的功能", "a": "下列哪项不是胶原蛋白的功能"}, {"q": "关于跨膜蛋白的说法，不正确的是", "a": "关于跨膜蛋白的说法，不正确的是"}, {"q": "以下哪个不属于内膜系统", "a": "以下哪个不属于内膜系统"}, {"q": "下列哪种方式不属于细胞信号通讯", "a": "下列哪种方式不属于细胞信号通讯"}, {"q": "内膜系统中负责合成蛋白质和磷脂的细胞器是", "a": "内膜系统中负责合成蛋白质和磷脂的细胞器是"}, {"q": "细胞骨架的三大成分是", "a": "细胞骨架的三大成分是"}, {"q": "与细胞侵袭过程无关的是", "a": "与细胞侵袭过程无关的是"}, {"q": "关于小RNA的说法，错误的是", "a": "关于小RNA的说法，错误的是"}];</script>
+<script>const mcqs = [];
+const flashcards = [{"q": "写出所有氨基酸的名称、结构简式、三字母缩写。", "a": "20种蛋白质氨基酸：甘氨酸（Gly，H₂N-CH₂-COOH）、丙氨酸（Ala，CH₃-CH(NH₂)-COOH）、缬氨酸（Val，(CH₃)₂CH-CH(NH₂)-COOH）、亮氨酸（Leu，(CH₃)₂CH-CH₂-CH(NH₂)-COOH）、异亮氨酸（Ile，CH₃CH₂CH(CH₃)-CH(NH₂)-COOH）、脯氨酸（Pro，吡咯烷-2-羧酸）、苯丙氨酸（Phe，C₆H₅-CH₂-CH(NH₂)-COOH）、色氨酸（Trp，吲哚-CH₂-CH(NH₂)-COOH）、甲硫氨酸（Met，CH₃-S-CH₂-CH₂-CH(NH₂)-COOH）、丝氨酸（Ser，HO-CH₂-CH(NH₂)-COOH）、苏氨酸（Thr，CH₃-CH(OH)-CH(NH₂)-COOH）、半胱氨酸（Cys，HS-CH₂-CH(NH₂)-COOH）、天冬酰胺（Asn，H₂N-CO-CH₂-CH(NH₂)-COOH）、谷氨酰胺（Gln，H₂N-CO-CH₂-CH₂-CH(NH₂)-COOH）、天冬氨酸（Asp，HOOC-CH₂-CH(NH₂)-COOH）、谷氨酸（Glu，HOOC-CH₂-CH₂-CH(NH₂)-COOH）、赖氨酸（Lys，H₂N-(CH₂)₄-CH(NH₂)-COOH）、精氨酸（Arg，H₂N-C(=NH)-NH-(CH₂)₃-CH(NH₂)-COOH）、组氨酸（His，咪唑-CH₂-CH(NH₂)-COOH）、酪氨酸（Tyr，HO-C₆H₄-CH₂-CH(NH₂)-COOH）。结构简式均以α-氨基酸通式 R-CH(NH₂)-COOH 表示，R基如上；三字母缩写为括号内字母。"}, {"q": "写出三种构型的 DNA 的名称、特点。", "a": "B-DNA：最普遍生理构型，右手螺旋，直径约2.37 nm，螺距3.4 nm，每圈10.5个碱基对，大沟宽深，小沟窄浅，碱基垂直于螺旋轴。A-DNA：右手螺旋，较粗短，直径约2.55 nm，螺距2.5 nm，每圈11个碱基对，碱基倾角大，大沟极深，小沟极浅，见于脱水状态或RNA-DNA杂交双链。Z-DNA：左手螺旋，呈锯齿状，直径约1.8 nm，螺距4.5 nm，每圈12个碱基对，交替的嘌呤-嘧啶序列（如GC）易形成，大沟平坦，小沟窄深，可能与转录调控有关。"}, {"q": "写出米-曼方程，并解释各参数及方程的意义。", "a": "方程：v = Vmax · [S] / (Km + [S])。参数：v为初始反应速率；Vmax为最大反应速率（酶完全被底物饱和时的速率）；[S]为底物浓度；Km为米氏常数，等于反应速率达Vmax/2时的底物浓度，反映酶与底物的亲和力（Km越小亲和力越大）。意义：定量描述底物浓度对酶促反应速率的影响，用于判断反应级数（[S]\u003c\u003eKm时近似零级）；可求得酶的催化效率和动力学参数，为抑制剂研究提供基础。"}, {"q": "写出下列代谢步骤的关键限速酶：糖酵解、糖原合成与分解、磷酸戊糖途径、三羧酸循环、脂肪酸β-氧化、酮体合成、脂肪酸合成、甘油三酯合成、胆固醇合成、尿素循环、嘌呤核苷酸从头合成、嘧啶核苷酸从头合成。", "a": "糖酵解：磷酸果糖激酶-1（PFK-1）。糖原合成：糖原合酶。糖原分解：糖原磷酸化酶。磷酸戊糖途径：葡萄糖-6-磷酸脱氢酶（G6PD）。三羧酸循环：柠檬酸合酶（或异柠檬酸脱氢酶、α-酮戊二酸脱氢酶复合体，常考柠檬酸合酶）。脂肪酸β-氧化：肉碱棕榈酰转移酶Ⅰ（CPT-Ⅰ）。酮体合成：HMG-CoA合酶（线粒体）。脂肪酸合成：乙酰CoA羧化酶（ACC）。甘油三酯合成：甘油-3-磷酸酰基转移酶（或二酰甘油酰基转移酶DGAT）。胆固醇合成：HMG-CoA还原酶（内质网）。尿素循环：氨基甲酰磷酸合成酶Ⅰ（CPSⅠ）。嘌呤核苷酸从头合成：PRPP酰胺转移酶（谷氨酰胺磷酸核糖焦磷酸酰胺转移酶）。嘧啶核苷酸从头合成：氨基甲酰磷酸合成酶Ⅱ（CPSⅡ）或天冬氨酸转氨甲酰酶（ATCase）。"}, {"q": "简述三羧酸循环和尿素循环是通过哪两个代谢中间产物联系起来的、如何联系起来的。", "a": "通过 草酰乙酸 和 天冬氨酸 联系起来。TCA循环中草酰乙酸经转氨作用（接受谷氨酸的氨基）生成天冬氨酸；天冬氨酸进入尿素循环，在精氨酸琥珀酸合成酶催化下与瓜氨酸缩合生成精氨酸琥珀酸，进而裂解为延胡索酸和精氨酸；延胡索酸可经延胡索酸酶水合、苹果酸脱氢酶氧化再生草酰乙酸，从而回补TCA循环。此过程同时将氨基从谷氨酸转移至尿素循环，实现氨的清除和碳骨架的循环利用。"}, {"q": "请简述在饥饿状态下，一个脂肪细胞中的甘油三酯分子的部分碳架是如何转变为能为大脑神经元所用的葡萄糖分子的，请列出主要的代谢历程、关键调控酶和参与的组织和器官。", "a": "① 脂肪细胞中甘油三酯经激素敏感性脂肪酶（HSL）水解为甘油和脂肪酸。② 甘油经血液循环入肝，在肝中经甘油激酶磷酸化生成3-磷酸甘油，脱氢生成磷酸二羟丙酮，进入糖异生。③ 脂肪酸经β-氧化生成乙酰CoA，同时产生大量NADH和FADH₂，促进肝内糖异生（激活丙酮酸羧化酶，抑制丙酮酸脱氢酶）。④ 肝脏利用乳酸、丙氨酸等生糖前体，通过糖异生关键酶（丙酮酸羧化酶、PEP羧激酶、果糖-1,6-二磷酸酶、葡萄糖-6-磷酸酶）合成葡萄糖，释放入血。⑤ 大脑神经元利用血糖（葡萄糖）通过GLUT转运体摄取，经糖酵解和氧化磷酸化供能。关键调控酶：脂肪细胞的HSL、肝的甘油激酶、丙酮酸羧化酶、PEPCK、FBPase、G6Pase；激素调控（胰高血糖素升高激活PKA，磷酸化HSL和果糖-2,6-二磷酸酶等）。"}, {"q": "在科研实践中，当使用质膜被通透化的细胞或纯化的线粒体来研究复合物Ⅰ的P/O比时，往往添加丙酮酸+苹果酸的底物组合，而非直接添加NADH。请简述为何丙酮酸+苹果酸可以特异性诱发依赖复合物Ⅰ的呼吸？", "a": "通透化细胞或纯化线粒体仍保留完整的内膜和基质酶。丙酮酸+苹果酸作为底物，通过基质中的苹果酸脱氢酶（MDH）催化：苹果酸→草酰乙酸+NADH（产生NADH），同时丙酮酸经丙酮酸脱氢酶复合体（PDH）生成乙酰CoA和NADH；这些NADH在基质内生成，仅能通过线粒体内膜上的复合物Ⅰ（NADH脱氢酶）将电子传递给泛醌，因此特异性依赖复合物Ⅰ进行呼吸。若直接添加外源NADH，由于NADH不能自由穿透线粒体内膜（需通过特定的转运体或穿梭系统），在纯化线粒体中无法有效进入基质到达复合物Ⅰ，因而无法特异地驱动复合物Ⅰ；在通透化细胞中，外源NADH可能被其他非特异性脱氢酶消耗或渗漏，造成干扰。"}, {"q": "列出原核DNA复制过程中的5种以上关键蛋白及其作用。", "a": "DnaA：识别并结合复制起始点oriC，促进DNA双链解链。DnaB（解旋酶）：沿DNA 5′→3′方向移动，解开双链。DnaC：辅助DnaB装载到单链DNA上。单链结合蛋白（SSB）：稳定解开的单链DNA，防止复性。DNA聚合酶Ⅲ：复制的主要酶，负责前导链和后随链的合成（5′→3′聚合活性及3′→5′校对外切酶活性）。引物酶（DnaG）：合成RNA引物，提供3′-OH起始。DNA聚合酶Ⅰ：切除RNA引物，填补缺口（5′→3′外切酶活性及聚合活性）。DNA连接酶：连接后随链的冈崎片段。拓扑异构酶（DNA旋转酶/拓扑异构酶Ⅱ）：消除复制叉前方产生的正超螺旋。"}, {"q": "列出4种以上DNA损伤修复途径（简称+英文全称），并列出其修复的损伤类型。", "a": "① 碱基切除修复（BER, Base Excision Repair）：修复单个碱基损伤（如脱氨基、氧化、烷基化产生的异常碱基）。② 核苷酸切除修复（NER, Nucleotide Excision Repair）：修复大块损伤，如嘧啶二聚体（紫外线引起的TT二聚体）、化学加合物（如苯并芘-DNA加合物）。③ 错配修复（MMR, Mismatch Repair）：修复DNA复制后新合成的链与模板链间错配的碱基（如G-T、A-C错配）。④ 同源重组修复（HRR, Homologous Recombination Repair）：修复双链断裂（DSB），利用同源姐妹染色单体作为模板，高保真。⑤ 非同源末端连接（NHEJ, Non-Homologous End Joining）：修复双链断裂，直接将断裂末端连接，易产生插入/缺失突变。⑥ 直接修复（Direct Repair）：如光复活酶（photolyase）直接修复嘧啶二聚体；O⁶-甲基鸟嘌呤-DNA甲基转移酶（MGMT）直接修复甲基化碱基。"}, {"q": "请简要解释真核基因转录过程中，转录因子、组蛋白修饰酶、染色质重塑因子、RNA聚合酶、启动子、增强子各自的功能。", "a": "启动子：基因上游的DNA序列（如TATA盒），是RNA聚合酶及转录因子结合的核心区域，决定转录起始位点。增强子：远端顺式调控元件，可被特异性转录因子结合，通过染色质环与启动子区域接触，大幅增强转录活性。转录因子：包括通用转录因子（TFⅡA、B、D、E、F、H等）和特异性转录因子；前者组装形成转录前起始复合体（PIC），帮助RNA聚合酶定位，后者识别增强子或启动子近端元件，调控细胞特异性表达。RNA聚合酶Ⅱ：负责转录蛋白质编码基因，以DNA为模板合成mRNA前体。组蛋白修饰酶：对组蛋白N端尾进行共价修饰（乙酰化、甲基化、磷酸化等），改变染色质结构和招募效应蛋白，例如组蛋白乙酰转移酶（HAT）促进开放染色质，组蛋白去乙酰化酶（HDAC）抑制转录。染色质重塑因子（如SWI/SNF复合物）：利用ATP水解能量移动或驱逐核小体，使启动子/增强子区域的DNA暴露，便于转录因子和RNA聚合酶结合。"}];</script>
 
 <script type="text/babel">
   const { useState, useEffect } = React;
@@ -433,6 +545,37 @@ const flashcards = [{"q": "NF-κB信号通路的配体是", "a": "NF-κB信号�
     </svg>
   );
 
+  const RichContent = ({ value, imageClassName = "max-h-72" }) => {
+    const content =
+      typeof value === "string"
+        ? { text: value, images: [] }
+        : { text: value?.text || "", images: value?.images || [] };
+
+    return (
+      <div className="min-w-0 space-y-3">
+        {content.text && (
+          <div className="whitespace-pre-wrap break-words">{content.text}</div>
+        )}
+        {content.images.map((image, index) => (
+          <figure key={`${image.src}-${index}`} className="space-y-1.5">
+            <img
+              src={image.src}
+              alt={image.alt || ""}
+              loading="lazy"
+              decoding="async"
+              className={`mx-auto w-auto max-w-full rounded-xl object-contain ${imageClassName}`}
+            />
+            {image.caption && (
+              <figcaption className="text-center text-xs font-normal opacity-70">
+                {image.caption}
+              </figcaption>
+            )}
+          </figure>
+        ))}
+      </div>
+    );
+  };
+
   function App() {
     const [view, setView] = useState("menu"); // 'menu', 'quiz', 'flashcard'
     const [currentIdx, setCurrentIdx] = useState(0);
@@ -445,6 +588,8 @@ const flashcards = [{"q": "NF-κB信号通路的配体是", "a": "NF-κB信号�
 
     // 答错记录追踪（供最后结果页查看分析）
     const [wrongAnswers, setWrongAnswers] = useState([]);
+    const hasMcqs = mcqs.length > 0;
+    const hasFlashcards = flashcards.length > 0;
 
     const resetState = () => {
       setCurrentIdx(0);
@@ -533,53 +678,59 @@ const flashcards = [{"q": "NF-κB信号通路的配体是", "a": "NF-κB信号�
       return (
         <div className="max-w-2xl mx-auto pt-4 px-0 sm:pt-10 sm:px-4 md:pt-16">
           <div className="text-center mb-7 sm:mb-12">
-            <div className="inline-flex p-3 sm:p-4 bg-blue-50 text-blue-600 rounded-2xl sm:rounded-3xl mb-4">
+            <div className="inline-flex p-3 sm:p-4 bg-brand-50 text-brand-800 rounded-2xl sm:rounded-3xl mb-4">
               <BookOpen size={40} />
             </div>
             <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-3 break-words">
-              细胞与生物分子Ⅰ2023秋回忆卷
+              2024-2025 学年秋冬学期小测回忆卷
             </h1>
             <p className="text-base sm:text-lg text-slate-500 leading-relaxed">
-              <p>Who Knows?</p><p>Made by Who Knows?</p>
+              <p>包含三次小测内容</p><p>Made by 李建树</p>
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 gap-3 sm:gap-6 mb-8">
-            <button
-              onClick={() => {
-                setView("quiz");
-                resetState();
-              }}
-              className="flex min-h-40 flex-col text-left p-5 sm:p-6 bg-white border border-slate-200 rounded-2xl hover:border-blue-500 hover:shadow-lg transition-all group focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <div className="p-3 bg-blue-50 text-blue-600 rounded-xl group-hover:bg-blue-600 group-hover:text-white transition-colors mb-4 w-fit">
-                <ListChecks size={28} />
-              </div>
-              <h3 className="font-bold text-xl text-slate-800 mb-1">
-                选择题闯关
-              </h3>
-              <span className="mt-auto text-blue-600 text-sm font-semibold flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-                开始挑战 <ChevronRight size={16} />
-              </span>
-            </button>
+          <div
+            className={`grid gap-3 sm:gap-6 mb-8 ${hasMcqs && hasFlashcards ? "sm:grid-cols-2" : "grid-cols-1"}`}
+          >
+            {hasMcqs && (
+              <button
+                onClick={() => {
+                  setView("quiz");
+                  resetState();
+                }}
+                className="flex min-h-40 flex-col text-left p-5 sm:p-6 bg-white border border-slate-200 rounded-2xl hover:border-brand-500 hover:shadow-lg transition-all group focus:outline-none focus:ring-2 focus:ring-brand-500"
+              >
+                <div className="p-3 bg-brand-50 text-brand-800 rounded-xl group-hover:bg-brand-800 group-hover:text-white transition-colors mb-4 w-fit">
+                  <ListChecks size={28} />
+                </div>
+                <h3 className="font-bold text-xl text-slate-800 mb-1">
+                  选择题闯关
+                </h3>
+                <span className="mt-auto text-brand-800 text-sm font-semibold flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                  开始挑战 <ChevronRight size={16} />
+                </span>
+              </button>
+            )}
 
-            <button
-              onClick={() => {
-                setView("flashcard");
-                resetState();
-              }}
-              className="flex min-h-40 flex-col text-left p-5 sm:p-6 bg-white border border-slate-200 rounded-2xl hover:border-emerald-500 hover:shadow-lg transition-all group focus:outline-none focus:ring-2 focus:ring-emerald-500"
-            >
-              <div className="p-3 bg-emerald-50 text-emerald-600 rounded-xl group-hover:bg-emerald-600 group-hover:text-white transition-colors mb-4 w-fit">
-                <CreditCard size={28} />
-              </div>
-              <h3 className="font-bold text-xl text-slate-800 mb-1">
-                简答题抽认卡
-              </h3>
-              <span className="mt-auto text-emerald-600 text-sm font-semibold flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-                开始背诵 <ChevronRight size={16} />
-              </span>
-            </button>
+            {hasFlashcards && (
+              <button
+                onClick={() => {
+                  setView("flashcard");
+                  resetState();
+                }}
+                className="flex min-h-40 flex-col text-left p-5 sm:p-6 bg-white border border-slate-200 rounded-2xl hover:border-brand-500 hover:shadow-lg transition-all group focus:outline-none focus:ring-2 focus:ring-brand-500"
+              >
+                <div className="p-3 bg-brand-50 text-brand-800 rounded-xl group-hover:bg-brand-800 group-hover:text-white transition-colors mb-4 w-fit">
+                  <CreditCard size={28} />
+                </div>
+                <h3 className="font-bold text-xl text-slate-800 mb-1">
+                  简答题抽认卡
+                </h3>
+                <span className="mt-auto text-brand-800 text-sm font-semibold flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                  开始背诵 <ChevronRight size={16} />
+                </span>
+              </button>
+            )}
           </div>
         </div>
       );
@@ -604,7 +755,7 @@ const flashcards = [{"q": "NF-κB信号通路的配体是", "a": "NF-κB信号�
               >
                 <Layers size={16} /> <span className="hidden sm:inline">跳转题目</span><span className="sm:hidden">题目</span>
               </button>
-              <div className="whitespace-nowrap px-3 py-2 bg-blue-50 text-blue-700 rounded-xl text-sm font-bold">
+              <div className="whitespace-nowrap px-3 py-2 bg-brand-50 text-brand-800 rounded-xl text-sm font-bold">
                 <span className="hidden sm:inline">进度: </span>{currentIdx + 1} / {mcqs.length}
               </div>
             </div>
@@ -613,7 +764,7 @@ const flashcards = [{"q": "NF-κB信号通路的配体是", "a": "NF-κB信号�
           {/* 进度条 */}
           <div className="w-full h-2 bg-slate-200 rounded-full mb-5 sm:mb-8 overflow-hidden">
             <div
-              className="h-full bg-blue-600 transition-all duration-300"
+              className="h-full bg-brand-800 transition-all duration-300"
               style={{ width: `${((currentIdx + 1) / mcqs.length) * 100}%` }}
             ></div>
           </div>
@@ -622,24 +773,20 @@ const flashcards = [{"q": "NF-κB信号通路的配体是", "a": "NF-κB信号�
             <div className="mobile-question-scroll">
               <div className="mb-4 sm:mb-6 bg-white rounded-2xl p-4 sm:p-6 border border-slate-200 shadow-sm">
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="text-xs font-bold text-blue-600 uppercase tracking-wider">
+                  <span className="text-xs font-bold text-brand-800 uppercase tracking-wider">
                     QUESTION {currentIdx + 1}
                   </span>
                   <span
-                    className={`px-2 py-0.5 rounded-full text-xs font-bold ${
-                      getCorrectAnswers(mcqs[currentIdx]).length > 1
-                        ? "bg-violet-100 text-violet-700"
-                        : "bg-blue-100 text-blue-700"
-                    }`}
+                    className="px-2 py-0.5 rounded-full bg-brand-100 text-xs font-bold text-brand-900"
                   >
                     {getCorrectAnswers(mcqs[currentIdx]).length > 1
                       ? "多选题"
                       : "单选题"}
                   </span>
                 </div>
-                <h2 className="text-lg sm:text-xl font-bold text-slate-800 leading-relaxed break-words">
-                  {mcqs[currentIdx].q}
-                </h2>
+                <div className="text-lg sm:text-xl font-bold text-slate-800 leading-relaxed">
+                  <RichContent value={mcqs[currentIdx].q} />
+                </div>
                 {getCorrectAnswers(mcqs[currentIdx]).length > 1 && (
                   <p className="text-sm text-slate-500 mt-3">
                     可选择多个答案，选好后点击“提交答案”
@@ -665,7 +812,7 @@ const flashcards = [{"q": "NF-κB信号通路的配体是", "a": "NF-κB信号�
                     }
                   } else if (isSelected) {
                     style =
-                      "border-violet-500 bg-violet-50 text-violet-800 font-semibold shadow-sm";
+                      "border-brand-500 bg-brand-50 text-brand-900 font-semibold shadow-sm";
                   }
                   return (
                     <button
@@ -673,11 +820,16 @@ const flashcards = [{"q": "NF-κB信号通路的配体是", "a": "NF-κB信号�
                       onClick={() => handleQuizAnswer(i)}
                       aria-pressed={isSelected}
                       disabled={isAnswerSubmitted}
-                      className={`min-h-14 p-4 sm:p-5 text-left border-2 rounded-xl transition-all duration-200 flex items-center justify-between break-words focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${style}`}
+                      className={`min-h-14 p-4 sm:p-5 text-left border-2 rounded-xl transition-all duration-200 flex items-center justify-between break-words focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2 ${style}`}
                     >
-                      <span className="leading-relaxed">
-                        {String.fromCharCode(65 + i)}. {opt}
-                      </span>
+                      <div className="flex min-w-0 flex-1 items-start gap-1 leading-relaxed">
+                        <span className="shrink-0">
+                          {String.fromCharCode(65 + i)}.
+                        </span>
+                        <div className="min-w-0 flex-1">
+                          <RichContent value={opt} imageClassName="max-h-48" />
+                        </div>
+                      </div>
                       {isAnswerSubmitted && isCorrectOption && (
                         <CheckCircle2 className="text-emerald-500 shrink-0 ml-3" />
                       )}
@@ -687,7 +839,7 @@ const flashcards = [{"q": "NF-κB信号通路的配体是", "a": "NF-κB信号�
                       {!isAnswerSubmitted &&
                         isSelected &&
                         correctAnswers.length > 1 && (
-                          <CheckCircle2 className="text-violet-500 shrink-0 ml-3" />
+                          <CheckCircle2 className="text-brand-500 shrink-0 ml-3" />
                         )}
                     </button>
                   );
@@ -698,7 +850,7 @@ const flashcards = [{"q": "NF-κB信号通路的配体是", "a": "NF-κB信号�
                   <button
                     onClick={() => submitQuizAnswer(selectedOptions)}
                     disabled={selectedOptions.length === 0}
-                    className="mt-5 w-full px-6 py-3 bg-violet-600 text-white rounded-xl font-bold hover:bg-violet-700 transition-colors shadow-md disabled:bg-slate-300 disabled:cursor-not-allowed disabled:shadow-none"
+                    className="mt-5 w-full px-6 py-3 bg-brand-800 text-white rounded-xl font-bold hover:bg-brand-900 transition-colors shadow-md disabled:bg-slate-300 disabled:cursor-not-allowed disabled:shadow-none"
                   >
                     提交答案
                     {selectedOptions.length > 0 &&
@@ -717,7 +869,7 @@ const flashcards = [{"q": "NF-κB信号通路的配体是", "a": "NF-κB信号�
               </h2>
               <p className="text-slate-500 mb-6">
                 您的正确率达到了{" "}
-                <span className="text-blue-600 font-bold text-2xl">
+                <span className="text-brand-800 font-bold text-2xl">
                   {Math.round((score / mcqs.length) * 100)}%
                 </span>
               </p>
@@ -743,9 +895,15 @@ const flashcards = [{"q": "NF-κB信号通路的配体是", "a": "NF-κB信号�
                   <div className="space-y-4">
                     {wrongAnswers.map((item, idx) => (
                       <div key={idx} className="text-xs">
-                        <p className="font-semibold text-slate-800">
-                          {idx + 1}. {item.q}
-                        </p>
+                        <div className="flex items-start gap-1 font-semibold text-slate-800">
+                          <span className="shrink-0">{idx + 1}.</span>
+                          <div className="min-w-0 flex-1">
+                            <RichContent
+                              value={item.q}
+                              imageClassName="max-h-32"
+                            />
+                          </div>
+                        </div>
                         <p className="text-rose-600 mt-1">
                           您的回答: {item.userLetter} (错误)
                         </p>
@@ -770,7 +928,7 @@ const flashcards = [{"q": "NF-κB信号通路的配体是", "a": "NF-κB信号�
                     resetState();
                     setView("menu");
                   }}
-                  className="min-h-12 w-full sm:w-auto px-6 py-3 bg-blue-600 text-white rounded-xl sm:rounded-full font-bold hover:bg-blue-700 transition-colors shadow-md"
+                  className="min-h-12 w-full sm:w-auto px-6 py-3 bg-brand-800 text-white rounded-xl sm:rounded-full font-bold hover:bg-brand-900 transition-colors shadow-md"
                 >
                   返回主页
                 </button>
@@ -784,7 +942,7 @@ const flashcards = [{"q": "NF-κB信号通路的配体是", "a": "NF-κB信号�
               <div className="bg-white rounded-t-2xl sm:rounded-2xl max-w-lg w-full max-h-[85dvh] overflow-hidden flex flex-col shadow-2xl">
                 <div className="p-4 sm:p-5 border-b flex justify-between items-center bg-slate-50">
                   <h3 className="font-bold text-slate-800 flex items-center gap-2">
-                    <Layers size={18} className="text-blue-500" />{" "}
+                    <Layers size={18} className="text-brand-600" />{" "}
                     选择题目录跳转
                   </h3>
                   <button
@@ -800,7 +958,7 @@ const flashcards = [{"q": "NF-κB信号通路的配体是", "a": "NF-κB信号�
                     <button
                       key={i}
                       onClick={() => jumpToQuestion(i)}
-                      className={`min-h-11 py-2 text-sm font-bold rounded-lg border transition-all ${currentIdx === i ? "bg-blue-600 border-blue-600 text-white" : "border-slate-200 hover:border-blue-500 text-slate-700 hover:bg-slate-50"}`}
+                      className={`min-h-11 py-2 text-sm font-bold rounded-lg border transition-all ${currentIdx === i ? "bg-brand-800 border-brand-800 text-white" : "border-slate-200 hover:border-brand-500 text-slate-700 hover:bg-brand-50"}`}
                     >
                       {i + 1}
                     </button>
@@ -832,7 +990,7 @@ const flashcards = [{"q": "NF-κB信号通路的配体是", "a": "NF-κB信号�
               >
                 <Layers size={16} /> <span className="hidden sm:inline">选卡列表</span><span className="sm:hidden">选卡</span>
               </button>
-              <div className="whitespace-nowrap px-3 py-2 bg-emerald-50 text-emerald-700 rounded-xl text-sm font-bold">
+              <div className="whitespace-nowrap px-3 py-2 bg-brand-50 text-brand-800 rounded-xl text-sm font-bold">
                 <span className="hidden sm:inline">卡片: </span>{currentIdx + 1} / {flashcards.length}
               </div>
             </div>
@@ -841,7 +999,7 @@ const flashcards = [{"q": "NF-κB信号通路的配体是", "a": "NF-κB信号�
           {/* 进度条 */}
           <div className="w-full h-2 bg-slate-200 rounded-full mb-5 sm:mb-8 overflow-hidden">
             <div
-              className="h-full bg-emerald-600 transition-all duration-300"
+              className="h-full bg-brand-800 transition-all duration-300"
               style={{
                 width: `${((currentIdx + 1) / flashcards.length) * 100}%`,
               }}
@@ -851,21 +1009,29 @@ const flashcards = [{"q": "NF-κB信号通路的配体是", "a": "NF-κB信号�
           {/* 翻转卡片结构 */}
           <div
             className={`flip-card ${flipped ? "flipped" : ""} w-full`}
-            onClick={() => setFlipped(!flipped)}
+            onClick={() => setFlipped((isFlipped) => !isFlipped)}
           >
-            <div className="flip-card-inner">
+            <div
+              className="flip-card-inner"
+              style={{
+                transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)",
+              }}
+            >
               {/* 卡片正面 (问题) */}
               <div className="flip-card-front bg-white border border-slate-200 text-slate-800 flex flex-col justify-between">
-                <div className="p-3 bg-emerald-50 text-emerald-500 rounded-full mt-4 self-center">
+                <div className="p-3 bg-brand-50 text-brand-600 rounded-full mt-4 self-center">
                   <Lightbulb size={28} />
                 </div>
                 <div className="my-auto min-h-0 w-full overflow-y-auto overscroll-contain px-2 py-2 scrollbar-hide sm:px-4">
                   <span className="text-xs font-bold text-slate-400 block mb-2">
                     QUESTION {currentIdx + 1}
                   </span>
-                  <h3 className="text-lg sm:text-xl font-bold leading-relaxed break-words">
-                    {flashcards[currentIdx].q}
-                  </h3>
+                  <div className="text-lg sm:text-xl font-bold leading-relaxed">
+                    <RichContent
+                      value={flashcards[currentIdx].q}
+                      imageClassName="max-h-48"
+                    />
+                  </div>
                 </div>
                 <p className="text-slate-400 text-xs font-medium pb-4 flex items-center gap-1 animate-pulse">
                   <svg
@@ -886,14 +1052,17 @@ const flashcards = [{"q": "NF-κB信号通路的配体是", "a": "NF-κB信号�
               </div>
 
               {/* 卡片背面 (要点解析) */}
-              <div className="flip-card-back bg-slate-900 text-white border border-slate-800 text-left items-start overflow-y-auto scrollbar-hide flex flex-col justify-between">
+              <div className="flip-card-back bg-brand-950 text-white border border-brand-900 text-left items-start overflow-y-auto scrollbar-hide flex flex-col justify-between">
                 <div className="w-full">
-                  <h4 className="text-emerald-400 font-bold mb-4 flex items-center gap-2 border-b border-slate-800 pb-2">
+                  <h4 className="text-brand-300 font-bold mb-4 flex items-center gap-2 border-b border-brand-900 pb-2">
                     <CheckCircle2 size={18} /> 核心要点 / 答案分析
                   </h4>
-                  <p className="text-base leading-relaxed text-slate-200 whitespace-pre-wrap font-medium">
-                    {flashcards[currentIdx].a}
-                  </p>
+                  <div className="text-base leading-relaxed text-slate-200 font-medium">
+                    <RichContent
+                      value={flashcards[currentIdx].a}
+                      imageClassName="max-h-48"
+                    />
+                  </div>
                 </div>
                 <p className="pt-6 text-slate-500 text-xs text-center w-full mt-auto">
                   点击卡片返回问题
@@ -923,7 +1092,7 @@ const flashcards = [{"q": "NF-κB信号通路的配体是", "a": "NF-κB信号�
                   setView("menu");
                 }
               }}
-              className="min-h-12 flex flex-1 sm:flex-none items-center justify-center gap-1 sm:gap-2 px-3 sm:px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-bold shadow-sm transition-all"
+              className="min-h-12 flex flex-1 sm:flex-none items-center justify-center gap-1 sm:gap-2 px-3 sm:px-6 py-3 bg-brand-800 hover:bg-brand-900 text-white rounded-xl font-bold shadow-sm transition-all"
             >
               {currentIdx === flashcards.length - 1 ? "完成复习" : "下一题"}{" "}
               <ChevronRight size={20} />
@@ -936,7 +1105,7 @@ const flashcards = [{"q": "NF-κB信号通路的配体是", "a": "NF-κB信号�
               <div className="bg-white rounded-t-2xl sm:rounded-2xl max-w-lg w-full max-h-[85dvh] overflow-hidden flex flex-col shadow-2xl">
                 <div className="p-4 sm:p-5 border-b flex justify-between items-center bg-slate-50">
                   <h3 className="font-bold text-slate-800 flex items-center gap-2">
-                    <Layers size={18} className="text-emerald-500" />{" "}
+                    <Layers size={18} className="text-brand-600" />{" "}
                     简答题卡片目录
                   </h3>
                   <button
@@ -952,7 +1121,7 @@ const flashcards = [{"q": "NF-κB信号通路的配体是", "a": "NF-κB信号�
                     <button
                       key={i}
                       onClick={() => jumpToQuestion(i)}
-                      className={`min-h-11 py-2 text-sm font-bold rounded-lg border transition-all ${currentIdx === i ? "bg-emerald-600 border-emerald-600 text-white" : "border-slate-200 hover:border-emerald-500 text-slate-700 hover:bg-slate-50"}`}
+                      className={`min-h-11 py-2 text-sm font-bold rounded-lg border transition-all ${currentIdx === i ? "bg-brand-800 border-brand-800 text-white" : "border-slate-200 hover:border-brand-500 text-slate-700 hover:bg-brand-50"}`}
                     >
                       {i + 1}
                     </button>
