@@ -29,6 +29,31 @@
         },
       };
     </script>
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [
+            ["$", "$"],
+            ["\\(", "\\)"],
+          ],
+          displayMath: [
+            ["$$", "$$"],
+            ["\\[", "\\]"],
+          ],
+          processEscapes: true,
+        },
+        startup: {
+          // React owns the page content, so each content component asks MathJax
+          // to typeset itself after it is mounted or updated.
+          typeset: false,
+          ready() {
+            MathJax.startup.defaultReady();
+            window.dispatchEvent(new Event("mathjax-ready"));
+          },
+        },
+      };
+    </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -43,18 +68,35 @@
           Roboto,
           sans-serif;
       }
+      #root {
+        min-height: 100%;
+      }
+      .math-content {
+        max-width: 100%;
+        overflow-x: auto;
+        overflow-y: hidden;
+      }
+      .math-content mjx-container[display="true"] {
+        margin: 0.5em 0 !important;
+      }
       .flip-card {
         perspective: 1000px;
-        height: clamp(320px, 55dvh, 380px);
+        min-height: clamp(28rem, calc(100dvh - 18rem), 52rem);
+      }
+      .flip-card:focus-visible {
+        outline: 3px solid rgb(39 139 112 / 0.45);
+        outline-offset: 4px;
+        border-radius: 1.5rem;
       }
       .flip-card-inner {
         position: relative;
+        display: grid;
         width: 100%;
-        height: 100%;
-        text-align: center;
+        min-height: inherit;
+        text-align: left;
         -webkit-transform: rotateY(0deg);
         transform: rotateY(0deg);
-        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         -webkit-transform-style: preserve-3d;
         transform-style: preserve-3d;
         transform-origin: center;
@@ -67,15 +109,15 @@
       }
       .flip-card-front,
       .flip-card-back {
-        position: absolute;
+        position: relative;
+        grid-area: 1 / 1;
         width: 100%;
-        height: 100%;
+        min-height: inherit;
         -webkit-backface-visibility: hidden;
         backface-visibility: hidden;
         display: flex;
         flex-direction: column;
-        justify-content: center;
-        align-items: center;
+        align-items: stretch;
         padding: 2rem;
         border-radius: 1.5rem;
         box-shadow:
@@ -86,8 +128,19 @@
         -webkit-transform: rotateY(180deg);
         transform: rotateY(180deg);
       }
-      .scrollbar-hide::-webkit-scrollbar {
-        display: none;
+      .flip-card-hint {
+        position: absolute;
+        right: 1.5rem;
+        bottom: 1.5rem;
+        left: 1.5rem;
+        z-index: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.375rem;
+        opacity: 0.26;
+        pointer-events: none;
+        user-select: none;
       }
       .sidebar-shell {
         visibility: hidden;
@@ -164,6 +217,14 @@
         .flip-card-back {
           padding: 1rem;
           border-radius: 1rem;
+        }
+        .flip-card {
+          min-height: clamp(24rem, calc(100dvh - 15.5rem), 44rem);
+        }
+        .flip-card-hint {
+          right: 1rem;
+          bottom: 1rem;
+          left: 1rem;
         }
       }
       @media (prefers-reduced-motion: reduce) {
@@ -362,11 +423,12 @@
       <!-- 右侧主体内容区 -->
       <main class=".js-quiz-container min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-contain p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:p-5 md:p-8"><div id="root"></div>
 
-<script>const mcqs = [{"q": "随着温度降低，蛋白质分子会逐渐靠近，若继续降温，肽链上的巯基 -SH 会形成二硫键 -SH，升温后蛋白质分子会逐渐分开，但是二硫键会被保留。由以上信息，以下哪个选项是错误的：", "a": ["巯基在氨基酸的 R 基上", "冷冻和解冻前后蛋白质结构没有发生变化。", "二硫键的形成不涉及肽键变化", "抗冻植物对防止巯基氧化的能力更强"], "c": [1]}, {"q": "Viral genome sizes vary greatly, ranging from four genes to several hundreds of genes. The following features of viruses are most closely correlated with genome size:", "a": ["The size of the capsid", "RNA versus DNA genome type", "Whether the genome is double-stranded or single-stranded", "The complexity of glycoproteins on the capsid surface"], "c": [0]}, {"q": "Which of the following is derived from the ancestral cyanobacterium?", "a": ["Chloroplast", "mitochondrion", "nydrogenosome", "mitosome", "The above two are correct"], "c": [0]}, {"q": "关于细菌荚膜，以下说法错误的是：", "a": ["有免疫原性可以区分细菌", "使细菌会更耐受热", "抗吞噬", "机体内生成"], "c": [1]}, {"q": "The ventilation of the lungs during inhalation is:", "a": ["A passive process", "Driven by positive pressure", "Caused by the downward movement of the diaphragm.", "Caused by the outward movement of the rib cage.", "An active process of forcing air into the lungs."], "c": [4]}, {"q": "关于Th1细胞对Tc细胞(CTL)的作用，以下正确的是：", "a": ["Th1分泌细胞因子促进CTL的增殖、分化", "Th1促进CTL膜上MHC I类受体表达", "Th1促进CTL膜上MHC II类受体表达", "Th1促进CTL分泌穿孔素"], "c": [0]}, {"q": "关于人类进化的历程，以下顺序正确的是：", "a": ["南方古猿-能人-直立人-智人", "南方古猿-直立人-能人-智人", "猿人-原始人-能人-直立人", "猿人-原始人-直立人-能人"], "c": [0]}, {"q": "In electrocardiogram：", "a": ["The QT indicates that the ventricular is contacting(systole)", "The QSR complex indicates that ventricular depolarization.", "The time between the heartbreaks is approximatedly 8 milliseconds", "The heartbreak will be slow when we take vigorous activities.", "No information the electrocardiogram can provide"], "c": [1]}, {"q": "关于人类的迁移，以下说法正确的是：", "a": ["人类的迁移增大的疾病的风向，这是人类“成长的烦恼”", "人类的迁移拓展生境，积累多样性，同时新的生境，也催生多样性", "个体的病患与痛苦，也是群体进化的适应性过程", "以上三个选项都是正确的"], "c": [3]}];
-const flashcards = [{"q": "List 5 main processes by which cells communciate with each other in multicellular organisms.For each process state the key machanism uesed to transfer information.", "a": "直接接触（通过间隙连接或黏附分子传递信号）；旁分泌（分泌局部化学信号）；内分泌（激素经血液循环传递）；自分泌（细胞作用于自身受体）；突触传递（神经递质跨突触传递）。"}];</script>
+<script>const examMetadata = {"title": "24-25医学生命基础期末考", "description": "", "authors": "强基2401, 强基2402"};
+const mcqs = [{"question": [{"type": "text", "content": "随着温度降低，蛋白质分子会逐渐靠近，若继续降温，肽链上的巯基 -SH 会形成二硫键 -SH，升温后蛋白质分子会逐渐分开，但是二硫键会被保留。由以上信息，以下哪个选项是错误的："}], "options": [{"type": "text", "content": "巯基在氨基酸的 R 基上", "correct": false}, {"type": "text", "content": "冷冻和解冻前后蛋白质结构没有发生变化。", "correct": true}, {"type": "text", "content": "二硫键的形成不涉及肽键变化", "correct": false}, {"type": "text", "content": "抗冻植物对防止巯基氧化的能力更强", "correct": false}]}, {"question": [{"type": "text", "content": "Viral genome sizes vary greatly, ranging from four genes to several hundreds of genes. The following features of viruses are most closely correlated with genome size:"}], "options": [{"type": "text", "content": "The size of the capsid", "correct": true}, {"type": "text", "content": "RNA versus DNA genome type", "correct": false}, {"type": "text", "content": "Whether the genome is double-stranded or single-stranded", "correct": false}, {"type": "text", "content": "The complexity of glycoproteins on the capsid surface", "correct": false}]}, {"question": [{"type": "text", "content": "Which of the following is derived from the ancestral cyanobacterium?"}], "options": [{"type": "text", "content": "Chloroplast", "correct": true}, {"type": "text", "content": "mitochondrion", "correct": false}, {"type": "text", "content": "nydrogenosome", "correct": false}, {"type": "text", "content": "mitosome", "correct": false}, {"type": "text", "content": "The above two are correct", "correct": false}]}, {"question": [{"type": "text", "content": "关于细菌荚膜，以下说法错误的是："}], "options": [{"type": "text", "content": "有免疫原性可以区分细菌", "correct": false}, {"type": "text", "content": "使细菌会更耐受热", "correct": true}, {"type": "text", "content": "抗吞噬", "correct": false}, {"type": "text", "content": "机体内生成", "correct": false}]}, {"question": [{"type": "text", "content": "The ventilation of the lungs during inhalation is:"}], "options": [{"type": "text", "content": "A passive process", "correct": false}, {"type": "text", "content": "Driven by positive pressure", "correct": false}, {"type": "text", "content": "Caused by the downward movement of the diaphragm.", "correct": false}, {"type": "text", "content": "Caused by the outward movement of the rib cage.", "correct": false}, {"type": "text", "content": "An active process of forcing air into the lungs.", "correct": true}]}, {"question": [{"type": "text", "content": "关于Th1细胞对Tc细胞(CTL)的作用，以下正确的是："}], "options": [{"type": "text", "content": "Th1分泌细胞因子促进CTL的增殖、分化", "correct": true}, {"type": "text", "content": "Th1促进CTL膜上MHC I类受体表达", "correct": false}, {"type": "text", "content": "Th1促进CTL膜上MHC II类受体表达", "correct": false}, {"type": "text", "content": "Th1促进CTL分泌穿孔素", "correct": false}]}, {"question": [{"type": "text", "content": "关于人类进化的历程，以下顺序正确的是："}], "options": [{"type": "text", "content": "南方古猿-能人-直立人-智人", "correct": true}, {"type": "text", "content": "南方古猿-直立人-能人-智人", "correct": false}, {"type": "text", "content": "猿人-原始人-能人-直立人", "correct": false}, {"type": "text", "content": "猿人-原始人-直立人-能人", "correct": false}]}, {"question": [{"type": "text", "content": "In electrocardiogram："}], "options": [{"type": "text", "content": "The QT indicates that the ventricular is contacting(systole)", "correct": false}, {"type": "text", "content": "The QSR complex indicates that ventricular depolarization.", "correct": true}, {"type": "text", "content": "The time between the heartbreaks is approximatedly 8 milliseconds", "correct": false}, {"type": "text", "content": "The heartbreak will be slow when we take vigorous activities.", "correct": false}, {"type": "text", "content": "No information the electrocardiogram can provide", "correct": false}]}, {"question": [{"type": "text", "content": "关于人类的迁移，以下说法正确的是："}], "options": [{"type": "text", "content": "人类的迁移增大的疾病的风向，这是人类“成长的烦恼”", "correct": false}, {"type": "text", "content": "人类的迁移拓展生境，积累多样性，同时新的生境，也催生多样性", "correct": false}, {"type": "text", "content": "个体的病患与痛苦，也是群体进化的适应性过程", "correct": false}, {"type": "text", "content": "以上三个选项都是正确的", "correct": true}]}];
+const flashcards = [{"question": [{"type": "text", "content": "List 5 main processes by which cells communciate with each other in multicellular organisms.For each process state the key machanism uesed to transfer information."}], "answer": [{"type": "text", "content": "直接接触（通过间隙连接或黏附分子传递信号）；旁分泌（分泌局部化学信号）；内分泌（激素经血液循环传递）；自分泌（细胞作用于自身受体）；突触传递（神经递质跨突触传递）。"}]}];</script>
 
 <script type="text/babel">
-  const { useState, useEffect } = React;
+  const { useState, useLayoutEffect, useRef } = React;
 
   // 自定义 SVG 图标组件，替代有 bug 的 Lucide-React 库，解决 Infinity 冲突
   const CheckCircle2 = ({ size = 24, className = "" }) => (
@@ -557,36 +619,160 @@ const flashcards = [{"q": "List 5 main processes by which cells communciate with
     </svg>
   );
 
-  const RichContent = ({ value, imageClassName = "max-h-72" }) => {
-    const content =
-      typeof value === "string"
-        ? { text: value, images: [] }
-        : { text: value?.text || "", images: value?.images || [] };
+  let mathJaxQueue = Promise.resolve();
+
+  const queueMathTask = (task) => {
+    mathJaxQueue = mathJaxQueue
+      .then(() => window.MathJax?.startup?.promise)
+      .then(task)
+      .catch((error) => console.error("MathJax typesetting failed", error));
+  };
+
+  const queueMathTypeset = (container, text, shouldSkip) => {
+    queueMathTask(() => {
+      const mathJax = window.MathJax;
+      if (
+        shouldSkip() ||
+        !container.isConnected ||
+        !mathJax?.typesetPromise
+      ) {
+        return;
+      }
+
+      mathJax.typesetClear?.([container]);
+      container.textContent = text || "";
+      return mathJax.typesetPromise([container]);
+    });
+  };
+
+  const MathText = ({ text, className = "" }) => {
+    const containerRef = useRef(null);
+
+    useLayoutEffect(() => {
+      const container = containerRef.current;
+      if (!container) return undefined;
+
+      if (!container.hasChildNodes()) {
+        container.textContent = text || "";
+      }
+      let disposed = false;
+
+      const typeset = () => {
+        const mathJax = window.MathJax;
+        if (disposed || !mathJax?.typesetPromise) return;
+        queueMathTypeset(container, text, () => disposed);
+      };
+
+      if (window.MathJax?.typesetPromise) {
+        typeset();
+      } else {
+        // Keep the source readable when the CDN is slow or unavailable.
+        container.textContent = text || "";
+        window.addEventListener("mathjax-ready", typeset, { once: true });
+      }
+
+      return () => {
+        disposed = true;
+        window.removeEventListener("mathjax-ready", typeset);
+        if (window.MathJax?.typesetClear) {
+          queueMathTask(() => window.MathJax.typesetClear([container]));
+        }
+      };
+    }, [text]);
 
     return (
-      <div className="min-w-0 space-y-3">
-        {content.text && (
-          <div className="whitespace-pre-wrap break-words">{content.text}</div>
-        )}
-        {content.images.map((image, index) => (
-          <figure key={`${image.src}-${index}`} className="space-y-1.5">
-            <img
-              src={image.src}
-              alt={image.alt || ""}
-              loading="lazy"
-              decoding="async"
-              className={`mx-auto w-auto max-w-full rounded-xl object-contain ${imageClassName}`}
-            />
-            {image.caption && (
-              <figcaption className="text-center text-xs font-normal opacity-70">
-                {image.caption}
-              </figcaption>
-            )}
-          </figure>
-        ))}
-      </div>
+      <div
+        ref={containerRef}
+        className={`math-content ${className}`}
+      ></div>
     );
   };
+
+  const alignmentClass = (alignment) => {
+    if (alignment === "right") return "text-right";
+    if (alignment === "middle") return "text-center";
+    return "text-left";
+  };
+
+  const ContentTable = ({ element }) => (
+    <div
+      className="max-w-full overflow-x-auto rounded-xl shadow-md"
+      onClick={(event) => event.stopPropagation()}
+    >
+      <table className="w-full min-w-max border-collapse bg-white text-sm font-normal text-slate-700">
+        {element.headers.length > 0 && (
+          <thead className="bg-brand-500/50 text-brand-950">
+            <tr className="border-b border-slate-300/50">
+              {element.headers.map((header, index) => (
+                <th
+                  key={index}
+                  scope="col"
+                  className={`px-4 py-3 font-bold ${alignmentClass(element.align[index])}`}
+                >
+                  <MathText text={header} />
+                </th>
+              ))}
+            </tr>
+          </thead>
+        )}
+        <tbody>
+          {element.rows.map((row, rowIndex) => (
+            <tr
+              key={rowIndex}
+              className="border-b border-slate-300/50 last:border-b-0"
+            >
+              {row.map((cell, cellIndex) => (
+                <td
+                  key={cellIndex}
+                  className={`px-4 py-3 ${alignmentClass(element.align[cellIndex])}`}
+                >
+                  <MathText text={cell} />
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+
+  const RichContent = ({ value = [], imageClassName = "max-h-72" }) => (
+    <div className="min-w-0 space-y-3">
+      {value.map((element, index) => {
+        if (element.type === "text") {
+          return (
+            <MathText
+              key={index}
+              text={element.content}
+              className="whitespace-pre-wrap break-words"
+            />
+          );
+        }
+        if (element.type === "image") {
+          return (
+            <figure key={index} className="space-y-1.5">
+              <img
+                src={element.src}
+                alt={element.alt || ""}
+                loading="lazy"
+                decoding="async"
+                className={`mx-auto w-auto max-w-full rounded-xl object-contain ${imageClassName}`}
+              />
+              {element.caption && (
+                <figcaption className="text-center text-xs font-normal opacity-70">
+                  {element.caption}
+                </figcaption>
+              )}
+            </figure>
+          );
+        }
+        if (element.type === "table") {
+          return <ContentTable key={index} element={element} />;
+        }
+        return null;
+      })}
+    </div>
+  );
 
   function App() {
     const [view, setView] = useState("menu"); // 'menu', 'quiz', 'flashcard'
@@ -613,9 +799,12 @@ const flashcards = [{"q": "List 5 main processes by which cells communciate with
       setWrongAnswers([]);
     };
 
-    // 将旧版单值 c 和新版列表 c 统一为答案索引列表。
     const getCorrectAnswers = (question) =>
-      Array.isArray(question.c) ? question.c : [question.c];
+      question.options.reduce(
+        (answers, option, index) =>
+          option.correct ? [...answers, index] : answers,
+        [],
+      );
 
     const submitQuizAnswer = (userAnswers) => {
       if (isAnswerSubmitted || userAnswers.length === 0) return;
@@ -694,11 +883,14 @@ const flashcards = [{"q": "List 5 main processes by which cells communciate with
               <BookOpen size={40} />
             </div>
             <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-3 break-words">
-              24-25医学生命基础期末考
+              <MathText text={examMetadata.title} />
             </h1>
-            <p className="text-base sm:text-lg text-slate-500 leading-relaxed">
-              <p></p><p>Made by 强基2401, 强基2402</p>
-            </p>
+            <div className="space-y-1 text-base leading-relaxed text-slate-500 sm:text-lg">
+              {examMetadata.description && (
+                <MathText text={examMetadata.description} />
+              )}
+              <div>Made by {examMetadata.authors}</div>
+            </div>
           </div>
 
           <div
@@ -797,7 +989,7 @@ const flashcards = [{"q": "List 5 main processes by which cells communciate with
                   </span>
                 </div>
                 <div className="text-lg sm:text-xl font-bold text-slate-800 leading-relaxed">
-                  <RichContent value={mcqs[currentIdx].q} />
+                  <RichContent value={mcqs[currentIdx].question} />
                 </div>
                 {getCorrectAnswers(mcqs[currentIdx]).length > 1 && (
                   <p className="text-sm text-slate-500 mt-3">
@@ -806,7 +998,7 @@ const flashcards = [{"q": "List 5 main processes by which cells communciate with
                 )}
               </div>
               <div className="grid gap-3">
-                {mcqs[currentIdx].a.map((opt, i) => {
+                {mcqs[currentIdx].options.map((opt, i) => {
                   const correctAnswers = getCorrectAnswers(mcqs[currentIdx]);
                   const isSelected = selectedOptions.includes(i);
                   const isCorrectOption = correctAnswers.includes(i);
@@ -839,7 +1031,10 @@ const flashcards = [{"q": "List 5 main processes by which cells communciate with
                           {String.fromCharCode(65 + i)}.
                         </span>
                         <div className="min-w-0 flex-1">
-                          <RichContent value={opt} imageClassName="max-h-48" />
+                          <RichContent
+                            value={[opt]}
+                            imageClassName="max-h-48"
+                          />
                         </div>
                       </div>
                       {isAnswerSubmitted && isCorrectOption && (
@@ -911,7 +1106,7 @@ const flashcards = [{"q": "List 5 main processes by which cells communciate with
                           <span className="shrink-0">{idx + 1}.</span>
                           <div className="min-w-0 flex-1">
                             <RichContent
-                              value={item.q}
+                              value={item.question}
                               imageClassName="max-h-32"
                             />
                           </div>
@@ -947,6 +1142,34 @@ const flashcards = [{"q": "List 5 main processes by which cells communciate with
               </div>
             </div>
           )}
+          
+          {/* 控制按钮 */}
+          <div className="flex items-center justify-between gap-2 sm:gap-4 mt-5 sm:mt-8">
+            <button
+              disabled={currentIdx === 0}
+              onClick={() => {
+                setCurrentIdx(currentIdx - 1);
+                setFlipped(false);
+              }}
+              className="min-h-12 flex flex-1 sm:flex-none items-center justify-center gap-1 sm:gap-2 px-3 sm:px-6 py-3 bg-white text-slate-600 hover:text-slate-800 border rounded-xl font-bold shadow-sm transition-all disabled:opacity-30 disabled:pointer-events-none"
+            >
+              <ChevronLeft size={20} /> 上一题
+            </button>
+            <button
+              onClick={() => {
+                if (currentIdx < mcqs.length - 1) {
+                  setCurrentIdx(currentIdx + 1);
+                  setFlipped(false);
+                } else {
+                  setView("menu");
+                }
+              }}
+              className="min-h-12 flex flex-1 sm:flex-none items-center justify-center gap-1 sm:gap-2 px-3 sm:px-6 py-3 bg-brand-800 hover:bg-brand-900 text-white rounded-xl font-bold shadow-sm transition-all"
+            >
+              {currentIdx === mcqs.length - 1 ? "完成复习" : "下一题"}{" "}
+              <ChevronRight size={20} />
+            </button>
+          </div>
 
           {/* 选择题快速导航模态框 */}
           {showNavModal && (
@@ -985,7 +1208,7 @@ const flashcards = [{"q": "List 5 main processes by which cells communciate with
 
     if (view === "flashcard") {
       return (
-        <div className="max-w-2xl mx-auto pt-1 px-0 sm:pt-4 sm:px-4 md:pt-8">
+        <div className="flashcard-view min-h-full max-w-4xl mx-auto pt-1 px-0 sm:pt-4 sm:px-4 md:pt-8">
           {/* 导航头 */}
           <div className="flex items-center justify-between gap-2 mb-4 sm:mb-6">
             <button
@@ -1018,39 +1241,30 @@ const flashcards = [{"q": "List 5 main processes by which cells communciate with
             ></div>
           </div>
 
-          {/* 翻转卡片结构 */}
+          {/* 自适应叠层翻转卡片 */}
           <div
             className={`flip-card ${flipped ? "flipped" : ""} w-full`}
             onClick={() => setFlipped((isFlipped) => !isFlipped)}
+            onKeyDown={(event) => {
+              if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                setFlipped((isFlipped) => !isFlipped);
+              }
+            }}
+            role="button"
+            tabIndex="0"
+            aria-label={flipped ? "返回查看问题" : "查看参考答案"}
           >
-            <div
-              className="flip-card-inner"
-              style={{
-                transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)",
-              }}
-            >
+            <div className="flip-card-inner">
               {/* 卡片正面 (问题) */}
-              <div className="flip-card-front bg-white border border-slate-200 text-slate-800 flex flex-col justify-between">
-                <div className="p-3 bg-brand-50 text-brand-600 rounded-full mt-4 self-center">
-                  <Lightbulb size={28} />
-                </div>
-                <div className="my-auto min-h-0 w-full overflow-y-auto overscroll-contain px-2 py-2 scrollbar-hide sm:px-4">
-                  <span className="text-xs font-bold text-slate-400 block mb-2">
-                    QUESTION {currentIdx + 1}
-                  </span>
-                  <div className="text-lg sm:text-xl font-bold leading-relaxed">
-                    <RichContent
-                      value={flashcards[currentIdx].q}
-                      imageClassName="max-h-48"
-                    />
-                  </div>
-                </div>
-                <p className="text-slate-400 text-xs font-medium pb-4 flex items-center gap-1 animate-pulse">
+              <div className="flip-card-front justify-start overflow-hidden bg-white border border-slate-200 text-slate-800">
+                <div className="flip-card-hint text-slate-500 text-xs sm:text-sm font-semibold">
                   <svg
-                    className="w-4 h-4"
+                    className="h-4 w-4 shrink-0"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
+                    aria-hidden="true"
                   >
                     <path
                       strokeLinecap="round"
@@ -1060,23 +1274,38 @@ const flashcards = [{"q": "List 5 main processes by which cells communciate with
                     />
                   </svg>
                   点击卡片翻看参考答案
-                </p>
-              </div>
+                </div>
 
-              {/* 卡片背面 (要点解析) */}
-              <div className="flip-card-back bg-brand-950 text-white border border-brand-900 text-left items-start overflow-y-auto scrollbar-hide flex flex-col justify-between">
-                <div className="w-full">
-                  <h4 className="text-brand-300 font-bold mb-4 flex items-center gap-2 border-b border-brand-900 pb-2">
-                    <CheckCircle2 size={18} /> 核心要点 / 答案分析
-                  </h4>
-                  <div className="text-base leading-relaxed text-slate-200 font-medium">
+                <div className="relative z-10 flex w-full flex-col gap-6 sm:gap-8">
+                  <div className="flex w-fit items-center gap-2 rounded-full bg-brand-50 px-3 py-2 text-brand-700">
+                    <Lightbulb size={22} className="shrink-0" />
+                    <span className="text-xs font-bold uppercase tracking-wider">
+                      QUESTION {currentIdx + 1}
+                    </span>
+                  </div>
+                  <div className="w-full text-left text-lg sm:text-xl font-bold leading-relaxed">
                     <RichContent
-                      value={flashcards[currentIdx].a}
-                      imageClassName="max-h-48"
+                      value={flashcards[currentIdx].question}
+                      imageClassName="max-h-[60dvh]"
                     />
                   </div>
                 </div>
-                <p className="pt-6 text-slate-500 text-xs text-center w-full mt-auto">
+              </div>
+
+              {/* 卡片背面 (要点解析) */}
+              <div className="flip-card-back justify-between bg-brand-950 text-white border border-brand-900 text-left">
+                <div className="relative z-10 w-full">
+                  <h4 className="text-brand-300 font-bold mb-4 flex items-center gap-2 border-b border-brand-900 pb-2">
+                    <CheckCircle2 size={18} /> 参考答案
+                  </h4>
+                  <div className="text-base leading-relaxed text-slate-200 font-medium">
+                    <RichContent
+                      value={flashcards[currentIdx].answer}
+                      imageClassName="max-h-[60dvh]"
+                    />
+                  </div>
+                </div>
+                <p className="relative z-10 pt-8 text-slate-500 text-xs text-center w-full mt-auto">
                   点击卡片返回问题
                 </p>
               </div>

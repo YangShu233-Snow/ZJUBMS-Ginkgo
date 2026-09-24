@@ -29,6 +29,31 @@
         },
       };
     </script>
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [
+            ["$", "$"],
+            ["\\(", "\\)"],
+          ],
+          displayMath: [
+            ["$$", "$$"],
+            ["\\[", "\\]"],
+          ],
+          processEscapes: true,
+        },
+        startup: {
+          // React owns the page content, so each content component asks MathJax
+          // to typeset itself after it is mounted or updated.
+          typeset: false,
+          ready() {
+            MathJax.startup.defaultReady();
+            window.dispatchEvent(new Event("mathjax-ready"));
+          },
+        },
+      };
+    </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -43,18 +68,35 @@
           Roboto,
           sans-serif;
       }
+      #root {
+        min-height: 100%;
+      }
+      .math-content {
+        max-width: 100%;
+        overflow-x: auto;
+        overflow-y: hidden;
+      }
+      .math-content mjx-container[display="true"] {
+        margin: 0.5em 0 !important;
+      }
       .flip-card {
         perspective: 1000px;
-        height: clamp(320px, 55dvh, 380px);
+        min-height: clamp(28rem, calc(100dvh - 18rem), 52rem);
+      }
+      .flip-card:focus-visible {
+        outline: 3px solid rgb(39 139 112 / 0.45);
+        outline-offset: 4px;
+        border-radius: 1.5rem;
       }
       .flip-card-inner {
         position: relative;
+        display: grid;
         width: 100%;
-        height: 100%;
-        text-align: center;
+        min-height: inherit;
+        text-align: left;
         -webkit-transform: rotateY(0deg);
         transform: rotateY(0deg);
-        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         -webkit-transform-style: preserve-3d;
         transform-style: preserve-3d;
         transform-origin: center;
@@ -67,15 +109,15 @@
       }
       .flip-card-front,
       .flip-card-back {
-        position: absolute;
+        position: relative;
+        grid-area: 1 / 1;
         width: 100%;
-        height: 100%;
+        min-height: inherit;
         -webkit-backface-visibility: hidden;
         backface-visibility: hidden;
         display: flex;
         flex-direction: column;
-        justify-content: center;
-        align-items: center;
+        align-items: stretch;
         padding: 2rem;
         border-radius: 1.5rem;
         box-shadow:
@@ -86,8 +128,19 @@
         -webkit-transform: rotateY(180deg);
         transform: rotateY(180deg);
       }
-      .scrollbar-hide::-webkit-scrollbar {
-        display: none;
+      .flip-card-hint {
+        position: absolute;
+        right: 1.5rem;
+        bottom: 1.5rem;
+        left: 1.5rem;
+        z-index: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.375rem;
+        opacity: 0.26;
+        pointer-events: none;
+        user-select: none;
       }
       .sidebar-shell {
         visibility: hidden;
@@ -164,6 +217,14 @@
         .flip-card-back {
           padding: 1rem;
           border-radius: 1rem;
+        }
+        .flip-card {
+          min-height: clamp(24rem, calc(100dvh - 15.5rem), 44rem);
+        }
+        .flip-card-hint {
+          right: 1rem;
+          bottom: 1rem;
+          left: 1rem;
         }
       }
       @media (prefers-reduced-motion: reduce) {
@@ -362,11 +423,12 @@
       <!-- 右侧主体内容区 -->
       <main class=".js-quiz-container min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-contain p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:p-5 md:p-8"><div id="root"></div>
 
-<script>const mcqs = [{"q": "最常用的模式动物。", "a": ["大鼠", "小鼠", "豚鼠", "猴子"], "c": [1]}, {"q": "遇突发事件先干什么？", "a": ["自救", "报警", "启动应急预案", "等待救援"], "c": [0]}, {"q": "消毒剂是什么因素？", "a": ["理化", "生物", "居住", "营养"], "c": [0]}, {"q": "CRISPR/Cas9 的必要条件。", "a": ["RNA 和 DNA 互补配对", "RNase Ⅲ 存在", "限制性内切酶参与", "连接酶参与"], "c": [0]}, {"q": "谁奠定了西方生物科学的基础？", "a": ["维萨里", "盖伦", "哈维", "达芬奇"], "c": [1]}, {"q": "以下哪个不是小鼠的品系？", "a": ["C57BL", "C3H", "Long Evans", "FVB"], "c": [2]}, {"q": "哪一种成像技术有更高的时间分辨率？", "a": ["GCaMP", "NAFP", "VSFP", "C-fos"], "c": [0]}, {"q": "鹿的红细胞是镰刀状的，可以用来研究镰刀型贫血，是什么动物模型？", "a": ["生物医学动物模型", "自发性动物模型", "诱导性动物模型", "抗疾病动物模型"], "c": [0]}, {"q": "Mecp2 基因突变会引起什么疾病？", "a": ["雷特综合征", "马凡综合征", "亨廷顿舞蹈症", "囊性纤维化"], "c": [0]}, {"q": "果蝇的听觉器官定位在哪里？", "a": ["前足", "翅膀边缘", "触角", "背部绒毛"], "c": [2]}, {"q": "哪种动物中最先发现 microRNA？", "a": ["小鼠", "斑马鱼", "果蝇", "线虫"], "c": [3]}, {"q": "哪个不是近交系动物的特点？", "a": ["遗传一致性高", "易于饲养", "受外界影响小", "基因纯合度高"], "c": [1]}, {"q": "以下哪种属于实验动物的环境丰荣措施？", "a": ["增加饲养密度", "提供筑巢材料", "减少光照时间", "更换饲料种类", "提供玩具或隐藏场所"], "c": [4]}, {"q": "关于实验动物安乐死的原则，下列哪项是正确的？", "a": ["应尽量减少动物的痛苦", "需符合伦理委员会批准的流程", "选用最便捷迅速的方法", "以上均正确", "以上均正确"], "c": [4]}, {"q": "哪种动物适合用于发育生物学和神经发育研究？", "a": ["小鼠", "斑马鱼", "豚鼠", "果蝇"], "c": [1]}];
-const flashcards = [{"q": "什么是动物实验伦理学。", "a": "动物实验伦理学是研究在科学研究中使用动物时应遵循的道德原则和伦理规范的学科，核心是尊重动物生命、减少痛苦、替代和改进实验方法，确保实验的必要性和合理性。"}, {"q": "爪蟾在生物医学上的应用价值。", "a": "爪蟾是经典的发育生物学和细胞生物学模型，常用于胚胎发育研究、细胞分裂与分化、基因功能研究（如通过显微注射调控基因表达），以及药物筛选和毒理学测试，其卵母细胞也是离子通道和受体研究的常用工具。"}, {"q": "影响实验动物环境的因素。", "a": "包括温度、湿度、光照、通风/空气质量（如氨气浓度）、噪音、饲养密度、垫料和笼具条件，以及营养和饮水质量等。"}, {"q": "说明从 T1、T2 数据解读脑神经元活动的 fMRI 成像的结果。", "a": "T1加权像主要显示解剖结构，T2加权像和BOLD信号依赖的T2加权像反映血氧水平变化，间接显示神经元活动。通过比较任务状态与静息状态的T2信号变化，可推断脑区激活情况；T1数据用于配准和结构定位。"}, {"q": "什么是自发性疾病和诱发性疾病，并分别说明对于肿瘤研究的优缺点。", "a": "自发性疾病指动物自然发生的疾病，不借助人为干预；诱发性疾病是通过化学、物理或生物手段人为诱导的疾病。在肿瘤研究中，自发性肿瘤更接近人类自然发生过程，但发生率低、周期长；诱发性肿瘤可控性强、模型重复性好，但可能与自然病程存在差异。"}, {"q": "动物权利和动物福利的异同。", "a": "动物福利强调人类有责任保障动物的基本生存和健康需求（如免受饥渴、疾病、痛苦和恐惧），注重使用中的善待和管理；动物权利更强调动物本身享有不被利用的基本权利，反对任何形式的动物使用。两者都关注动物利益，但权利观点更激进，福利观点更注重平衡科学需求与伦理责任。"}, {"q": "对如何善待实验动物的看法。", "a": "善待实验动物应从饲养管理、操作规范、伦理审查和人员培训等方面入手，包括提供适宜的居住环境、减少应激和疼痛、优化实验设计（如3R原则）、尊重动物生命尊严，并在实验后实施安乐死。"}, {"q": "实验动物微生物控制的重要性，国家标准的分级，每级对环境的要求。", "a": "微生物控制是防止动物感染和疾病传播、保障实验可重复性和人员健康的关键。国家标准一般分为普通级、清洁级、SPF级和无菌级。普通级要求基本环境卫生；清洁级需排除特定人畜共患病和主要病原；SPF级需排除多种特定病原体，使用屏障设施；无菌级要求完全无菌，使用隔离器。"}, {"q": "如何用小鼠的胚胎干细胞（ES）转基因。", "a": "将目标基因（或敲除载体）通过电穿孔或脂质体转染等方法导入小鼠ES细胞，筛选稳定整合的克隆，将其注射入囊胚，移植到假孕母鼠子宫中，产下嵌合体小鼠，再与野生型小鼠交配，筛选可生殖传递的转基因品系。"}, {"q": "系统说明果蝇、线虫、斑马鱼在人类疾病研究上的优缺点。", "a": "果蝇：繁殖快、遗传工具丰富、成本低，适合研究神经退行性疾病、节律、发育；但无脊椎动物生理与人类差异大，部分疾病机制不保守。线虫：体型小、细胞谱系清晰、寿命短，适合衰老、神经科学和药物筛选；但同样无脊椎，缺乏复杂器官系统。斑马鱼：脊椎动物、胚胎透明、发育快、适合遗传学和药物筛选，器官系统与人类相似度高；但饲养繁殖成本较高，基因编辑效率相对较低，部分疾病模型尚不完善。"}, {"q": "选取一种模式动物，设计方案探究并证明影响睡眠节律的基因。", "a": "以小鼠为模型，选择候选基因（如Clock或Per2），构建基因敲除或条件性敲除小鼠，结合脑电/肌电记录监测睡眠-觉醒周期，分析敲除组与野生组的昼夜节律、总睡眠时间、REM/NREM分布等指标。还可使用光遗传或化学遗传结合睡眠监测调控相关脑区神经元活动，验证该基因对睡眠节律的影响。同时可引入药物干预或环境光周期干扰作为对照，量化基因表达的节律性变化，最终证明该基因对节律的调控作用。"}];</script>
+<script>const examMetadata = {"title": "2024-2025 学年秋学期实验动物与伦理学期末回忆卷", "description": "", "authors": "李建树"};
+const mcqs = [{"question": [{"type": "text", "content": "最常用的模式动物。"}], "options": [{"type": "text", "content": "大鼠", "correct": false}, {"type": "text", "content": "小鼠", "correct": true}, {"type": "text", "content": "豚鼠", "correct": false}, {"type": "text", "content": "猴子", "correct": false}]}, {"question": [{"type": "text", "content": "遇突发事件先干什么？"}], "options": [{"type": "text", "content": "自救", "correct": true}, {"type": "text", "content": "报警", "correct": false}, {"type": "text", "content": "启动应急预案", "correct": false}, {"type": "text", "content": "等待救援", "correct": false}]}, {"question": [{"type": "text", "content": "消毒剂是什么因素？"}], "options": [{"type": "text", "content": "理化", "correct": true}, {"type": "text", "content": "生物", "correct": false}, {"type": "text", "content": "居住", "correct": false}, {"type": "text", "content": "营养", "correct": false}]}, {"question": [{"type": "text", "content": "CRISPR/Cas9 的必要条件。"}], "options": [{"type": "text", "content": "RNA 和 DNA 互补配对", "correct": true}, {"type": "text", "content": "RNase Ⅲ 存在", "correct": false}, {"type": "text", "content": "限制性内切酶参与", "correct": false}, {"type": "text", "content": "连接酶参与", "correct": false}]}, {"question": [{"type": "text", "content": "谁奠定了西方生物科学的基础？"}], "options": [{"type": "text", "content": "维萨里", "correct": false}, {"type": "text", "content": "盖伦", "correct": true}, {"type": "text", "content": "哈维", "correct": false}, {"type": "text", "content": "达芬奇", "correct": false}]}, {"question": [{"type": "text", "content": "以下哪个不是小鼠的品系？"}], "options": [{"type": "text", "content": "C57BL", "correct": false}, {"type": "text", "content": "C3H", "correct": false}, {"type": "text", "content": "Long Evans", "correct": true}, {"type": "text", "content": "FVB", "correct": false}]}, {"question": [{"type": "text", "content": "哪一种成像技术有更高的时间分辨率？"}], "options": [{"type": "text", "content": "GCaMP", "correct": true}, {"type": "text", "content": "NAFP", "correct": false}, {"type": "text", "content": "VSFP", "correct": false}, {"type": "text", "content": "C-fos", "correct": false}]}, {"question": [{"type": "text", "content": "鹿的红细胞是镰刀状的，可以用来研究镰刀型贫血，是什么动物模型？"}], "options": [{"type": "text", "content": "生物医学动物模型", "correct": true}, {"type": "text", "content": "自发性动物模型", "correct": false}, {"type": "text", "content": "诱导性动物模型", "correct": false}, {"type": "text", "content": "抗疾病动物模型", "correct": false}]}, {"question": [{"type": "text", "content": "Mecp2 基因突变会引起什么疾病？"}], "options": [{"type": "text", "content": "雷特综合征", "correct": true}, {"type": "text", "content": "马凡综合征", "correct": false}, {"type": "text", "content": "亨廷顿舞蹈症", "correct": false}, {"type": "text", "content": "囊性纤维化", "correct": false}]}, {"question": [{"type": "text", "content": "果蝇的听觉器官定位在哪里？"}], "options": [{"type": "text", "content": "前足", "correct": false}, {"type": "text", "content": "翅膀边缘", "correct": false}, {"type": "text", "content": "触角", "correct": true}, {"type": "text", "content": "背部绒毛", "correct": false}]}, {"question": [{"type": "text", "content": "哪种动物中最先发现 microRNA？"}], "options": [{"type": "text", "content": "小鼠", "correct": false}, {"type": "text", "content": "斑马鱼", "correct": false}, {"type": "text", "content": "果蝇", "correct": false}, {"type": "text", "content": "线虫", "correct": true}]}, {"question": [{"type": "text", "content": "哪个不是近交系动物的特点？"}], "options": [{"type": "text", "content": "遗传一致性高", "correct": false}, {"type": "text", "content": "易于饲养", "correct": true}, {"type": "text", "content": "受外界影响小", "correct": false}, {"type": "text", "content": "基因纯合度高", "correct": false}]}, {"question": [{"type": "text", "content": "以下哪种属于实验动物的环境丰荣措施？"}], "options": [{"type": "text", "content": "增加饲养密度", "correct": false}, {"type": "text", "content": "提供筑巢材料", "correct": false}, {"type": "text", "content": "减少光照时间", "correct": false}, {"type": "text", "content": "更换饲料种类", "correct": false}, {"type": "text", "content": "提供玩具或隐藏场所", "correct": true}]}, {"question": [{"type": "text", "content": "关于实验动物安乐死的原则，下列哪项是正确的？"}], "options": [{"type": "text", "content": "应尽量减少动物的痛苦", "correct": false}, {"type": "text", "content": "需符合伦理委员会批准的流程", "correct": false}, {"type": "text", "content": "选用最便捷迅速的方法", "correct": false}, {"type": "text", "content": "以上均正确", "correct": false}, {"type": "text", "content": "以上均正确", "correct": true}]}, {"question": [{"type": "text", "content": "哪种动物适合用于发育生物学和神经发育研究？"}], "options": [{"type": "text", "content": "小鼠", "correct": false}, {"type": "text", "content": "斑马鱼", "correct": true}, {"type": "text", "content": "豚鼠", "correct": false}, {"type": "text", "content": "果蝇", "correct": false}]}];
+const flashcards = [{"question": [{"type": "text", "content": "什么是动物实验伦理学。"}], "answer": [{"type": "text", "content": "动物实验伦理学是研究在科学研究中使用动物时应遵循的道德原则和伦理规范的学科，核心是尊重动物生命、减少痛苦、替代和改进实验方法，确保实验的必要性和合理性。"}]}, {"question": [{"type": "text", "content": "爪蟾在生物医学上的应用价值。"}], "answer": [{"type": "text", "content": "爪蟾是经典的发育生物学和细胞生物学模型，常用于胚胎发育研究、细胞分裂与分化、基因功能研究（如通过显微注射调控基因表达），以及药物筛选和毒理学测试，其卵母细胞也是离子通道和受体研究的常用工具。"}]}, {"question": [{"type": "text", "content": "影响实验动物环境的因素。"}], "answer": [{"type": "text", "content": "包括温度、湿度、光照、通风/空气质量（如氨气浓度）、噪音、饲养密度、垫料和笼具条件，以及营养和饮水质量等。"}]}, {"question": [{"type": "text", "content": "说明从 T1、T2 数据解读脑神经元活动的 fMRI 成像的结果。"}], "answer": [{"type": "text", "content": "T1加权像主要显示解剖结构，T2加权像和BOLD信号依赖的T2加权像反映血氧水平变化，间接显示神经元活动。通过比较任务状态与静息状态的T2信号变化，可推断脑区激活情况；T1数据用于配准和结构定位。"}]}, {"question": [{"type": "text", "content": "什么是自发性疾病和诱发性疾病，并分别说明对于肿瘤研究的优缺点。"}], "answer": [{"type": "text", "content": "自发性疾病指动物自然发生的疾病，不借助人为干预；诱发性疾病是通过化学、物理或生物手段人为诱导的疾病。在肿瘤研究中，自发性肿瘤更接近人类自然发生过程，但发生率低、周期长；诱发性肿瘤可控性强、模型重复性好，但可能与自然病程存在差异。"}]}, {"question": [{"type": "text", "content": "动物权利和动物福利的异同。"}], "answer": [{"type": "text", "content": "动物福利强调人类有责任保障动物的基本生存和健康需求（如免受饥渴、疾病、痛苦和恐惧），注重使用中的善待和管理；动物权利更强调动物本身享有不被利用的基本权利，反对任何形式的动物使用。两者都关注动物利益，但权利观点更激进，福利观点更注重平衡科学需求与伦理责任。"}]}, {"question": [{"type": "text", "content": "对如何善待实验动物的看法。"}], "answer": [{"type": "text", "content": "善待实验动物应从饲养管理、操作规范、伦理审查和人员培训等方面入手，包括提供适宜的居住环境、减少应激和疼痛、优化实验设计（如3R原则）、尊重动物生命尊严，并在实验后实施安乐死。"}]}, {"question": [{"type": "text", "content": "实验动物微生物控制的重要性，国家标准的分级，每级对环境的要求。"}], "answer": [{"type": "text", "content": "微生物控制是防止动物感染和疾病传播、保障实验可重复性和人员健康的关键。国家标准一般分为普通级、清洁级、SPF级和无菌级。普通级要求基本环境卫生；清洁级需排除特定人畜共患病和主要病原；SPF级需排除多种特定病原体，使用屏障设施；无菌级要求完全无菌，使用隔离器。"}]}, {"question": [{"type": "text", "content": "如何用小鼠的胚胎干细胞（ES）转基因。"}], "answer": [{"type": "text", "content": "将目标基因（或敲除载体）通过电穿孔或脂质体转染等方法导入小鼠ES细胞，筛选稳定整合的克隆，将其注射入囊胚，移植到假孕母鼠子宫中，产下嵌合体小鼠，再与野生型小鼠交配，筛选可生殖传递的转基因品系。"}]}, {"question": [{"type": "text", "content": "系统说明果蝇、线虫、斑马鱼在人类疾病研究上的优缺点。"}], "answer": [{"type": "text", "content": "果蝇：繁殖快、遗传工具丰富、成本低，适合研究神经退行性疾病、节律、发育；但无脊椎动物生理与人类差异大，部分疾病机制不保守。线虫：体型小、细胞谱系清晰、寿命短，适合衰老、神经科学和药物筛选；但同样无脊椎，缺乏复杂器官系统。斑马鱼：脊椎动物、胚胎透明、发育快、适合遗传学和药物筛选，器官系统与人类相似度高；但饲养繁殖成本较高，基因编辑效率相对较低，部分疾病模型尚不完善。"}]}, {"question": [{"type": "text", "content": "选取一种模式动物，设计方案探究并证明影响睡眠节律的基因。"}], "answer": [{"type": "text", "content": "以小鼠为模型，选择候选基因（如Clock或Per2），构建基因敲除或条件性敲除小鼠，结合脑电/肌电记录监测睡眠-觉醒周期，分析敲除组与野生组的昼夜节律、总睡眠时间、REM/NREM分布等指标。还可使用光遗传或化学遗传结合睡眠监测调控相关脑区神经元活动，验证该基因对睡眠节律的影响。同时可引入药物干预或环境光周期干扰作为对照，量化基因表达的节律性变化，最终证明该基因对节律的调控作用。"}]}];</script>
 
 <script type="text/babel">
-  const { useState, useEffect } = React;
+  const { useState, useLayoutEffect, useRef } = React;
 
   // 自定义 SVG 图标组件，替代有 bug 的 Lucide-React 库，解决 Infinity 冲突
   const CheckCircle2 = ({ size = 24, className = "" }) => (
@@ -557,36 +619,160 @@ const flashcards = [{"q": "什么是动物实验伦理学。", "a": "动物实�
     </svg>
   );
 
-  const RichContent = ({ value, imageClassName = "max-h-72" }) => {
-    const content =
-      typeof value === "string"
-        ? { text: value, images: [] }
-        : { text: value?.text || "", images: value?.images || [] };
+  let mathJaxQueue = Promise.resolve();
+
+  const queueMathTask = (task) => {
+    mathJaxQueue = mathJaxQueue
+      .then(() => window.MathJax?.startup?.promise)
+      .then(task)
+      .catch((error) => console.error("MathJax typesetting failed", error));
+  };
+
+  const queueMathTypeset = (container, text, shouldSkip) => {
+    queueMathTask(() => {
+      const mathJax = window.MathJax;
+      if (
+        shouldSkip() ||
+        !container.isConnected ||
+        !mathJax?.typesetPromise
+      ) {
+        return;
+      }
+
+      mathJax.typesetClear?.([container]);
+      container.textContent = text || "";
+      return mathJax.typesetPromise([container]);
+    });
+  };
+
+  const MathText = ({ text, className = "" }) => {
+    const containerRef = useRef(null);
+
+    useLayoutEffect(() => {
+      const container = containerRef.current;
+      if (!container) return undefined;
+
+      if (!container.hasChildNodes()) {
+        container.textContent = text || "";
+      }
+      let disposed = false;
+
+      const typeset = () => {
+        const mathJax = window.MathJax;
+        if (disposed || !mathJax?.typesetPromise) return;
+        queueMathTypeset(container, text, () => disposed);
+      };
+
+      if (window.MathJax?.typesetPromise) {
+        typeset();
+      } else {
+        // Keep the source readable when the CDN is slow or unavailable.
+        container.textContent = text || "";
+        window.addEventListener("mathjax-ready", typeset, { once: true });
+      }
+
+      return () => {
+        disposed = true;
+        window.removeEventListener("mathjax-ready", typeset);
+        if (window.MathJax?.typesetClear) {
+          queueMathTask(() => window.MathJax.typesetClear([container]));
+        }
+      };
+    }, [text]);
 
     return (
-      <div className="min-w-0 space-y-3">
-        {content.text && (
-          <div className="whitespace-pre-wrap break-words">{content.text}</div>
-        )}
-        {content.images.map((image, index) => (
-          <figure key={`${image.src}-${index}`} className="space-y-1.5">
-            <img
-              src={image.src}
-              alt={image.alt || ""}
-              loading="lazy"
-              decoding="async"
-              className={`mx-auto w-auto max-w-full rounded-xl object-contain ${imageClassName}`}
-            />
-            {image.caption && (
-              <figcaption className="text-center text-xs font-normal opacity-70">
-                {image.caption}
-              </figcaption>
-            )}
-          </figure>
-        ))}
-      </div>
+      <div
+        ref={containerRef}
+        className={`math-content ${className}`}
+      ></div>
     );
   };
+
+  const alignmentClass = (alignment) => {
+    if (alignment === "right") return "text-right";
+    if (alignment === "middle") return "text-center";
+    return "text-left";
+  };
+
+  const ContentTable = ({ element }) => (
+    <div
+      className="max-w-full overflow-x-auto rounded-xl shadow-md"
+      onClick={(event) => event.stopPropagation()}
+    >
+      <table className="w-full min-w-max border-collapse bg-white text-sm font-normal text-slate-700">
+        {element.headers.length > 0 && (
+          <thead className="bg-brand-500/50 text-brand-950">
+            <tr className="border-b border-slate-300/50">
+              {element.headers.map((header, index) => (
+                <th
+                  key={index}
+                  scope="col"
+                  className={`px-4 py-3 font-bold ${alignmentClass(element.align[index])}`}
+                >
+                  <MathText text={header} />
+                </th>
+              ))}
+            </tr>
+          </thead>
+        )}
+        <tbody>
+          {element.rows.map((row, rowIndex) => (
+            <tr
+              key={rowIndex}
+              className="border-b border-slate-300/50 last:border-b-0"
+            >
+              {row.map((cell, cellIndex) => (
+                <td
+                  key={cellIndex}
+                  className={`px-4 py-3 ${alignmentClass(element.align[cellIndex])}`}
+                >
+                  <MathText text={cell} />
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+
+  const RichContent = ({ value = [], imageClassName = "max-h-72" }) => (
+    <div className="min-w-0 space-y-3">
+      {value.map((element, index) => {
+        if (element.type === "text") {
+          return (
+            <MathText
+              key={index}
+              text={element.content}
+              className="whitespace-pre-wrap break-words"
+            />
+          );
+        }
+        if (element.type === "image") {
+          return (
+            <figure key={index} className="space-y-1.5">
+              <img
+                src={element.src}
+                alt={element.alt || ""}
+                loading="lazy"
+                decoding="async"
+                className={`mx-auto w-auto max-w-full rounded-xl object-contain ${imageClassName}`}
+              />
+              {element.caption && (
+                <figcaption className="text-center text-xs font-normal opacity-70">
+                  {element.caption}
+                </figcaption>
+              )}
+            </figure>
+          );
+        }
+        if (element.type === "table") {
+          return <ContentTable key={index} element={element} />;
+        }
+        return null;
+      })}
+    </div>
+  );
 
   function App() {
     const [view, setView] = useState("menu"); // 'menu', 'quiz', 'flashcard'
@@ -613,9 +799,12 @@ const flashcards = [{"q": "什么是动物实验伦理学。", "a": "动物实�
       setWrongAnswers([]);
     };
 
-    // 将旧版单值 c 和新版列表 c 统一为答案索引列表。
     const getCorrectAnswers = (question) =>
-      Array.isArray(question.c) ? question.c : [question.c];
+      question.options.reduce(
+        (answers, option, index) =>
+          option.correct ? [...answers, index] : answers,
+        [],
+      );
 
     const submitQuizAnswer = (userAnswers) => {
       if (isAnswerSubmitted || userAnswers.length === 0) return;
@@ -694,11 +883,14 @@ const flashcards = [{"q": "什么是动物实验伦理学。", "a": "动物实�
               <BookOpen size={40} />
             </div>
             <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-3 break-words">
-              2024-2025 学年秋学期实验动物与伦理学期末回忆卷
+              <MathText text={examMetadata.title} />
             </h1>
-            <p className="text-base sm:text-lg text-slate-500 leading-relaxed">
-              <p></p><p>Made by 李建树</p>
-            </p>
+            <div className="space-y-1 text-base leading-relaxed text-slate-500 sm:text-lg">
+              {examMetadata.description && (
+                <MathText text={examMetadata.description} />
+              )}
+              <div>Made by {examMetadata.authors}</div>
+            </div>
           </div>
 
           <div
@@ -797,7 +989,7 @@ const flashcards = [{"q": "什么是动物实验伦理学。", "a": "动物实�
                   </span>
                 </div>
                 <div className="text-lg sm:text-xl font-bold text-slate-800 leading-relaxed">
-                  <RichContent value={mcqs[currentIdx].q} />
+                  <RichContent value={mcqs[currentIdx].question} />
                 </div>
                 {getCorrectAnswers(mcqs[currentIdx]).length > 1 && (
                   <p className="text-sm text-slate-500 mt-3">
@@ -806,7 +998,7 @@ const flashcards = [{"q": "什么是动物实验伦理学。", "a": "动物实�
                 )}
               </div>
               <div className="grid gap-3">
-                {mcqs[currentIdx].a.map((opt, i) => {
+                {mcqs[currentIdx].options.map((opt, i) => {
                   const correctAnswers = getCorrectAnswers(mcqs[currentIdx]);
                   const isSelected = selectedOptions.includes(i);
                   const isCorrectOption = correctAnswers.includes(i);
@@ -839,7 +1031,10 @@ const flashcards = [{"q": "什么是动物实验伦理学。", "a": "动物实�
                           {String.fromCharCode(65 + i)}.
                         </span>
                         <div className="min-w-0 flex-1">
-                          <RichContent value={opt} imageClassName="max-h-48" />
+                          <RichContent
+                            value={[opt]}
+                            imageClassName="max-h-48"
+                          />
                         </div>
                       </div>
                       {isAnswerSubmitted && isCorrectOption && (
@@ -911,7 +1106,7 @@ const flashcards = [{"q": "什么是动物实验伦理学。", "a": "动物实�
                           <span className="shrink-0">{idx + 1}.</span>
                           <div className="min-w-0 flex-1">
                             <RichContent
-                              value={item.q}
+                              value={item.question}
                               imageClassName="max-h-32"
                             />
                           </div>
@@ -947,6 +1142,34 @@ const flashcards = [{"q": "什么是动物实验伦理学。", "a": "动物实�
               </div>
             </div>
           )}
+          
+          {/* 控制按钮 */}
+          <div className="flex items-center justify-between gap-2 sm:gap-4 mt-5 sm:mt-8">
+            <button
+              disabled={currentIdx === 0}
+              onClick={() => {
+                setCurrentIdx(currentIdx - 1);
+                setFlipped(false);
+              }}
+              className="min-h-12 flex flex-1 sm:flex-none items-center justify-center gap-1 sm:gap-2 px-3 sm:px-6 py-3 bg-white text-slate-600 hover:text-slate-800 border rounded-xl font-bold shadow-sm transition-all disabled:opacity-30 disabled:pointer-events-none"
+            >
+              <ChevronLeft size={20} /> 上一题
+            </button>
+            <button
+              onClick={() => {
+                if (currentIdx < mcqs.length - 1) {
+                  setCurrentIdx(currentIdx + 1);
+                  setFlipped(false);
+                } else {
+                  setView("menu");
+                }
+              }}
+              className="min-h-12 flex flex-1 sm:flex-none items-center justify-center gap-1 sm:gap-2 px-3 sm:px-6 py-3 bg-brand-800 hover:bg-brand-900 text-white rounded-xl font-bold shadow-sm transition-all"
+            >
+              {currentIdx === mcqs.length - 1 ? "完成复习" : "下一题"}{" "}
+              <ChevronRight size={20} />
+            </button>
+          </div>
 
           {/* 选择题快速导航模态框 */}
           {showNavModal && (
@@ -985,7 +1208,7 @@ const flashcards = [{"q": "什么是动物实验伦理学。", "a": "动物实�
 
     if (view === "flashcard") {
       return (
-        <div className="max-w-2xl mx-auto pt-1 px-0 sm:pt-4 sm:px-4 md:pt-8">
+        <div className="flashcard-view min-h-full max-w-4xl mx-auto pt-1 px-0 sm:pt-4 sm:px-4 md:pt-8">
           {/* 导航头 */}
           <div className="flex items-center justify-between gap-2 mb-4 sm:mb-6">
             <button
@@ -1018,39 +1241,30 @@ const flashcards = [{"q": "什么是动物实验伦理学。", "a": "动物实�
             ></div>
           </div>
 
-          {/* 翻转卡片结构 */}
+          {/* 自适应叠层翻转卡片 */}
           <div
             className={`flip-card ${flipped ? "flipped" : ""} w-full`}
             onClick={() => setFlipped((isFlipped) => !isFlipped)}
+            onKeyDown={(event) => {
+              if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                setFlipped((isFlipped) => !isFlipped);
+              }
+            }}
+            role="button"
+            tabIndex="0"
+            aria-label={flipped ? "返回查看问题" : "查看参考答案"}
           >
-            <div
-              className="flip-card-inner"
-              style={{
-                transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)",
-              }}
-            >
+            <div className="flip-card-inner">
               {/* 卡片正面 (问题) */}
-              <div className="flip-card-front bg-white border border-slate-200 text-slate-800 flex flex-col justify-between">
-                <div className="p-3 bg-brand-50 text-brand-600 rounded-full mt-4 self-center">
-                  <Lightbulb size={28} />
-                </div>
-                <div className="my-auto min-h-0 w-full overflow-y-auto overscroll-contain px-2 py-2 scrollbar-hide sm:px-4">
-                  <span className="text-xs font-bold text-slate-400 block mb-2">
-                    QUESTION {currentIdx + 1}
-                  </span>
-                  <div className="text-lg sm:text-xl font-bold leading-relaxed">
-                    <RichContent
-                      value={flashcards[currentIdx].q}
-                      imageClassName="max-h-48"
-                    />
-                  </div>
-                </div>
-                <p className="text-slate-400 text-xs font-medium pb-4 flex items-center gap-1 animate-pulse">
+              <div className="flip-card-front justify-start overflow-hidden bg-white border border-slate-200 text-slate-800">
+                <div className="flip-card-hint text-slate-500 text-xs sm:text-sm font-semibold">
                   <svg
-                    className="w-4 h-4"
+                    className="h-4 w-4 shrink-0"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
+                    aria-hidden="true"
                   >
                     <path
                       strokeLinecap="round"
@@ -1060,23 +1274,38 @@ const flashcards = [{"q": "什么是动物实验伦理学。", "a": "动物实�
                     />
                   </svg>
                   点击卡片翻看参考答案
-                </p>
-              </div>
+                </div>
 
-              {/* 卡片背面 (要点解析) */}
-              <div className="flip-card-back bg-brand-950 text-white border border-brand-900 text-left items-start overflow-y-auto scrollbar-hide flex flex-col justify-between">
-                <div className="w-full">
-                  <h4 className="text-brand-300 font-bold mb-4 flex items-center gap-2 border-b border-brand-900 pb-2">
-                    <CheckCircle2 size={18} /> 核心要点 / 答案分析
-                  </h4>
-                  <div className="text-base leading-relaxed text-slate-200 font-medium">
+                <div className="relative z-10 flex w-full flex-col gap-6 sm:gap-8">
+                  <div className="flex w-fit items-center gap-2 rounded-full bg-brand-50 px-3 py-2 text-brand-700">
+                    <Lightbulb size={22} className="shrink-0" />
+                    <span className="text-xs font-bold uppercase tracking-wider">
+                      QUESTION {currentIdx + 1}
+                    </span>
+                  </div>
+                  <div className="w-full text-left text-lg sm:text-xl font-bold leading-relaxed">
                     <RichContent
-                      value={flashcards[currentIdx].a}
-                      imageClassName="max-h-48"
+                      value={flashcards[currentIdx].question}
+                      imageClassName="max-h-[60dvh]"
                     />
                   </div>
                 </div>
-                <p className="pt-6 text-slate-500 text-xs text-center w-full mt-auto">
+              </div>
+
+              {/* 卡片背面 (要点解析) */}
+              <div className="flip-card-back justify-between bg-brand-950 text-white border border-brand-900 text-left">
+                <div className="relative z-10 w-full">
+                  <h4 className="text-brand-300 font-bold mb-4 flex items-center gap-2 border-b border-brand-900 pb-2">
+                    <CheckCircle2 size={18} /> 参考答案
+                  </h4>
+                  <div className="text-base leading-relaxed text-slate-200 font-medium">
+                    <RichContent
+                      value={flashcards[currentIdx].answer}
+                      imageClassName="max-h-[60dvh]"
+                    />
+                  </div>
+                </div>
+                <p className="relative z-10 pt-8 text-slate-500 text-xs text-center w-full mt-auto">
                   点击卡片返回问题
                 </p>
               </div>

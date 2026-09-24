@@ -29,6 +29,31 @@
         },
       };
     </script>
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [
+            ["$", "$"],
+            ["\\(", "\\)"],
+          ],
+          displayMath: [
+            ["$$", "$$"],
+            ["\\[", "\\]"],
+          ],
+          processEscapes: true,
+        },
+        startup: {
+          // React owns the page content, so each content component asks MathJax
+          // to typeset itself after it is mounted or updated.
+          typeset: false,
+          ready() {
+            MathJax.startup.defaultReady();
+            window.dispatchEvent(new Event("mathjax-ready"));
+          },
+        },
+      };
+    </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -43,18 +68,35 @@
           Roboto,
           sans-serif;
       }
+      #root {
+        min-height: 100%;
+      }
+      .math-content {
+        max-width: 100%;
+        overflow-x: auto;
+        overflow-y: hidden;
+      }
+      .math-content mjx-container[display="true"] {
+        margin: 0.5em 0 !important;
+      }
       .flip-card {
         perspective: 1000px;
-        height: clamp(320px, 55dvh, 380px);
+        min-height: clamp(28rem, calc(100dvh - 18rem), 52rem);
+      }
+      .flip-card:focus-visible {
+        outline: 3px solid rgb(39 139 112 / 0.45);
+        outline-offset: 4px;
+        border-radius: 1.5rem;
       }
       .flip-card-inner {
         position: relative;
+        display: grid;
         width: 100%;
-        height: 100%;
-        text-align: center;
+        min-height: inherit;
+        text-align: left;
         -webkit-transform: rotateY(0deg);
         transform: rotateY(0deg);
-        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         -webkit-transform-style: preserve-3d;
         transform-style: preserve-3d;
         transform-origin: center;
@@ -67,15 +109,15 @@
       }
       .flip-card-front,
       .flip-card-back {
-        position: absolute;
+        position: relative;
+        grid-area: 1 / 1;
         width: 100%;
-        height: 100%;
+        min-height: inherit;
         -webkit-backface-visibility: hidden;
         backface-visibility: hidden;
         display: flex;
         flex-direction: column;
-        justify-content: center;
-        align-items: center;
+        align-items: stretch;
         padding: 2rem;
         border-radius: 1.5rem;
         box-shadow:
@@ -86,8 +128,19 @@
         -webkit-transform: rotateY(180deg);
         transform: rotateY(180deg);
       }
-      .scrollbar-hide::-webkit-scrollbar {
-        display: none;
+      .flip-card-hint {
+        position: absolute;
+        right: 1.5rem;
+        bottom: 1.5rem;
+        left: 1.5rem;
+        z-index: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.375rem;
+        opacity: 0.26;
+        pointer-events: none;
+        user-select: none;
       }
       .sidebar-shell {
         visibility: hidden;
@@ -164,6 +217,14 @@
         .flip-card-back {
           padding: 1rem;
           border-radius: 1rem;
+        }
+        .flip-card {
+          min-height: clamp(24rem, calc(100dvh - 15.5rem), 44rem);
+        }
+        .flip-card-hint {
+          right: 1rem;
+          bottom: 1rem;
+          left: 1rem;
         }
       }
       @media (prefers-reduced-motion: reduce) {
@@ -362,11 +423,12 @@
       <!-- 右侧主体内容区 -->
       <main class=".js-quiz-container min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-contain p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:p-5 md:p-8"><div id="root"></div>
 
-<script>const mcqs = [];
-const flashcards = [{"q": "解释 miRNA 与 siRNA 的联系和差异。", "a": "联系：均为非编码小RNA，由Dicer酶加工形成，并与Argonaute蛋白组装成RISC复合物，通过碱基互补配对靶向mRNA，在转录后水平负调控基因表达。差异：miRNA通常由内源基因组中的发夹结构前体转录，靶向不完全互补的mRNA，主要抑制翻译或诱导去腺苷酸化；siRNA通常来源于外源长双链RNA（dsRNA）或人工导入，靶向完全互补的mRNA，引导Ago2蛋白切割靶mRNA。"}, {"q": "解释 substrate-level phosphorylation 与 oxidative phosphorylation 的联系和差异。", "a": "联系：均为细胞内合成ATP的核心生化机制。差异：底物水平磷酸化由高能代谢物（如1,3-二磷酸甘油酸、磷酸烯醇式丙酮酸）直接将磷酸基团转移给ADP，不依赖电子传递链，发生于糖酵解和三羧酸循环中；氧化磷酸化依赖于线粒体内膜电子传递链建立的质子电化学梯度，由ATP合酶催化合成ATP，需氧气作为最终电子受体。"}, {"q": "解释 one carbon unit 与 S-Adenosylmethionine（SAM）的联系和差异。", "a": "联系：一碳单位是SAM分子中甲基基团的间接来源之一（通过甲硫氨酸循环）。差异：一碳单位（如甲基、亚甲基、甲酰基等）由四氢叶酸（THF）携带，参与嘌呤环、胸腺嘧啶及甲硫氨酸的从头合成；SAM是生物体内最主要的直接甲基供体，由甲硫氨酸与ATP反应生成，参与蛋白质、DNA、RNA及小分子代谢物的甲基化修饰。"}, {"q": "解释 chromatin loops 与 topologically associated domains（TADs）的联系和差异。", "a": "联系：TAD是染色质三维空间折叠的结构单元，其内部包含多个染色质环。差异：TAD是较大的拓扑结构域（通常几百kb至几Mb），边界由CTCF蛋白和黏连蛋白（cohesin）划定，域内互作频率显著高于域间；染色质环是TAD内部由cohesin和CTCF介导的特定长程互作结构（通常几十kb至几百kb），常介导增强子与启动子之间的特异性调控。"}, {"q": "写出蛋白质变性且沉淀、蛋白质变性但不沉淀、蛋白质不变性但沉淀的例子各一个。", "a": "变性且沉淀：煮沸鸡蛋清（加热使蛋白质空间结构破坏，疏水基团暴露后聚集凝固沉淀）。变性但不沉淀：尿素或盐酸胍处理后的球状蛋白溶液（肽链伸展但仍可溶于溶剂，未达到等电点或浓度较低时不沉淀）。不变性但沉淀：硫酸铵分级盐析（中性盐中和蛋白质表面电荷、破坏水化层使其沉淀，但天然构象完整）。"}, {"q": "100个葡萄糖通过磷酸戊糖途径变为40个5-磷酸-核酮糖，剩下的碳架全部通过磷酸戊糖途径完全氧化为二氧化碳。请计算生成的NADPH的总数量。", "a": "总NADPH生成量为 800。计算依据：100个葡萄糖共含600个碳原子，最终生成40个5-磷酸-核酮糖（含200个碳原子），其余400个碳原子经氧化脱羧生成CO₂。磷酸戊糖途径氧化阶段每脱羧1个碳原子伴随产生2分子NADPH，因此总NADPH = 400 × 2 = 800。"}, {"q": "三组小鼠空腹实验。1. 为什么要提前空腹12小时？2. 为什么B组（缺精氨酸）氨中毒？3. 为什么C组（缺精氨酸+鸟氨酸）没有氨中毒？", "a": "空腹12小时用于耗尽肝糖原储备和循环中的内源性氨基酸，降低基础代谢干扰，使动物主要依赖外源氨基酸供能，从而清晰观察尿素循环对膳食氨基酸的响应。2. B组缺乏精氨酸，而精氨酸是尿素循环的必需中间产物（氨甲酰磷酸+鸟氨酸→瓜氨酸→精氨酸琥珀酸→精氨酸→尿素+鸟氨酸），缺乏精氨酸导致循环中断，氨无法转化为尿素，血氨堆积导致中毒。3. C组添加的鸟氨酸可通过鸟氨酸转氨甲酰酶与氨甲酰磷酸反应生成瓜氨酸，后续生成精氨酸，从而绕过膳食精氨酸的绝对需求，恢复尿素循环功能。"}, {"q": "拓扑异构酶Ⅱ（Topoisomerase Ⅱ）的相关问题。1. 有什么效果？2. 写两个该酶参与的过程。3. 治疗癌症可能的机理。", "a": "效果：催化DNA双链的瞬时断裂与再连接，改变DNA拓扑结构，可松弛正/负超螺旋，并介导双链DNA的解连环（decatenation）。2. 参与过程：DNA复制（移除复制叉前方形成的正超螺旋，并分离姊妹染色单体）；转录（释放RNA聚合酶行进时产生的扭转应力）；有丝分裂染色体凝集。3. 治疗机理：拓扑异构酶Ⅱ抑制剂（如依托泊苷、多柔比星）可捕获酶与DNA共价结合的切割中间体（“切割-再连接”平衡被破坏），导致DNA双链断裂积累，激活DNA损伤应答及凋亡途径；由于增殖活跃的癌细胞拓扑压力大，对该类药物敏感性更高，从而选择性杀伤。"}, {"q": "请思考“镜像分子”和“镜像生命体”可能带来的机遇和挑战。", "a": "机遇：可作为新型生物材料或药物（D-肽药物具有抗蛋白酶降解特性，半衰期长）；用于镜像生物催化，合成自然界难以制备的立体专一化合物；为研究生命手性起源、对称性破缺及酶进化提供独特工具。挑战：安全风险极大，镜像生命体可能无法被免疫系统识别，逃逸天然免疫监视；缺乏天敌和降解酶系，可能导致生态入侵；技术合成门槛极高（需构建镜像DNA聚合酶和核糖体等）；需配套严格的生物遏制策略和伦理规范。"}, {"q": "患者长期酗酒且几乎不进食，出现低血糖（40 mg/L）。推测原因和分子机制。", "a": "直接原因：糖原耗竭后，糖异生途径被酒精代谢强烈抑制。分子机制：酒精经乙醇脱氢酶氧化为乙醛，产生大量NADH，导致细胞质NADH/NAD⁺比值急剧升高。高NADH抑制糖异生的关键酶（如丙酮酸羧化酶、磷酸烯醇式丙酮酸羧激酶），并促进丙酮酸大量还原为乳酸，减少了糖异生前体（如丙氨酸、乳酸）向葡萄糖的转化；同时，肝脏糖原已耗尽，无法通过糖原分解补充血糖，最终导致严重低血糖。"}, {"q": "HBG1/2 基因诱导治疗镰状细胞贫血。图中三种分子（根据常见临床及实验策略推断：羟基脲、丁酸盐/HDAC抑制剂、DNA甲基转移酶抑制剂）的治疗机制及缺点。", "a": "由于原题配图缺失具体分子结构，以下基于诱导胎儿血红蛋白（HbF）的经典策略补全：分子A（羟基脲）：机制为抑制核糖核苷酸还原酶，通过NO/cGMP通路及应激信号诱导γ-珠蛋白转录；缺点为骨髓抑制、个体差异大。分子B（丁酸盐/组蛋白去乙酰化酶抑制剂）：改变HBG启动子区域组蛋白乙酰化状态，开放染色质促进转录；缺点为半衰期短、需持续给药、胃肠反应明显。分子C（地西他滨/氮杂胞苷，DNA甲基转移酶抑制剂）：降低HBG启动子CpG岛甲基化水平，逆转发育性基因沉默；缺点为遗传毒性、骨髓抑制及致突变风险。"}, {"q": "解析题：培养液含0.1 M草酰乙酸，供氧加丙酸盐（复合物Ⅱ抑制剂）促琥珀酸生成；切断氧气供N₂加丙酸盐抑琥珀酸生成。推测机理。", "a": "供氧条件下：呼吸链正常运转，NADH可被再氧化，TCA循环通量维持。丙酸盐抑制琥珀酸脱氢酶（复合物Ⅱ），使琥珀酸无法氧化为延胡索酸，导致琥珀酸直接累积；同时，草酰乙酸可通过苹果酸脱氢酶还原为苹果酸，苹果酸在复合物Ⅱ抑制处反向或经其他旁路也可转化为琥珀酸，故可见琥珀酸生成增加。缺氧（N₂）条件下：电子传递链受阻，NADH无法重新氧化，导致TCA循环停滞，草酰乙酸向苹果酸/柠檬酸的转化效率大幅降低；且缺乏氧化磷酸化提供的能量支持，草酰乙酸的代谢转化受阻，因此琥珀酸生成被抑制。"}, {"q": "解析题：基因X表达经细胞因子处理-撤除-再处理呈现“低-高-爆发”趋势。提出假说并设计实验。", "a": "假说：细胞因子诱导了基因X启动子区域表观遗传修饰的改变（如组蛋白H3K4me3富集、DNA去甲基化），形成“转录记忆”；撤除因子后，转录因子解离但表观标记保留，mRNA合成回落；再刺激时，转录因子快速结合已开放的染色质模板，导致转录爆发性激活。实验设计：① 使用转录抑制剂（放线菌素D）追踪不同阶段mRNA半衰期，判断表达变化是否源于转录速率改变；② 染色质免疫共沉淀测序（ChIP-seq）检测基因X启动子区组蛋白H3K4me3、H3K27ac及RNA聚合酶II的富集动态；③ 使用组蛋白甲基转移酶抑制剂（如MLL抑制剂）或DNA甲基转移酶抑制剂预处理，观察第三阶段爆发性升高是否被抑制；④ 蛋白质印迹（Western blot）检测该细胞因子下游关键转录因子的磷酸化水平与核转位速率。"}];</script>
+<script>const examMetadata = {"title": "细胞与生物分子Ⅱ 2024-2025 学年秋冬学期期末回忆卷", "description": "", "authors": "李建树"};
+const mcqs = [];
+const flashcards = [{"question": [{"type": "text", "content": "解释 miRNA 与 siRNA 的联系和差异。"}], "answer": [{"type": "text", "content": "联系：均为非编码小RNA，由Dicer酶加工形成，并与Argonaute蛋白组装成RISC复合物，通过碱基互补配对靶向mRNA，在转录后水平负调控基因表达。差异：miRNA通常由内源基因组中的发夹结构前体转录，靶向不完全互补的mRNA，主要抑制翻译或诱导去腺苷酸化；siRNA通常来源于外源长双链RNA（dsRNA）或人工导入，靶向完全互补的mRNA，引导Ago2蛋白切割靶mRNA。"}]}, {"question": [{"type": "text", "content": "解释 substrate-level phosphorylation 与 oxidative phosphorylation 的联系和差异。"}], "answer": [{"type": "text", "content": "联系：均为细胞内合成ATP的核心生化机制。差异：底物水平磷酸化由高能代谢物（如1,3-二磷酸甘油酸、磷酸烯醇式丙酮酸）直接将磷酸基团转移给ADP，不依赖电子传递链，发生于糖酵解和三羧酸循环中；氧化磷酸化依赖于线粒体内膜电子传递链建立的质子电化学梯度，由ATP合酶催化合成ATP，需氧气作为最终电子受体。"}]}, {"question": [{"type": "text", "content": "解释 one carbon unit 与 S-Adenosylmethionine（SAM）的联系和差异。"}], "answer": [{"type": "text", "content": "联系：一碳单位是SAM分子中甲基基团的间接来源之一（通过甲硫氨酸循环）。差异：一碳单位（如甲基、亚甲基、甲酰基等）由四氢叶酸（THF）携带，参与嘌呤环、胸腺嘧啶及甲硫氨酸的从头合成；SAM是生物体内最主要的直接甲基供体，由甲硫氨酸与ATP反应生成，参与蛋白质、DNA、RNA及小分子代谢物的甲基化修饰。"}]}, {"question": [{"type": "text", "content": "解释 chromatin loops 与 topologically associated domains（TADs）的联系和差异。"}], "answer": [{"type": "text", "content": "联系：TAD是染色质三维空间折叠的结构单元，其内部包含多个染色质环。差异：TAD是较大的拓扑结构域（通常几百kb至几Mb），边界由CTCF蛋白和黏连蛋白（cohesin）划定，域内互作频率显著高于域间；染色质环是TAD内部由cohesin和CTCF介导的特定长程互作结构（通常几十kb至几百kb），常介导增强子与启动子之间的特异性调控。"}]}, {"question": [{"type": "text", "content": "写出蛋白质变性且沉淀、蛋白质变性但不沉淀、蛋白质不变性但沉淀的例子各一个。"}], "answer": [{"type": "text", "content": "变性且沉淀：煮沸鸡蛋清（加热使蛋白质空间结构破坏，疏水基团暴露后聚集凝固沉淀）。变性但不沉淀：尿素或盐酸胍处理后的球状蛋白溶液（肽链伸展但仍可溶于溶剂，未达到等电点或浓度较低时不沉淀）。不变性但沉淀：硫酸铵分级盐析（中性盐中和蛋白质表面电荷、破坏水化层使其沉淀，但天然构象完整）。"}]}, {"question": [{"type": "text", "content": "100个葡萄糖通过磷酸戊糖途径变为40个5-磷酸-核酮糖，剩下的碳架全部通过磷酸戊糖途径完全氧化为二氧化碳。请计算生成的NADPH的总数量。"}], "answer": [{"type": "text", "content": "总NADPH生成量为 800。计算依据：100个葡萄糖共含600个碳原子，最终生成40个5-磷酸-核酮糖（含200个碳原子），其余400个碳原子经氧化脱羧生成CO₂。磷酸戊糖途径氧化阶段每脱羧1个碳原子伴随产生2分子NADPH，因此总NADPH = 400 × 2 = 800。"}]}, {"question": [{"type": "text", "content": "三组小鼠空腹实验。1. 为什么要提前空腹12小时？2. 为什么B组（缺精氨酸）氨中毒？3. 为什么C组（缺精氨酸+鸟氨酸）没有氨中毒？"}], "answer": [{"type": "text", "content": "(1) 空腹12小时用于耗尽肝糖原储备和循环中的内源性氨基酸，降低基础代谢干扰，使动物主要依赖外源氨基酸供能，从而清晰观察尿素循环对膳食氨基酸的响应。2. B组缺乏精氨酸，而精氨酸是尿素循环的必需中间产物（氨甲酰磷酸+鸟氨酸→瓜氨酸→精氨酸琥珀酸→精氨酸→尿素+鸟氨酸），缺乏精氨酸导致循环中断，氨无法转化为尿素，血氨堆积导致中毒。3. C组添加的鸟氨酸可通过鸟氨酸转氨甲酰酶与氨甲酰磷酸反应生成瓜氨酸，后续生成精氨酸，从而绕过膳食精氨酸的绝对需求，恢复尿素循环功能。"}]}, {"question": [{"type": "text", "content": "拓扑异构酶Ⅱ（Topoisomerase Ⅱ）的相关问题。1. 有什么效果？2. 写两个该酶参与的过程。3. 治疗癌症可能的机理。"}], "answer": [{"type": "text", "content": "(1) 效果：催化DNA双链的瞬时断裂与再连接，改变DNA拓扑结构，可松弛正/负超螺旋，并介导双链DNA的解连环（decatenation）。2. 参与过程：DNA复制（移除复制叉前方形成的正超螺旋，并分离姊妹染色单体）；转录（释放RNA聚合酶行进时产生的扭转应力）；有丝分裂染色体凝集。3. 治疗机理：拓扑异构酶Ⅱ抑制剂（如依托泊苷、多柔比星）可捕获酶与DNA共价结合的切割中间体（“切割-再连接”平衡被破坏），导致DNA双链断裂积累，激活DNA损伤应答及凋亡途径；由于增殖活跃的癌细胞拓扑压力大，对该类药物敏感性更高，从而选择性杀伤。"}]}, {"question": [{"type": "text", "content": "请思考“镜像分子”和“镜像生命体”可能带来的机遇和挑战。"}], "answer": [{"type": "text", "content": "机遇：可作为新型生物材料或药物（D-肽药物具有抗蛋白酶降解特性，半衰期长）；用于镜像生物催化，合成自然界难以制备的立体专一化合物；为研究生命手性起源、对称性破缺及酶进化提供独特工具。挑战：安全风险极大，镜像生命体可能无法被免疫系统识别，逃逸天然免疫监视；缺乏天敌和降解酶系，可能导致生态入侵；技术合成门槛极高（需构建镜像DNA聚合酶和核糖体等）；需配套严格的生物遏制策略和伦理规范。"}]}, {"question": [{"type": "text", "content": "患者长期酗酒且几乎不进食，出现低血糖（40 mg/L）。推测原因和分子机制。"}], "answer": [{"type": "text", "content": "直接原因：糖原耗竭后，糖异生途径被酒精代谢强烈抑制。分子机制：酒精经乙醇脱氢酶氧化为乙醛，产生大量NADH，导致细胞质NADH/NAD⁺比值急剧升高。高NADH抑制糖异生的关键酶（如丙酮酸羧化酶、磷酸烯醇式丙酮酸羧激酶），并促进丙酮酸大量还原为乳酸，减少了糖异生前体（如丙氨酸、乳酸）向葡萄糖的转化；同时，肝脏糖原已耗尽，无法通过糖原分解补充血糖，最终导致严重低血糖。"}]}, {"question": [{"type": "text", "content": "HBG1/2 基因诱导治疗镰状细胞贫血。图中三种分子（根据常见临床及实验策略推断：羟基脲、丁酸盐/HDAC抑制剂、DNA甲基转移酶抑制剂）的治疗机制及缺点。"}], "answer": [{"type": "text", "content": "由于原题配图缺失具体分子结构，以下基于诱导胎儿血红蛋白（HbF）的经典策略补全：分子A（羟基脲）：机制为抑制核糖核苷酸还原酶，通过NO/cGMP通路及应激信号诱导γ-珠蛋白转录；缺点为骨髓抑制、个体差异大。分子B（丁酸盐/组蛋白去乙酰化酶抑制剂）：改变HBG启动子区域组蛋白乙酰化状态，开放染色质促进转录；缺点为半衰期短、需持续给药、胃肠反应明显。分子C（地西他滨/氮杂胞苷，DNA甲基转移酶抑制剂）：降低HBG启动子CpG岛甲基化水平，逆转发育性基因沉默；缺点为遗传毒性、骨髓抑制及致突变风险。"}]}, {"question": [{"type": "text", "content": "解析题：培养液含0.1 M草酰乙酸，供氧加丙酸盐（复合物Ⅱ抑制剂）促琥珀酸生成；切断氧气供N₂加丙酸盐抑琥珀酸生成。推测机理。"}], "answer": [{"type": "text", "content": "供氧条件下：呼吸链正常运转，NADH可被再氧化，TCA循环通量维持。丙酸盐抑制琥珀酸脱氢酶（复合物Ⅱ），使琥珀酸无法氧化为延胡索酸，导致琥珀酸直接累积；同时，草酰乙酸可通过苹果酸脱氢酶还原为苹果酸，苹果酸在复合物Ⅱ抑制处反向或经其他旁路也可转化为琥珀酸，故可见琥珀酸生成增加。缺氧（N₂）条件下：电子传递链受阻，NADH无法重新氧化，导致TCA循环停滞，草酰乙酸向苹果酸/柠檬酸的转化效率大幅降低；且缺乏氧化磷酸化提供的能量支持，草酰乙酸的代谢转化受阻，因此琥珀酸生成被抑制。"}]}, {"question": [{"type": "text", "content": "解析题：基因X表达经细胞因子处理-撤除-再处理呈现“低-高-爆发”趋势。提出假说并设计实验。"}], "answer": [{"type": "text", "content": "假说：细胞因子诱导了基因X启动子区域表观遗传修饰的改变（如组蛋白H3K4me3富集、DNA去甲基化），形成“转录记忆”；撤除因子后，转录因子解离但表观标记保留，mRNA合成回落；再刺激时，转录因子快速结合已开放的染色质模板，导致转录爆发性激活。实验设计：① 使用转录抑制剂（放线菌素D）追踪不同阶段mRNA半衰期，判断表达变化是否源于转录速率改变；② 染色质免疫共沉淀测序（ChIP-seq）检测基因X启动子区组蛋白H3K4me3、H3K27ac及RNA聚合酶II的富集动态；③ 使用组蛋白甲基转移酶抑制剂（如MLL抑制剂）或DNA甲基转移酶抑制剂预处理，观察第三阶段爆发性升高是否被抑制；④ 蛋白质印迹（Western blot）检测该细胞因子下游关键转录因子的磷酸化水平与核转位速率。"}]}];</script>
 
 <script type="text/babel">
-  const { useState, useEffect } = React;
+  const { useState, useLayoutEffect, useRef } = React;
 
   // 自定义 SVG 图标组件，替代有 bug 的 Lucide-React 库，解决 Infinity 冲突
   const CheckCircle2 = ({ size = 24, className = "" }) => (
@@ -557,36 +619,160 @@ const flashcards = [{"q": "解释 miRNA 与 siRNA 的联系和差异。", "a": "
     </svg>
   );
 
-  const RichContent = ({ value, imageClassName = "max-h-72" }) => {
-    const content =
-      typeof value === "string"
-        ? { text: value, images: [] }
-        : { text: value?.text || "", images: value?.images || [] };
+  let mathJaxQueue = Promise.resolve();
+
+  const queueMathTask = (task) => {
+    mathJaxQueue = mathJaxQueue
+      .then(() => window.MathJax?.startup?.promise)
+      .then(task)
+      .catch((error) => console.error("MathJax typesetting failed", error));
+  };
+
+  const queueMathTypeset = (container, text, shouldSkip) => {
+    queueMathTask(() => {
+      const mathJax = window.MathJax;
+      if (
+        shouldSkip() ||
+        !container.isConnected ||
+        !mathJax?.typesetPromise
+      ) {
+        return;
+      }
+
+      mathJax.typesetClear?.([container]);
+      container.textContent = text || "";
+      return mathJax.typesetPromise([container]);
+    });
+  };
+
+  const MathText = ({ text, className = "" }) => {
+    const containerRef = useRef(null);
+
+    useLayoutEffect(() => {
+      const container = containerRef.current;
+      if (!container) return undefined;
+
+      if (!container.hasChildNodes()) {
+        container.textContent = text || "";
+      }
+      let disposed = false;
+
+      const typeset = () => {
+        const mathJax = window.MathJax;
+        if (disposed || !mathJax?.typesetPromise) return;
+        queueMathTypeset(container, text, () => disposed);
+      };
+
+      if (window.MathJax?.typesetPromise) {
+        typeset();
+      } else {
+        // Keep the source readable when the CDN is slow or unavailable.
+        container.textContent = text || "";
+        window.addEventListener("mathjax-ready", typeset, { once: true });
+      }
+
+      return () => {
+        disposed = true;
+        window.removeEventListener("mathjax-ready", typeset);
+        if (window.MathJax?.typesetClear) {
+          queueMathTask(() => window.MathJax.typesetClear([container]));
+        }
+      };
+    }, [text]);
 
     return (
-      <div className="min-w-0 space-y-3">
-        {content.text && (
-          <div className="whitespace-pre-wrap break-words">{content.text}</div>
-        )}
-        {content.images.map((image, index) => (
-          <figure key={`${image.src}-${index}`} className="space-y-1.5">
-            <img
-              src={image.src}
-              alt={image.alt || ""}
-              loading="lazy"
-              decoding="async"
-              className={`mx-auto w-auto max-w-full rounded-xl object-contain ${imageClassName}`}
-            />
-            {image.caption && (
-              <figcaption className="text-center text-xs font-normal opacity-70">
-                {image.caption}
-              </figcaption>
-            )}
-          </figure>
-        ))}
-      </div>
+      <div
+        ref={containerRef}
+        className={`math-content ${className}`}
+      ></div>
     );
   };
+
+  const alignmentClass = (alignment) => {
+    if (alignment === "right") return "text-right";
+    if (alignment === "middle") return "text-center";
+    return "text-left";
+  };
+
+  const ContentTable = ({ element }) => (
+    <div
+      className="max-w-full overflow-x-auto rounded-xl shadow-md"
+      onClick={(event) => event.stopPropagation()}
+    >
+      <table className="w-full min-w-max border-collapse bg-white text-sm font-normal text-slate-700">
+        {element.headers.length > 0 && (
+          <thead className="bg-brand-500/50 text-brand-950">
+            <tr className="border-b border-slate-300/50">
+              {element.headers.map((header, index) => (
+                <th
+                  key={index}
+                  scope="col"
+                  className={`px-4 py-3 font-bold ${alignmentClass(element.align[index])}`}
+                >
+                  <MathText text={header} />
+                </th>
+              ))}
+            </tr>
+          </thead>
+        )}
+        <tbody>
+          {element.rows.map((row, rowIndex) => (
+            <tr
+              key={rowIndex}
+              className="border-b border-slate-300/50 last:border-b-0"
+            >
+              {row.map((cell, cellIndex) => (
+                <td
+                  key={cellIndex}
+                  className={`px-4 py-3 ${alignmentClass(element.align[cellIndex])}`}
+                >
+                  <MathText text={cell} />
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+
+  const RichContent = ({ value = [], imageClassName = "max-h-72" }) => (
+    <div className="min-w-0 space-y-3">
+      {value.map((element, index) => {
+        if (element.type === "text") {
+          return (
+            <MathText
+              key={index}
+              text={element.content}
+              className="whitespace-pre-wrap break-words"
+            />
+          );
+        }
+        if (element.type === "image") {
+          return (
+            <figure key={index} className="space-y-1.5">
+              <img
+                src={element.src}
+                alt={element.alt || ""}
+                loading="lazy"
+                decoding="async"
+                className={`mx-auto w-auto max-w-full rounded-xl object-contain ${imageClassName}`}
+              />
+              {element.caption && (
+                <figcaption className="text-center text-xs font-normal opacity-70">
+                  {element.caption}
+                </figcaption>
+              )}
+            </figure>
+          );
+        }
+        if (element.type === "table") {
+          return <ContentTable key={index} element={element} />;
+        }
+        return null;
+      })}
+    </div>
+  );
 
   function App() {
     const [view, setView] = useState("menu"); // 'menu', 'quiz', 'flashcard'
@@ -613,9 +799,12 @@ const flashcards = [{"q": "解释 miRNA 与 siRNA 的联系和差异。", "a": "
       setWrongAnswers([]);
     };
 
-    // 将旧版单值 c 和新版列表 c 统一为答案索引列表。
     const getCorrectAnswers = (question) =>
-      Array.isArray(question.c) ? question.c : [question.c];
+      question.options.reduce(
+        (answers, option, index) =>
+          option.correct ? [...answers, index] : answers,
+        [],
+      );
 
     const submitQuizAnswer = (userAnswers) => {
       if (isAnswerSubmitted || userAnswers.length === 0) return;
@@ -694,11 +883,14 @@ const flashcards = [{"q": "解释 miRNA 与 siRNA 的联系和差异。", "a": "
               <BookOpen size={40} />
             </div>
             <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-3 break-words">
-              细胞与生物分子Ⅱ 2024-2025 学年秋冬学期期末回忆卷
+              <MathText text={examMetadata.title} />
             </h1>
-            <p className="text-base sm:text-lg text-slate-500 leading-relaxed">
-              <p></p><p>Made by 李建树</p>
-            </p>
+            <div className="space-y-1 text-base leading-relaxed text-slate-500 sm:text-lg">
+              {examMetadata.description && (
+                <MathText text={examMetadata.description} />
+              )}
+              <div>Made by {examMetadata.authors}</div>
+            </div>
           </div>
 
           <div
@@ -797,7 +989,7 @@ const flashcards = [{"q": "解释 miRNA 与 siRNA 的联系和差异。", "a": "
                   </span>
                 </div>
                 <div className="text-lg sm:text-xl font-bold text-slate-800 leading-relaxed">
-                  <RichContent value={mcqs[currentIdx].q} />
+                  <RichContent value={mcqs[currentIdx].question} />
                 </div>
                 {getCorrectAnswers(mcqs[currentIdx]).length > 1 && (
                   <p className="text-sm text-slate-500 mt-3">
@@ -806,7 +998,7 @@ const flashcards = [{"q": "解释 miRNA 与 siRNA 的联系和差异。", "a": "
                 )}
               </div>
               <div className="grid gap-3">
-                {mcqs[currentIdx].a.map((opt, i) => {
+                {mcqs[currentIdx].options.map((opt, i) => {
                   const correctAnswers = getCorrectAnswers(mcqs[currentIdx]);
                   const isSelected = selectedOptions.includes(i);
                   const isCorrectOption = correctAnswers.includes(i);
@@ -839,7 +1031,10 @@ const flashcards = [{"q": "解释 miRNA 与 siRNA 的联系和差异。", "a": "
                           {String.fromCharCode(65 + i)}.
                         </span>
                         <div className="min-w-0 flex-1">
-                          <RichContent value={opt} imageClassName="max-h-48" />
+                          <RichContent
+                            value={[opt]}
+                            imageClassName="max-h-48"
+                          />
                         </div>
                       </div>
                       {isAnswerSubmitted && isCorrectOption && (
@@ -911,7 +1106,7 @@ const flashcards = [{"q": "解释 miRNA 与 siRNA 的联系和差异。", "a": "
                           <span className="shrink-0">{idx + 1}.</span>
                           <div className="min-w-0 flex-1">
                             <RichContent
-                              value={item.q}
+                              value={item.question}
                               imageClassName="max-h-32"
                             />
                           </div>
@@ -947,6 +1142,34 @@ const flashcards = [{"q": "解释 miRNA 与 siRNA 的联系和差异。", "a": "
               </div>
             </div>
           )}
+          
+          {/* 控制按钮 */}
+          <div className="flex items-center justify-between gap-2 sm:gap-4 mt-5 sm:mt-8">
+            <button
+              disabled={currentIdx === 0}
+              onClick={() => {
+                setCurrentIdx(currentIdx - 1);
+                setFlipped(false);
+              }}
+              className="min-h-12 flex flex-1 sm:flex-none items-center justify-center gap-1 sm:gap-2 px-3 sm:px-6 py-3 bg-white text-slate-600 hover:text-slate-800 border rounded-xl font-bold shadow-sm transition-all disabled:opacity-30 disabled:pointer-events-none"
+            >
+              <ChevronLeft size={20} /> 上一题
+            </button>
+            <button
+              onClick={() => {
+                if (currentIdx < mcqs.length - 1) {
+                  setCurrentIdx(currentIdx + 1);
+                  setFlipped(false);
+                } else {
+                  setView("menu");
+                }
+              }}
+              className="min-h-12 flex flex-1 sm:flex-none items-center justify-center gap-1 sm:gap-2 px-3 sm:px-6 py-3 bg-brand-800 hover:bg-brand-900 text-white rounded-xl font-bold shadow-sm transition-all"
+            >
+              {currentIdx === mcqs.length - 1 ? "完成复习" : "下一题"}{" "}
+              <ChevronRight size={20} />
+            </button>
+          </div>
 
           {/* 选择题快速导航模态框 */}
           {showNavModal && (
@@ -985,7 +1208,7 @@ const flashcards = [{"q": "解释 miRNA 与 siRNA 的联系和差异。", "a": "
 
     if (view === "flashcard") {
       return (
-        <div className="max-w-2xl mx-auto pt-1 px-0 sm:pt-4 sm:px-4 md:pt-8">
+        <div className="flashcard-view min-h-full max-w-4xl mx-auto pt-1 px-0 sm:pt-4 sm:px-4 md:pt-8">
           {/* 导航头 */}
           <div className="flex items-center justify-between gap-2 mb-4 sm:mb-6">
             <button
@@ -1018,39 +1241,30 @@ const flashcards = [{"q": "解释 miRNA 与 siRNA 的联系和差异。", "a": "
             ></div>
           </div>
 
-          {/* 翻转卡片结构 */}
+          {/* 自适应叠层翻转卡片 */}
           <div
             className={`flip-card ${flipped ? "flipped" : ""} w-full`}
             onClick={() => setFlipped((isFlipped) => !isFlipped)}
+            onKeyDown={(event) => {
+              if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                setFlipped((isFlipped) => !isFlipped);
+              }
+            }}
+            role="button"
+            tabIndex="0"
+            aria-label={flipped ? "返回查看问题" : "查看参考答案"}
           >
-            <div
-              className="flip-card-inner"
-              style={{
-                transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)",
-              }}
-            >
+            <div className="flip-card-inner">
               {/* 卡片正面 (问题) */}
-              <div className="flip-card-front bg-white border border-slate-200 text-slate-800 flex flex-col justify-between">
-                <div className="p-3 bg-brand-50 text-brand-600 rounded-full mt-4 self-center">
-                  <Lightbulb size={28} />
-                </div>
-                <div className="my-auto min-h-0 w-full overflow-y-auto overscroll-contain px-2 py-2 scrollbar-hide sm:px-4">
-                  <span className="text-xs font-bold text-slate-400 block mb-2">
-                    QUESTION {currentIdx + 1}
-                  </span>
-                  <div className="text-lg sm:text-xl font-bold leading-relaxed">
-                    <RichContent
-                      value={flashcards[currentIdx].q}
-                      imageClassName="max-h-48"
-                    />
-                  </div>
-                </div>
-                <p className="text-slate-400 text-xs font-medium pb-4 flex items-center gap-1 animate-pulse">
+              <div className="flip-card-front justify-start overflow-hidden bg-white border border-slate-200 text-slate-800">
+                <div className="flip-card-hint text-slate-500 text-xs sm:text-sm font-semibold">
                   <svg
-                    className="w-4 h-4"
+                    className="h-4 w-4 shrink-0"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
+                    aria-hidden="true"
                   >
                     <path
                       strokeLinecap="round"
@@ -1060,23 +1274,38 @@ const flashcards = [{"q": "解释 miRNA 与 siRNA 的联系和差异。", "a": "
                     />
                   </svg>
                   点击卡片翻看参考答案
-                </p>
-              </div>
+                </div>
 
-              {/* 卡片背面 (要点解析) */}
-              <div className="flip-card-back bg-brand-950 text-white border border-brand-900 text-left items-start overflow-y-auto scrollbar-hide flex flex-col justify-between">
-                <div className="w-full">
-                  <h4 className="text-brand-300 font-bold mb-4 flex items-center gap-2 border-b border-brand-900 pb-2">
-                    <CheckCircle2 size={18} /> 核心要点 / 答案分析
-                  </h4>
-                  <div className="text-base leading-relaxed text-slate-200 font-medium">
+                <div className="relative z-10 flex w-full flex-col gap-6 sm:gap-8">
+                  <div className="flex w-fit items-center gap-2 rounded-full bg-brand-50 px-3 py-2 text-brand-700">
+                    <Lightbulb size={22} className="shrink-0" />
+                    <span className="text-xs font-bold uppercase tracking-wider">
+                      QUESTION {currentIdx + 1}
+                    </span>
+                  </div>
+                  <div className="w-full text-left text-lg sm:text-xl font-bold leading-relaxed">
                     <RichContent
-                      value={flashcards[currentIdx].a}
-                      imageClassName="max-h-48"
+                      value={flashcards[currentIdx].question}
+                      imageClassName="max-h-[60dvh]"
                     />
                   </div>
                 </div>
-                <p className="pt-6 text-slate-500 text-xs text-center w-full mt-auto">
+              </div>
+
+              {/* 卡片背面 (要点解析) */}
+              <div className="flip-card-back justify-between bg-brand-950 text-white border border-brand-900 text-left">
+                <div className="relative z-10 w-full">
+                  <h4 className="text-brand-300 font-bold mb-4 flex items-center gap-2 border-b border-brand-900 pb-2">
+                    <CheckCircle2 size={18} /> 参考答案
+                  </h4>
+                  <div className="text-base leading-relaxed text-slate-200 font-medium">
+                    <RichContent
+                      value={flashcards[currentIdx].answer}
+                      imageClassName="max-h-[60dvh]"
+                    />
+                  </div>
+                </div>
+                <p className="relative z-10 pt-8 text-slate-500 text-xs text-center w-full mt-auto">
                   点击卡片返回问题
                 </p>
               </div>

@@ -29,6 +29,31 @@
         },
       };
     </script>
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [
+            ["$", "$"],
+            ["\\(", "\\)"],
+          ],
+          displayMath: [
+            ["$$", "$$"],
+            ["\\[", "\\]"],
+          ],
+          processEscapes: true,
+        },
+        startup: {
+          // React owns the page content, so each content component asks MathJax
+          // to typeset itself after it is mounted or updated.
+          typeset: false,
+          ready() {
+            MathJax.startup.defaultReady();
+            window.dispatchEvent(new Event("mathjax-ready"));
+          },
+        },
+      };
+    </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -43,18 +68,35 @@
           Roboto,
           sans-serif;
       }
+      #root {
+        min-height: 100%;
+      }
+      .math-content {
+        max-width: 100%;
+        overflow-x: auto;
+        overflow-y: hidden;
+      }
+      .math-content mjx-container[display="true"] {
+        margin: 0.5em 0 !important;
+      }
       .flip-card {
         perspective: 1000px;
-        height: clamp(320px, 55dvh, 380px);
+        min-height: clamp(28rem, calc(100dvh - 18rem), 52rem);
+      }
+      .flip-card:focus-visible {
+        outline: 3px solid rgb(39 139 112 / 0.45);
+        outline-offset: 4px;
+        border-radius: 1.5rem;
       }
       .flip-card-inner {
         position: relative;
+        display: grid;
         width: 100%;
-        height: 100%;
-        text-align: center;
+        min-height: inherit;
+        text-align: left;
         -webkit-transform: rotateY(0deg);
         transform: rotateY(0deg);
-        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         -webkit-transform-style: preserve-3d;
         transform-style: preserve-3d;
         transform-origin: center;
@@ -67,15 +109,15 @@
       }
       .flip-card-front,
       .flip-card-back {
-        position: absolute;
+        position: relative;
+        grid-area: 1 / 1;
         width: 100%;
-        height: 100%;
+        min-height: inherit;
         -webkit-backface-visibility: hidden;
         backface-visibility: hidden;
         display: flex;
         flex-direction: column;
-        justify-content: center;
-        align-items: center;
+        align-items: stretch;
         padding: 2rem;
         border-radius: 1.5rem;
         box-shadow:
@@ -86,8 +128,19 @@
         -webkit-transform: rotateY(180deg);
         transform: rotateY(180deg);
       }
-      .scrollbar-hide::-webkit-scrollbar {
-        display: none;
+      .flip-card-hint {
+        position: absolute;
+        right: 1.5rem;
+        bottom: 1.5rem;
+        left: 1.5rem;
+        z-index: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.375rem;
+        opacity: 0.26;
+        pointer-events: none;
+        user-select: none;
       }
       .sidebar-shell {
         visibility: hidden;
@@ -164,6 +217,14 @@
         .flip-card-back {
           padding: 1rem;
           border-radius: 1rem;
+        }
+        .flip-card {
+          min-height: clamp(24rem, calc(100dvh - 15.5rem), 44rem);
+        }
+        .flip-card-hint {
+          right: 1rem;
+          bottom: 1rem;
+          left: 1rem;
         }
       }
       @media (prefers-reduced-motion: reduce) {
@@ -362,11 +423,12 @@
       <!-- 右侧主体内容区 -->
       <main class=".js-quiz-container min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-contain p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:p-5 md:p-8"><div id="root"></div>
 
-<script>const mcqs = [{"q": "分子间作用力的量级为：", "a": ["1 N", "1 × 10⁻³ N", "1 × 10⁻⁶ N", "1 × 10⁻⁹ N", "1 × 10⁻¹² N"], "c": [4]}, {"q": "以下哪个是单分子技术：", "a": ["光镊", "膜片钳", "磁镊", "原子力显微镜", "以上都是"], "c": [4]}, {"q": "以下有关冠状病毒入侵受体细胞的生物力学的说法错误的是：", "a": ["冠状病毒入侵受体细胞的过程中存在生物力作用", "冠状病毒入侵受体细胞的过程中会感受到拉力和压力", "冠状病毒刺突蛋白受力会减缓刺突蛋白和 ACE2 解离", "冠状病毒演化突变刺突蛋白的 RBD 区会降低刺突蛋白与 ACE2 的力学稳定性", "冠状病毒刺突蛋白受力，S1/S2 区域结合更稳定"], "c": [2]}, {"q": "下面关于力在各个尺度上的描述正确的是：", "a": ["分子间的作用力：范德华力、静电力", "细胞间的作用力：粘附力", "组织和器官尺度上的力学因素：受限空间、基质软硬度", "组织和器官尺度上的作用力：流、拉、扭、压", "以上都是"], "c": [4]}, {"q": "下面关于吉布斯自由能的说法错误的是：", "a": ["系统的吉布斯自由能可由系统的焓和熵计算出", "Δ_r G 取决于化学反应平衡常数和各物质的浓度", "标准状态下，ΔG° = - RT ln K", "平衡状态时，ΔG = ΔG°", "吉布斯自由能变是吉布斯自由能的导数"], "c": [3]}, {"q": "下面有关 ATP 水解的描述说法错误的是：", "a": ["ATP 水解释放出的能量的大小与 ATP / ADP 的浓度有关", "ATP 在线粒体基质中水解释放的能量更多", "ATP 与 ADP 对向转运是主动运输", "与 ATP 水解偶联是很多热力学不利反应能发生的原因", "在体内 ATP 的水解和 pH、Mg²⁺ 浓度和磷酸基团水平有关"], "c": [1]}, {"q": "下列关于核磁共振说法正确的是：", "a": ["核自旋量子数 I 反映外加磁场方向的投影，反映了核自旋角动量空间取向的量子化", "磁量子数 m_I 反映核自旋角动量大小的量子化", "核磁共振只能用于氢核的检测", "核磁距正比于 m_I", "¹H 拉莫尔频率与仪器精度成反比"], "c": [3]}, {"q": "下列关于核磁共振说法错误的是：", "a": ["核磁共振可以测定蛋白质的三维结构", "可以研究动态变化", "不适用于大分子", "解析结构一般需要 ¹H-¹³C-¹⁵N 三谱联用，所以需要同位素标记的蛋白质", "通过实验和非实验约束可以确定唯一结构"], "c": [2]}, {"q": "STRING 数据库提供：", "a": ["蛋白互作的证据", "蛋白互作的机理", "哪些蛋白有互作", "蛋白互作的网络", "蛋白互作的文献"], "c": [3]}, {"q": "同源建模序列比对氨基酸一致性力求要达到：", "a": ["10%", "15%", "20%", "30%", "25%"], "c": [3]}, {"q": "使用在线服务器可以获取：", "a": ["氨基酸的基本性质", "肽链的二级结构预测", "蛋白的跨膜结构域预测", "蛋白无固定结构域预测", "以上都是"], "c": [4]}, {"q": "下面有关生物大分子的动态变化哪个时间尺度更大：", "a": ["氨基酸侧链上甲基的旋转", "化学键的拉伸振动", "蛋白质二级结构的形成", "蛋白质三级结构的形成", "氨基酸侧链上甲基的旋转"], "c": [3]}, {"q": "下面哪个是线粒体膜间隙的标志酶：", "a": ["单胺氧化酶", "腺苷酸激酶", "孔蛋白", "细胞色素氧化酶", "ATP 合酶"], "c": [1]}, {"q": "线粒体运动的 Miro1 / Miro2 是：", "a": ["ATP 酶", "GTPase 酶", "泛素化酶", "水解酶", "（未回忆）"], "c": [1]}, {"q": "p-tau217 是什么疾病的生物标志物（Biomarker）：", "a": ["阿尔兹海默", "帕金森", "肌萎缩性脊髓侧索硬化症", "亨廷顿病", "多发性硬化"], "c": [0]}, {"q": "第一个宣告发现 GFP 的人是：", "a": ["格拉斯・普拉舍", "下村修", "钱永健", "马丁·查尔菲", "弗兰克・约翰逊"], "c": [1]}, {"q": "以下哪个是线性马达：", "a": ["肌球蛋白", "RNA 聚合酶", "DNA 聚合酶", "ATP 合酶", "细菌的鞭毛马达"], "c": [0]}, {"q": "动力蛋白（dynein）在微管上运动方向是：", "a": ["正极", "负极", "双向随机运动", "依靠微丝运动", "（未回忆）"], "c": [1]}, {"q": "驱动分子马达步行的机制：", "a": ["两条重链交替 ATP 水解", "轻链甲基化", "微丝的动态不稳定性", "钙离子波动", "膜电位变化"], "c": [0]}, {"q": "tau 蛋白过度磷酸化导致 AD 的可能机制是：", "a": ["激活驱动蛋白", "抑制动力蛋白", "激活肌球蛋白在微丝上运动", "破坏微管稳定性并影响线粒体运输", "激活线粒体自噬"], "c": [3]}];
-const flashcards = [{"q": "简要说出两种单分子力学操作技术", "a": "光镊和磁镊（或原子力显微镜）。"}, {"q": "简要说出核磁共振技术在非结构生物学领域的应用", "a": "研究生物大分子的动态变化、蛋白质-配体相互作用、代谢组学分析、药物结合位点鉴定、膜蛋白构象变化等。"}, {"q": "简要说出生物成像技术在科学研究中的应用", "a": "观察细胞和亚细胞结构、追踪蛋白质等分子的动态分布、研究疾病模型、监测药物作用效果、以及活体成像等。"}, {"q": "简要说出超氧化物歧化酶的催化原理和生理学意义", "a": "催化超氧阴离子自由基（O₂⁻）歧化为过氧化氢（H₂O₂）和氧气（O₂）；生理意义是清除活性氧，保护细胞免受氧化损伤，维持氧化还原平衡。"}, {"q": "说出至少五个用于表征荧光物质的参数", "a": "激发光谱、发射光谱、荧光量子产率、荧光寿命、荧光偏振（或各向异性）、斯托克斯位移等。"}, {"q": "研究发现某新蛋白质为疾病发生的关键调控因子，具备成为治疗靶标的生物学特征。请简述该靶点蛋白的药物研发工作可以采用哪些计算生物学研究策略", "a": "可采用同源建模或从头预测构建三维结构；分子对接和虚拟筛选发现候选小分子；分子动力学模拟评估结合稳定性；药效团模型和定量构效关系优化先导化合物；以及基于网络的靶点-疾病关联分析。"}, {"q": "膜片钳技术的原理和记录方式", "a": "原理：利用玻璃微电极与细胞膜形成高阻（吉欧级）封接，隔离膜片上的离子通道，在电压钳制下记录单个或群体离子通道的电流。记录方式包括：细胞贴附式、内面向外式、外面向外式、全细胞式、穿孔膜片钳等。"}, {"q": "冷冻电镜技术解析生物样品结构的优点", "a": "无需结晶，可解析近原子分辨率（2-4 Å）结构；适用于膜蛋白、大分子复合物和动态构象；样品保持在近生理状态的冷冻水合环境中；可同时获得多个构象状态；对样品纯度要求相对较低。"}, {"q": {"text": "Activation and closed-state inactivation mechanisms of the human voltage-gated KV4 channel complexes, Molecular Cell (Vol. 82, pp. 2427-2442) 报道了电压门控钾离子通道 Kv4.2 在不同状态下的结构：图 A 左侧 VSD 激活状态，右侧 VSD 静息状态；图 B 单个亚基关闭和开放状态下 VSD、S4-S5 linker、gate 的 S6 C 末端结构的比较；图 C 蓝色开放状态，橙色关闭状态。根据图片结合分析和比较，阐述 Kv4.2 的电压门控机理（图中所示的箭头为从开放状态转为关闭状态）。", "images": [{"src": "../assets/2024-2025-final-exam-question-4-1-aa3558897e08.png", "alt": "第 4-1 题题图"}]}, "a": "电压感受器（VSD）中的 S4 片段富含正电荷，感知膜电位变化。去极化时，S4 向外移动，通过 S4-S5 连接器牵拉 S6 段（门控），使通道开放；复极化时，S4 向内移动，S6 返回关闭构象，门控关闭。从开放到关闭（箭头方向），S4 内移，S4-S5 linker 松弛，S6 弯曲或扭转，孔道收缩，同时可能伴随 N-型或 C-型失活。"}, {"q": {"text": "新发现一种海洋微生物可以在极端盐碱环境生存。其表面有特殊膜结构可以有效隔绝细胞内外，此外还发现参与物质运输和能量转换。进一步研究发现还可以对不同类型的物质有选择透过性，允许特定物质进入，阻止其他物质进入。（1）推测该特定膜结构最可能属于哪种膜，并解释依据。（2）结合该膜结构的功能，分析其在维持细胞内外环境稳态中发挥的作用。", "images": [{"src": "../assets/2024-2025-final-exam-question-4-2-a78cef02d05d.png", "alt": "第 4-2 题题图"}]}, "a": "（1）最可能属于细胞膜（质膜）。依据：具有隔绝内外、物质运输、能量转换和选择透过性，是细胞膜的基本功能。（2）通过选择透过性，允许离子和营养物质选择性进入，排出有毒离子（如 Na⁺）和代谢废物；参与质子梯度或离子梯度建立，驱动 ATP 合成；维持细胞内合适的离子浓度、pH 和渗透压，抵御外部高盐碱环境，保证代谢酶活性。"}];</script>
+<script>const examMetadata = {"title": "医学生物物理学 2024-2025 学年春学期期末回忆卷", "description": "", "authors": "李建树"};
+const mcqs = [{"question": [{"type": "text", "content": "分子间作用力的量级为："}], "options": [{"type": "text", "content": "1 N", "correct": false}, {"type": "text", "content": "1 × 10⁻³ N", "correct": false}, {"type": "text", "content": "1 × 10⁻⁶ N", "correct": false}, {"type": "text", "content": "1 × 10⁻⁹ N", "correct": false}, {"type": "text", "content": "1 × 10⁻¹² N", "correct": true}]}, {"question": [{"type": "text", "content": "以下哪个是单分子技术："}], "options": [{"type": "text", "content": "光镊", "correct": false}, {"type": "text", "content": "膜片钳", "correct": false}, {"type": "text", "content": "磁镊", "correct": false}, {"type": "text", "content": "原子力显微镜", "correct": false}, {"type": "text", "content": "以上都是", "correct": true}]}, {"question": [{"type": "text", "content": "以下有关冠状病毒入侵受体细胞的生物力学的说法错误的是："}], "options": [{"type": "text", "content": "冠状病毒入侵受体细胞的过程中存在生物力作用", "correct": false}, {"type": "text", "content": "冠状病毒入侵受体细胞的过程中会感受到拉力和压力", "correct": false}, {"type": "text", "content": "冠状病毒刺突蛋白受力会减缓刺突蛋白和 ACE2 解离", "correct": true}, {"type": "text", "content": "冠状病毒演化突变刺突蛋白的 RBD 区会降低刺突蛋白与 ACE2 的力学稳定性", "correct": false}, {"type": "text", "content": "冠状病毒刺突蛋白受力，S1/S2 区域结合更稳定", "correct": false}]}, {"question": [{"type": "text", "content": "下面关于力在各个尺度上的描述正确的是："}], "options": [{"type": "text", "content": "分子间的作用力：范德华力、静电力", "correct": false}, {"type": "text", "content": "细胞间的作用力：粘附力", "correct": false}, {"type": "text", "content": "组织和器官尺度上的力学因素：受限空间、基质软硬度", "correct": false}, {"type": "text", "content": "组织和器官尺度上的作用力：流、拉、扭、压", "correct": false}, {"type": "text", "content": "以上都是", "correct": true}]}, {"question": [{"type": "text", "content": "下面关于吉布斯自由能的说法错误的是："}], "options": [{"type": "text", "content": "系统的吉布斯自由能可由系统的焓和熵计算出", "correct": false}, {"type": "text", "content": "Δ_r G 取决于化学反应平衡常数和各物质的浓度", "correct": false}, {"type": "text", "content": "标准状态下，ΔG° = - RT ln K", "correct": false}, {"type": "text", "content": "平衡状态时，ΔG = ΔG°", "correct": true}, {"type": "text", "content": "吉布斯自由能变是吉布斯自由能的导数", "correct": false}]}, {"question": [{"type": "text", "content": "下面有关 ATP 水解的描述说法错误的是："}], "options": [{"type": "text", "content": "ATP 水解释放出的能量的大小与 ATP / ADP 的浓度有关", "correct": false}, {"type": "text", "content": "ATP 在线粒体基质中水解释放的能量更多", "correct": true}, {"type": "text", "content": "ATP 与 ADP 对向转运是主动运输", "correct": false}, {"type": "text", "content": "与 ATP 水解偶联是很多热力学不利反应能发生的原因", "correct": false}, {"type": "text", "content": "在体内 ATP 的水解和 pH、Mg²⁺ 浓度和磷酸基团水平有关", "correct": false}]}, {"question": [{"type": "text", "content": "下列关于核磁共振说法正确的是："}], "options": [{"type": "text", "content": "核自旋量子数 I 反映外加磁场方向的投影，反映了核自旋角动量空间取向的量子化", "correct": false}, {"type": "text", "content": "磁量子数 m_I 反映核自旋角动量大小的量子化", "correct": false}, {"type": "text", "content": "核磁共振只能用于氢核的检测", "correct": false}, {"type": "text", "content": "核磁距正比于 m_I", "correct": true}, {"type": "text", "content": "¹H 拉莫尔频率与仪器精度成反比", "correct": false}]}, {"question": [{"type": "text", "content": "下列关于核磁共振说法错误的是："}], "options": [{"type": "text", "content": "核磁共振可以测定蛋白质的三维结构", "correct": false}, {"type": "text", "content": "可以研究动态变化", "correct": false}, {"type": "text", "content": "不适用于大分子", "correct": true}, {"type": "text", "content": "解析结构一般需要 ¹H-¹³C-¹⁵N 三谱联用，所以需要同位素标记的蛋白质", "correct": false}, {"type": "text", "content": "通过实验和非实验约束可以确定唯一结构", "correct": false}]}, {"question": [{"type": "text", "content": "STRING 数据库提供："}], "options": [{"type": "text", "content": "蛋白互作的证据", "correct": false}, {"type": "text", "content": "蛋白互作的机理", "correct": false}, {"type": "text", "content": "哪些蛋白有互作", "correct": false}, {"type": "text", "content": "蛋白互作的网络", "correct": true}, {"type": "text", "content": "蛋白互作的文献", "correct": false}]}, {"question": [{"type": "text", "content": "同源建模序列比对氨基酸一致性力求要达到："}], "options": [{"type": "text", "content": "10%", "correct": false}, {"type": "text", "content": "15%", "correct": false}, {"type": "text", "content": "20%", "correct": false}, {"type": "text", "content": "30%", "correct": true}, {"type": "text", "content": "25%", "correct": false}]}, {"question": [{"type": "text", "content": "使用在线服务器可以获取："}], "options": [{"type": "text", "content": "氨基酸的基本性质", "correct": false}, {"type": "text", "content": "肽链的二级结构预测", "correct": false}, {"type": "text", "content": "蛋白的跨膜结构域预测", "correct": false}, {"type": "text", "content": "蛋白无固定结构域预测", "correct": false}, {"type": "text", "content": "以上都是", "correct": true}]}, {"question": [{"type": "text", "content": "下面有关生物大分子的动态变化哪个时间尺度更大："}], "options": [{"type": "text", "content": "氨基酸侧链上甲基的旋转", "correct": false}, {"type": "text", "content": "化学键的拉伸振动", "correct": false}, {"type": "text", "content": "蛋白质二级结构的形成", "correct": false}, {"type": "text", "content": "蛋白质三级结构的形成", "correct": true}, {"type": "text", "content": "氨基酸侧链上甲基的旋转", "correct": false}]}, {"question": [{"type": "text", "content": "下面哪个是线粒体膜间隙的标志酶："}], "options": [{"type": "text", "content": "单胺氧化酶", "correct": false}, {"type": "text", "content": "腺苷酸激酶", "correct": true}, {"type": "text", "content": "孔蛋白", "correct": false}, {"type": "text", "content": "细胞色素氧化酶", "correct": false}, {"type": "text", "content": "ATP 合酶", "correct": false}]}, {"question": [{"type": "text", "content": "线粒体运动的 Miro1 / Miro2 是："}], "options": [{"type": "text", "content": "ATP 酶", "correct": false}, {"type": "text", "content": "GTPase 酶", "correct": true}, {"type": "text", "content": "泛素化酶", "correct": false}, {"type": "text", "content": "水解酶", "correct": false}, {"type": "text", "content": "（未回忆）", "correct": false}]}, {"question": [{"type": "text", "content": "p-tau217 是什么疾病的生物标志物（Biomarker）："}], "options": [{"type": "text", "content": "阿尔兹海默", "correct": true}, {"type": "text", "content": "帕金森", "correct": false}, {"type": "text", "content": "肌萎缩性脊髓侧索硬化症", "correct": false}, {"type": "text", "content": "亨廷顿病", "correct": false}, {"type": "text", "content": "多发性硬化", "correct": false}]}, {"question": [{"type": "text", "content": "第一个宣告发现 GFP 的人是："}], "options": [{"type": "text", "content": "格拉斯・普拉舍", "correct": false}, {"type": "text", "content": "下村修", "correct": true}, {"type": "text", "content": "钱永健", "correct": false}, {"type": "text", "content": "马丁·查尔菲", "correct": false}, {"type": "text", "content": "弗兰克・约翰逊", "correct": false}]}, {"question": [{"type": "text", "content": "以下哪个是线性马达："}], "options": [{"type": "text", "content": "肌球蛋白", "correct": true}, {"type": "text", "content": "RNA 聚合酶", "correct": false}, {"type": "text", "content": "DNA 聚合酶", "correct": false}, {"type": "text", "content": "ATP 合酶", "correct": false}, {"type": "text", "content": "细菌的鞭毛马达", "correct": false}]}, {"question": [{"type": "text", "content": "动力蛋白（dynein）在微管上运动方向是："}], "options": [{"type": "text", "content": "正极", "correct": false}, {"type": "text", "content": "负极", "correct": true}, {"type": "text", "content": "双向随机运动", "correct": false}, {"type": "text", "content": "依靠微丝运动", "correct": false}, {"type": "text", "content": "（未回忆）", "correct": false}]}, {"question": [{"type": "text", "content": "驱动分子马达步行的机制："}], "options": [{"type": "text", "content": "两条重链交替 ATP 水解", "correct": true}, {"type": "text", "content": "轻链甲基化", "correct": false}, {"type": "text", "content": "微丝的动态不稳定性", "correct": false}, {"type": "text", "content": "钙离子波动", "correct": false}, {"type": "text", "content": "膜电位变化", "correct": false}]}, {"question": [{"type": "text", "content": "tau 蛋白过度磷酸化导致 AD 的可能机制是："}], "options": [{"type": "text", "content": "激活驱动蛋白", "correct": false}, {"type": "text", "content": "抑制动力蛋白", "correct": false}, {"type": "text", "content": "激活肌球蛋白在微丝上运动", "correct": false}, {"type": "text", "content": "破坏微管稳定性并影响线粒体运输", "correct": true}, {"type": "text", "content": "激活线粒体自噬", "correct": false}]}];
+const flashcards = [{"question": [{"type": "text", "content": "简要说出两种单分子力学操作技术"}], "answer": [{"type": "text", "content": "光镊和磁镊（或原子力显微镜）。"}]}, {"question": [{"type": "text", "content": "简要说出核磁共振技术在非结构生物学领域的应用"}], "answer": [{"type": "text", "content": "研究生物大分子的动态变化、蛋白质-配体相互作用、代谢组学分析、药物结合位点鉴定、膜蛋白构象变化等。"}]}, {"question": [{"type": "text", "content": "简要说出生物成像技术在科学研究中的应用"}], "answer": [{"type": "text", "content": "观察细胞和亚细胞结构、追踪蛋白质等分子的动态分布、研究疾病模型、监测药物作用效果、以及活体成像等。"}]}, {"question": [{"type": "text", "content": "简要说出超氧化物歧化酶的催化原理和生理学意义"}], "answer": [{"type": "text", "content": "催化超氧阴离子自由基（O₂⁻）歧化为过氧化氢（H₂O₂）和氧气（O₂）；生理意义是清除活性氧，保护细胞免受氧化损伤，维持氧化还原平衡。"}]}, {"question": [{"type": "text", "content": "说出至少五个用于表征荧光物质的参数"}], "answer": [{"type": "text", "content": "激发光谱、发射光谱、荧光量子产率、荧光寿命、荧光偏振（或各向异性）、斯托克斯位移等。"}]}, {"question": [{"type": "text", "content": "研究发现某新蛋白质为疾病发生的关键调控因子，具备成为治疗靶标的生物学特征。请简述该靶点蛋白的药物研发工作可以采用哪些计算生物学研究策略"}], "answer": [{"type": "text", "content": "可采用同源建模或从头预测构建三维结构；分子对接和虚拟筛选发现候选小分子；分子动力学模拟评估结合稳定性；药效团模型和定量构效关系优化先导化合物；以及基于网络的靶点-疾病关联分析。"}]}, {"question": [{"type": "text", "content": "膜片钳技术的原理和记录方式"}], "answer": [{"type": "text", "content": "原理：利用玻璃微电极与细胞膜形成高阻（吉欧级）封接，隔离膜片上的离子通道，在电压钳制下记录单个或群体离子通道的电流。记录方式包括：细胞贴附式、内面向外式、外面向外式、全细胞式、穿孔膜片钳等。"}]}, {"question": [{"type": "text", "content": "冷冻电镜技术解析生物样品结构的优点"}], "answer": [{"type": "text", "content": "无需结晶，可解析近原子分辨率（2-4 Å）结构；适用于膜蛋白、大分子复合物和动态构象；样品保持在近生理状态的冷冻水合环境中；可同时获得多个构象状态；对样品纯度要求相对较低。"}]}, {"question": [{"type": "text", "content": "Activation and closed-state inactivation mechanisms of the human voltage-gated KV4 channel complexes, Molecular Cell (Vol. 82, pp. 2427-2442) 报道了电压门控钾离子通道 Kv4.2 在不同状态下的结构：图 A 左侧 VSD 激活状态，右侧 VSD 静息状态；图 B 单个亚基关闭和开放状态下 VSD、S4-S5 linker、gate 的 S6 C 末端结构的比较；图 C 蓝色开放状态，橙色关闭状态。根据图片结合分析和比较，阐述 Kv4.2 的电压门控机理（图中所示的箭头为从开放状态转为关闭状态）。"}, {"type": "image", "src": "../assets/2024-2025-final-exam-question-4-1-aa3558897e08.png", "alt": "第 4-1 题题图"}], "answer": [{"type": "text", "content": "电压感受器（VSD）中的 S4 片段富含正电荷，感知膜电位变化。去极化时，S4 向外移动，通过 S4-S5 连接器牵拉 S6 段（门控），使通道开放；复极化时，S4 向内移动，S6 返回关闭构象，门控关闭。从开放到关闭（箭头方向），S4 内移，S4-S5 linker 松弛，S6 弯曲或扭转，孔道收缩，同时可能伴随 N-型或 C-型失活。"}]}, {"question": [{"type": "text", "content": "新发现一种海洋微生物可以在极端盐碱环境生存。其表面有特殊膜结构可以有效隔绝细胞内外，此外还发现参与物质运输和能量转换。进一步研究发现还可以对不同类型的物质有选择透过性，允许特定物质进入，阻止其他物质进入。（1）推测该特定膜结构最可能属于哪种膜，并解释依据。（2）结合该膜结构的功能，分析其在维持细胞内外环境稳态中发挥的作用。"}, {"type": "image", "src": "../assets/2024-2025-final-exam-question-4-2-a78cef02d05d.png", "alt": "第 4-2 题题图"}], "answer": [{"type": "text", "content": "（1）最可能属于细胞膜（质膜）。依据：具有隔绝内外、物质运输、能量转换和选择透过性，是细胞膜的基本功能。（2）通过选择透过性，允许离子和营养物质选择性进入，排出有毒离子（如 Na⁺）和代谢废物；参与质子梯度或离子梯度建立，驱动 ATP 合成；维持细胞内合适的离子浓度、pH 和渗透压，抵御外部高盐碱环境，保证代谢酶活性。"}]}];</script>
 
 <script type="text/babel">
-  const { useState, useEffect } = React;
+  const { useState, useLayoutEffect, useRef } = React;
 
   // 自定义 SVG 图标组件，替代有 bug 的 Lucide-React 库，解决 Infinity 冲突
   const CheckCircle2 = ({ size = 24, className = "" }) => (
@@ -557,36 +619,160 @@ const flashcards = [{"q": "简要说出两种单分子力学操作技术", "a": 
     </svg>
   );
 
-  const RichContent = ({ value, imageClassName = "max-h-72" }) => {
-    const content =
-      typeof value === "string"
-        ? { text: value, images: [] }
-        : { text: value?.text || "", images: value?.images || [] };
+  let mathJaxQueue = Promise.resolve();
+
+  const queueMathTask = (task) => {
+    mathJaxQueue = mathJaxQueue
+      .then(() => window.MathJax?.startup?.promise)
+      .then(task)
+      .catch((error) => console.error("MathJax typesetting failed", error));
+  };
+
+  const queueMathTypeset = (container, text, shouldSkip) => {
+    queueMathTask(() => {
+      const mathJax = window.MathJax;
+      if (
+        shouldSkip() ||
+        !container.isConnected ||
+        !mathJax?.typesetPromise
+      ) {
+        return;
+      }
+
+      mathJax.typesetClear?.([container]);
+      container.textContent = text || "";
+      return mathJax.typesetPromise([container]);
+    });
+  };
+
+  const MathText = ({ text, className = "" }) => {
+    const containerRef = useRef(null);
+
+    useLayoutEffect(() => {
+      const container = containerRef.current;
+      if (!container) return undefined;
+
+      if (!container.hasChildNodes()) {
+        container.textContent = text || "";
+      }
+      let disposed = false;
+
+      const typeset = () => {
+        const mathJax = window.MathJax;
+        if (disposed || !mathJax?.typesetPromise) return;
+        queueMathTypeset(container, text, () => disposed);
+      };
+
+      if (window.MathJax?.typesetPromise) {
+        typeset();
+      } else {
+        // Keep the source readable when the CDN is slow or unavailable.
+        container.textContent = text || "";
+        window.addEventListener("mathjax-ready", typeset, { once: true });
+      }
+
+      return () => {
+        disposed = true;
+        window.removeEventListener("mathjax-ready", typeset);
+        if (window.MathJax?.typesetClear) {
+          queueMathTask(() => window.MathJax.typesetClear([container]));
+        }
+      };
+    }, [text]);
 
     return (
-      <div className="min-w-0 space-y-3">
-        {content.text && (
-          <div className="whitespace-pre-wrap break-words">{content.text}</div>
-        )}
-        {content.images.map((image, index) => (
-          <figure key={`${image.src}-${index}`} className="space-y-1.5">
-            <img
-              src={image.src}
-              alt={image.alt || ""}
-              loading="lazy"
-              decoding="async"
-              className={`mx-auto w-auto max-w-full rounded-xl object-contain ${imageClassName}`}
-            />
-            {image.caption && (
-              <figcaption className="text-center text-xs font-normal opacity-70">
-                {image.caption}
-              </figcaption>
-            )}
-          </figure>
-        ))}
-      </div>
+      <div
+        ref={containerRef}
+        className={`math-content ${className}`}
+      ></div>
     );
   };
+
+  const alignmentClass = (alignment) => {
+    if (alignment === "right") return "text-right";
+    if (alignment === "middle") return "text-center";
+    return "text-left";
+  };
+
+  const ContentTable = ({ element }) => (
+    <div
+      className="max-w-full overflow-x-auto rounded-xl shadow-md"
+      onClick={(event) => event.stopPropagation()}
+    >
+      <table className="w-full min-w-max border-collapse bg-white text-sm font-normal text-slate-700">
+        {element.headers.length > 0 && (
+          <thead className="bg-brand-500/50 text-brand-950">
+            <tr className="border-b border-slate-300/50">
+              {element.headers.map((header, index) => (
+                <th
+                  key={index}
+                  scope="col"
+                  className={`px-4 py-3 font-bold ${alignmentClass(element.align[index])}`}
+                >
+                  <MathText text={header} />
+                </th>
+              ))}
+            </tr>
+          </thead>
+        )}
+        <tbody>
+          {element.rows.map((row, rowIndex) => (
+            <tr
+              key={rowIndex}
+              className="border-b border-slate-300/50 last:border-b-0"
+            >
+              {row.map((cell, cellIndex) => (
+                <td
+                  key={cellIndex}
+                  className={`px-4 py-3 ${alignmentClass(element.align[cellIndex])}`}
+                >
+                  <MathText text={cell} />
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+
+  const RichContent = ({ value = [], imageClassName = "max-h-72" }) => (
+    <div className="min-w-0 space-y-3">
+      {value.map((element, index) => {
+        if (element.type === "text") {
+          return (
+            <MathText
+              key={index}
+              text={element.content}
+              className="whitespace-pre-wrap break-words"
+            />
+          );
+        }
+        if (element.type === "image") {
+          return (
+            <figure key={index} className="space-y-1.5">
+              <img
+                src={element.src}
+                alt={element.alt || ""}
+                loading="lazy"
+                decoding="async"
+                className={`mx-auto w-auto max-w-full rounded-xl object-contain ${imageClassName}`}
+              />
+              {element.caption && (
+                <figcaption className="text-center text-xs font-normal opacity-70">
+                  {element.caption}
+                </figcaption>
+              )}
+            </figure>
+          );
+        }
+        if (element.type === "table") {
+          return <ContentTable key={index} element={element} />;
+        }
+        return null;
+      })}
+    </div>
+  );
 
   function App() {
     const [view, setView] = useState("menu"); // 'menu', 'quiz', 'flashcard'
@@ -613,9 +799,12 @@ const flashcards = [{"q": "简要说出两种单分子力学操作技术", "a": 
       setWrongAnswers([]);
     };
 
-    // 将旧版单值 c 和新版列表 c 统一为答案索引列表。
     const getCorrectAnswers = (question) =>
-      Array.isArray(question.c) ? question.c : [question.c];
+      question.options.reduce(
+        (answers, option, index) =>
+          option.correct ? [...answers, index] : answers,
+        [],
+      );
 
     const submitQuizAnswer = (userAnswers) => {
       if (isAnswerSubmitted || userAnswers.length === 0) return;
@@ -694,11 +883,14 @@ const flashcards = [{"q": "简要说出两种单分子力学操作技术", "a": 
               <BookOpen size={40} />
             </div>
             <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-3 break-words">
-              医学生物物理学 2024-2025 学年春学期期末回忆卷
+              <MathText text={examMetadata.title} />
             </h1>
-            <p className="text-base sm:text-lg text-slate-500 leading-relaxed">
-              <p></p><p>Made by 李建树</p>
-            </p>
+            <div className="space-y-1 text-base leading-relaxed text-slate-500 sm:text-lg">
+              {examMetadata.description && (
+                <MathText text={examMetadata.description} />
+              )}
+              <div>Made by {examMetadata.authors}</div>
+            </div>
           </div>
 
           <div
@@ -797,7 +989,7 @@ const flashcards = [{"q": "简要说出两种单分子力学操作技术", "a": 
                   </span>
                 </div>
                 <div className="text-lg sm:text-xl font-bold text-slate-800 leading-relaxed">
-                  <RichContent value={mcqs[currentIdx].q} />
+                  <RichContent value={mcqs[currentIdx].question} />
                 </div>
                 {getCorrectAnswers(mcqs[currentIdx]).length > 1 && (
                   <p className="text-sm text-slate-500 mt-3">
@@ -806,7 +998,7 @@ const flashcards = [{"q": "简要说出两种单分子力学操作技术", "a": 
                 )}
               </div>
               <div className="grid gap-3">
-                {mcqs[currentIdx].a.map((opt, i) => {
+                {mcqs[currentIdx].options.map((opt, i) => {
                   const correctAnswers = getCorrectAnswers(mcqs[currentIdx]);
                   const isSelected = selectedOptions.includes(i);
                   const isCorrectOption = correctAnswers.includes(i);
@@ -839,7 +1031,10 @@ const flashcards = [{"q": "简要说出两种单分子力学操作技术", "a": 
                           {String.fromCharCode(65 + i)}.
                         </span>
                         <div className="min-w-0 flex-1">
-                          <RichContent value={opt} imageClassName="max-h-48" />
+                          <RichContent
+                            value={[opt]}
+                            imageClassName="max-h-48"
+                          />
                         </div>
                       </div>
                       {isAnswerSubmitted && isCorrectOption && (
@@ -911,7 +1106,7 @@ const flashcards = [{"q": "简要说出两种单分子力学操作技术", "a": 
                           <span className="shrink-0">{idx + 1}.</span>
                           <div className="min-w-0 flex-1">
                             <RichContent
-                              value={item.q}
+                              value={item.question}
                               imageClassName="max-h-32"
                             />
                           </div>
@@ -947,6 +1142,34 @@ const flashcards = [{"q": "简要说出两种单分子力学操作技术", "a": 
               </div>
             </div>
           )}
+          
+          {/* 控制按钮 */}
+          <div className="flex items-center justify-between gap-2 sm:gap-4 mt-5 sm:mt-8">
+            <button
+              disabled={currentIdx === 0}
+              onClick={() => {
+                setCurrentIdx(currentIdx - 1);
+                setFlipped(false);
+              }}
+              className="min-h-12 flex flex-1 sm:flex-none items-center justify-center gap-1 sm:gap-2 px-3 sm:px-6 py-3 bg-white text-slate-600 hover:text-slate-800 border rounded-xl font-bold shadow-sm transition-all disabled:opacity-30 disabled:pointer-events-none"
+            >
+              <ChevronLeft size={20} /> 上一题
+            </button>
+            <button
+              onClick={() => {
+                if (currentIdx < mcqs.length - 1) {
+                  setCurrentIdx(currentIdx + 1);
+                  setFlipped(false);
+                } else {
+                  setView("menu");
+                }
+              }}
+              className="min-h-12 flex flex-1 sm:flex-none items-center justify-center gap-1 sm:gap-2 px-3 sm:px-6 py-3 bg-brand-800 hover:bg-brand-900 text-white rounded-xl font-bold shadow-sm transition-all"
+            >
+              {currentIdx === mcqs.length - 1 ? "完成复习" : "下一题"}{" "}
+              <ChevronRight size={20} />
+            </button>
+          </div>
 
           {/* 选择题快速导航模态框 */}
           {showNavModal && (
@@ -985,7 +1208,7 @@ const flashcards = [{"q": "简要说出两种单分子力学操作技术", "a": 
 
     if (view === "flashcard") {
       return (
-        <div className="max-w-2xl mx-auto pt-1 px-0 sm:pt-4 sm:px-4 md:pt-8">
+        <div className="flashcard-view min-h-full max-w-4xl mx-auto pt-1 px-0 sm:pt-4 sm:px-4 md:pt-8">
           {/* 导航头 */}
           <div className="flex items-center justify-between gap-2 mb-4 sm:mb-6">
             <button
@@ -1018,39 +1241,30 @@ const flashcards = [{"q": "简要说出两种单分子力学操作技术", "a": 
             ></div>
           </div>
 
-          {/* 翻转卡片结构 */}
+          {/* 自适应叠层翻转卡片 */}
           <div
             className={`flip-card ${flipped ? "flipped" : ""} w-full`}
             onClick={() => setFlipped((isFlipped) => !isFlipped)}
+            onKeyDown={(event) => {
+              if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                setFlipped((isFlipped) => !isFlipped);
+              }
+            }}
+            role="button"
+            tabIndex="0"
+            aria-label={flipped ? "返回查看问题" : "查看参考答案"}
           >
-            <div
-              className="flip-card-inner"
-              style={{
-                transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)",
-              }}
-            >
+            <div className="flip-card-inner">
               {/* 卡片正面 (问题) */}
-              <div className="flip-card-front bg-white border border-slate-200 text-slate-800 flex flex-col justify-between">
-                <div className="p-3 bg-brand-50 text-brand-600 rounded-full mt-4 self-center">
-                  <Lightbulb size={28} />
-                </div>
-                <div className="my-auto min-h-0 w-full overflow-y-auto overscroll-contain px-2 py-2 scrollbar-hide sm:px-4">
-                  <span className="text-xs font-bold text-slate-400 block mb-2">
-                    QUESTION {currentIdx + 1}
-                  </span>
-                  <div className="text-lg sm:text-xl font-bold leading-relaxed">
-                    <RichContent
-                      value={flashcards[currentIdx].q}
-                      imageClassName="max-h-48"
-                    />
-                  </div>
-                </div>
-                <p className="text-slate-400 text-xs font-medium pb-4 flex items-center gap-1 animate-pulse">
+              <div className="flip-card-front justify-start overflow-hidden bg-white border border-slate-200 text-slate-800">
+                <div className="flip-card-hint text-slate-500 text-xs sm:text-sm font-semibold">
                   <svg
-                    className="w-4 h-4"
+                    className="h-4 w-4 shrink-0"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
+                    aria-hidden="true"
                   >
                     <path
                       strokeLinecap="round"
@@ -1060,23 +1274,38 @@ const flashcards = [{"q": "简要说出两种单分子力学操作技术", "a": 
                     />
                   </svg>
                   点击卡片翻看参考答案
-                </p>
-              </div>
+                </div>
 
-              {/* 卡片背面 (要点解析) */}
-              <div className="flip-card-back bg-brand-950 text-white border border-brand-900 text-left items-start overflow-y-auto scrollbar-hide flex flex-col justify-between">
-                <div className="w-full">
-                  <h4 className="text-brand-300 font-bold mb-4 flex items-center gap-2 border-b border-brand-900 pb-2">
-                    <CheckCircle2 size={18} /> 核心要点 / 答案分析
-                  </h4>
-                  <div className="text-base leading-relaxed text-slate-200 font-medium">
+                <div className="relative z-10 flex w-full flex-col gap-6 sm:gap-8">
+                  <div className="flex w-fit items-center gap-2 rounded-full bg-brand-50 px-3 py-2 text-brand-700">
+                    <Lightbulb size={22} className="shrink-0" />
+                    <span className="text-xs font-bold uppercase tracking-wider">
+                      QUESTION {currentIdx + 1}
+                    </span>
+                  </div>
+                  <div className="w-full text-left text-lg sm:text-xl font-bold leading-relaxed">
                     <RichContent
-                      value={flashcards[currentIdx].a}
-                      imageClassName="max-h-48"
+                      value={flashcards[currentIdx].question}
+                      imageClassName="max-h-[60dvh]"
                     />
                   </div>
                 </div>
-                <p className="pt-6 text-slate-500 text-xs text-center w-full mt-auto">
+              </div>
+
+              {/* 卡片背面 (要点解析) */}
+              <div className="flip-card-back justify-between bg-brand-950 text-white border border-brand-900 text-left">
+                <div className="relative z-10 w-full">
+                  <h4 className="text-brand-300 font-bold mb-4 flex items-center gap-2 border-b border-brand-900 pb-2">
+                    <CheckCircle2 size={18} /> 参考答案
+                  </h4>
+                  <div className="text-base leading-relaxed text-slate-200 font-medium">
+                    <RichContent
+                      value={flashcards[currentIdx].answer}
+                      imageClassName="max-h-[60dvh]"
+                    />
+                  </div>
+                </div>
+                <p className="relative z-10 pt-8 text-slate-500 text-xs text-center w-full mt-auto">
                   点击卡片返回问题
                 </p>
               </div>

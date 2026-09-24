@@ -29,6 +29,31 @@
         },
       };
     </script>
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [
+            ["$", "$"],
+            ["\\(", "\\)"],
+          ],
+          displayMath: [
+            ["$$", "$$"],
+            ["\\[", "\\]"],
+          ],
+          processEscapes: true,
+        },
+        startup: {
+          // React owns the page content, so each content component asks MathJax
+          // to typeset itself after it is mounted or updated.
+          typeset: false,
+          ready() {
+            MathJax.startup.defaultReady();
+            window.dispatchEvent(new Event("mathjax-ready"));
+          },
+        },
+      };
+    </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -43,18 +68,35 @@
           Roboto,
           sans-serif;
       }
+      #root {
+        min-height: 100%;
+      }
+      .math-content {
+        max-width: 100%;
+        overflow-x: auto;
+        overflow-y: hidden;
+      }
+      .math-content mjx-container[display="true"] {
+        margin: 0.5em 0 !important;
+      }
       .flip-card {
         perspective: 1000px;
-        height: clamp(320px, 55dvh, 380px);
+        min-height: clamp(28rem, calc(100dvh - 18rem), 52rem);
+      }
+      .flip-card:focus-visible {
+        outline: 3px solid rgb(39 139 112 / 0.45);
+        outline-offset: 4px;
+        border-radius: 1.5rem;
       }
       .flip-card-inner {
         position: relative;
+        display: grid;
         width: 100%;
-        height: 100%;
-        text-align: center;
+        min-height: inherit;
+        text-align: left;
         -webkit-transform: rotateY(0deg);
         transform: rotateY(0deg);
-        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         -webkit-transform-style: preserve-3d;
         transform-style: preserve-3d;
         transform-origin: center;
@@ -67,15 +109,15 @@
       }
       .flip-card-front,
       .flip-card-back {
-        position: absolute;
+        position: relative;
+        grid-area: 1 / 1;
         width: 100%;
-        height: 100%;
+        min-height: inherit;
         -webkit-backface-visibility: hidden;
         backface-visibility: hidden;
         display: flex;
         flex-direction: column;
-        justify-content: center;
-        align-items: center;
+        align-items: stretch;
         padding: 2rem;
         border-radius: 1.5rem;
         box-shadow:
@@ -86,8 +128,19 @@
         -webkit-transform: rotateY(180deg);
         transform: rotateY(180deg);
       }
-      .scrollbar-hide::-webkit-scrollbar {
-        display: none;
+      .flip-card-hint {
+        position: absolute;
+        right: 1.5rem;
+        bottom: 1.5rem;
+        left: 1.5rem;
+        z-index: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.375rem;
+        opacity: 0.26;
+        pointer-events: none;
+        user-select: none;
       }
       .sidebar-shell {
         visibility: hidden;
@@ -164,6 +217,14 @@
         .flip-card-back {
           padding: 1rem;
           border-radius: 1rem;
+        }
+        .flip-card {
+          min-height: clamp(24rem, calc(100dvh - 15.5rem), 44rem);
+        }
+        .flip-card-hint {
+          right: 1rem;
+          bottom: 1rem;
+          left: 1rem;
         }
       }
       @media (prefers-reduced-motion: reduce) {
@@ -362,11 +423,12 @@
       <!-- 右侧主体内容区 -->
       <main class=".js-quiz-container min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-contain p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:p-5 md:p-8"><div id="root"></div>
 
-<script>const mcqs = [];
-const flashcards = [{"q": "写出所有氨基酸的名称、结构简式、三字母缩写。", "a": "20种蛋白质氨基酸：甘氨酸（Gly，H₂N-CH₂-COOH）、丙氨酸（Ala，CH₃-CH(NH₂)-COOH）、缬氨酸（Val，(CH₃)₂CH-CH(NH₂)-COOH）、亮氨酸（Leu，(CH₃)₂CH-CH₂-CH(NH₂)-COOH）、异亮氨酸（Ile，CH₃CH₂CH(CH₃)-CH(NH₂)-COOH）、脯氨酸（Pro，吡咯烷-2-羧酸）、苯丙氨酸（Phe，C₆H₅-CH₂-CH(NH₂)-COOH）、色氨酸（Trp，吲哚-CH₂-CH(NH₂)-COOH）、甲硫氨酸（Met，CH₃-S-CH₂-CH₂-CH(NH₂)-COOH）、丝氨酸（Ser，HO-CH₂-CH(NH₂)-COOH）、苏氨酸（Thr，CH₃-CH(OH)-CH(NH₂)-COOH）、半胱氨酸（Cys，HS-CH₂-CH(NH₂)-COOH）、天冬酰胺（Asn，H₂N-CO-CH₂-CH(NH₂)-COOH）、谷氨酰胺（Gln，H₂N-CO-CH₂-CH₂-CH(NH₂)-COOH）、天冬氨酸（Asp，HOOC-CH₂-CH(NH₂)-COOH）、谷氨酸（Glu，HOOC-CH₂-CH₂-CH(NH₂)-COOH）、赖氨酸（Lys，H₂N-(CH₂)₄-CH(NH₂)-COOH）、精氨酸（Arg，H₂N-C(=NH)-NH-(CH₂)₃-CH(NH₂)-COOH）、组氨酸（His，咪唑-CH₂-CH(NH₂)-COOH）、酪氨酸（Tyr，HO-C₆H₄-CH₂-CH(NH₂)-COOH）。结构简式均以α-氨基酸通式 R-CH(NH₂)-COOH 表示，R基如上；三字母缩写为括号内字母。"}, {"q": "写出三种构型的 DNA 的名称、特点。", "a": "B-DNA：最普遍生理构型，右手螺旋，直径约2.37 nm，螺距3.4 nm，每圈10.5个碱基对，大沟宽深，小沟窄浅，碱基垂直于螺旋轴。A-DNA：右手螺旋，较粗短，直径约2.55 nm，螺距2.5 nm，每圈11个碱基对，碱基倾角大，大沟极深，小沟极浅，见于脱水状态或RNA-DNA杂交双链。Z-DNA：左手螺旋，呈锯齿状，直径约1.8 nm，螺距4.5 nm，每圈12个碱基对，交替的嘌呤-嘧啶序列（如GC）易形成，大沟平坦，小沟窄深，可能与转录调控有关。"}, {"q": "写出米-曼方程，并解释各参数及方程的意义。", "a": "方程：v = Vmax · [S] / (Km + [S])。参数：v为初始反应速率；Vmax为最大反应速率（酶完全被底物饱和时的速率）；[S]为底物浓度；Km为米氏常数，等于反应速率达Vmax/2时的底物浓度，反映酶与底物的亲和力（Km越小亲和力越大）。意义：定量描述底物浓度对酶促反应速率的影响，用于判断反应级数（[S]\u003c\u003eKm时近似零级）；可求得酶的催化效率和动力学参数，为抑制剂研究提供基础。"}, {"q": "写出下列代谢步骤的关键限速酶：糖酵解、糖原合成与分解、磷酸戊糖途径、三羧酸循环、脂肪酸β-氧化、酮体合成、脂肪酸合成、甘油三酯合成、胆固醇合成、尿素循环、嘌呤核苷酸从头合成、嘧啶核苷酸从头合成。", "a": "糖酵解：磷酸果糖激酶-1（PFK-1）。糖原合成：糖原合酶。糖原分解：糖原磷酸化酶。磷酸戊糖途径：葡萄糖-6-磷酸脱氢酶（G6PD）。三羧酸循环：柠檬酸合酶（或异柠檬酸脱氢酶、α-酮戊二酸脱氢酶复合体，常考柠檬酸合酶）。脂肪酸β-氧化：肉碱棕榈酰转移酶Ⅰ（CPT-Ⅰ）。酮体合成：HMG-CoA合酶（线粒体）。脂肪酸合成：乙酰CoA羧化酶（ACC）。甘油三酯合成：甘油-3-磷酸酰基转移酶（或二酰甘油酰基转移酶DGAT）。胆固醇合成：HMG-CoA还原酶（内质网）。尿素循环：氨基甲酰磷酸合成酶Ⅰ（CPSⅠ）。嘌呤核苷酸从头合成：PRPP酰胺转移酶（谷氨酰胺磷酸核糖焦磷酸酰胺转移酶）。嘧啶核苷酸从头合成：氨基甲酰磷酸合成酶Ⅱ（CPSⅡ）或天冬氨酸转氨甲酰酶（ATCase）。"}, {"q": "简述三羧酸循环和尿素循环是通过哪两个代谢中间产物联系起来的、如何联系起来的。", "a": "通过 草酰乙酸 和 天冬氨酸 联系起来。TCA循环中草酰乙酸经转氨作用（接受谷氨酸的氨基）生成天冬氨酸；天冬氨酸进入尿素循环，在精氨酸琥珀酸合成酶催化下与瓜氨酸缩合生成精氨酸琥珀酸，进而裂解为延胡索酸和精氨酸；延胡索酸可经延胡索酸酶水合、苹果酸脱氢酶氧化再生草酰乙酸，从而回补TCA循环。此过程同时将氨基从谷氨酸转移至尿素循环，实现氨的清除和碳骨架的循环利用。"}, {"q": "请简述在饥饿状态下，一个脂肪细胞中的甘油三酯分子的部分碳架是如何转变为能为大脑神经元所用的葡萄糖分子的，请列出主要的代谢历程、关键调控酶和参与的组织和器官。", "a": "① 脂肪细胞中甘油三酯经激素敏感性脂肪酶（HSL）水解为甘油和脂肪酸。② 甘油经血液循环入肝，在肝中经甘油激酶磷酸化生成3-磷酸甘油，脱氢生成磷酸二羟丙酮，进入糖异生。③ 脂肪酸经β-氧化生成乙酰CoA，同时产生大量NADH和FADH₂，促进肝内糖异生（激活丙酮酸羧化酶，抑制丙酮酸脱氢酶）。④ 肝脏利用乳酸、丙氨酸等生糖前体，通过糖异生关键酶（丙酮酸羧化酶、PEP羧激酶、果糖-1,6-二磷酸酶、葡萄糖-6-磷酸酶）合成葡萄糖，释放入血。⑤ 大脑神经元利用血糖（葡萄糖）通过GLUT转运体摄取，经糖酵解和氧化磷酸化供能。关键调控酶：脂肪细胞的HSL、肝的甘油激酶、丙酮酸羧化酶、PEPCK、FBPase、G6Pase；激素调控（胰高血糖素升高激活PKA，磷酸化HSL和果糖-2,6-二磷酸酶等）。"}, {"q": "在科研实践中，当使用质膜被通透化的细胞或纯化的线粒体来研究复合物Ⅰ的P/O比时，往往添加丙酮酸+苹果酸的底物组合，而非直接添加NADH。请简述为何丙酮酸+苹果酸可以特异性诱发依赖复合物Ⅰ的呼吸？", "a": "通透化细胞或纯化线粒体仍保留完整的内膜和基质酶。丙酮酸+苹果酸作为底物，通过基质中的苹果酸脱氢酶（MDH）催化：苹果酸→草酰乙酸+NADH（产生NADH），同时丙酮酸经丙酮酸脱氢酶复合体（PDH）生成乙酰CoA和NADH；这些NADH在基质内生成，仅能通过线粒体内膜上的复合物Ⅰ（NADH脱氢酶）将电子传递给泛醌，因此特异性依赖复合物Ⅰ进行呼吸。若直接添加外源NADH，由于NADH不能自由穿透线粒体内膜（需通过特定的转运体或穿梭系统），在纯化线粒体中无法有效进入基质到达复合物Ⅰ，因而无法特异地驱动复合物Ⅰ；在通透化细胞中，外源NADH可能被其他非特异性脱氢酶消耗或渗漏，造成干扰。"}, {"q": "列出原核DNA复制过程中的5种以上关键蛋白及其作用。", "a": "DnaA：识别并结合复制起始点oriC，促进DNA双链解链。DnaB（解旋酶）：沿DNA 5′→3′方向移动，解开双链。DnaC：辅助DnaB装载到单链DNA上。单链结合蛋白（SSB）：稳定解开的单链DNA，防止复性。DNA聚合酶Ⅲ：复制的主要酶，负责前导链和后随链的合成（5′→3′聚合活性及3′→5′校对外切酶活性）。引物酶（DnaG）：合成RNA引物，提供3′-OH起始。DNA聚合酶Ⅰ：切除RNA引物，填补缺口（5′→3′外切酶活性及聚合活性）。DNA连接酶：连接后随链的冈崎片段。拓扑异构酶（DNA旋转酶/拓扑异构酶Ⅱ）：消除复制叉前方产生的正超螺旋。"}, {"q": "列出4种以上DNA损伤修复途径（简称+英文全称），并列出其修复的损伤类型。", "a": "① 碱基切除修复（BER, Base Excision Repair）：修复单个碱基损伤（如脱氨基、氧化、烷基化产生的异常碱基）。② 核苷酸切除修复（NER, Nucleotide Excision Repair）：修复大块损伤，如嘧啶二聚体（紫外线引起的TT二聚体）、化学加合物（如苯并芘-DNA加合物）。③ 错配修复（MMR, Mismatch Repair）：修复DNA复制后新合成的链与模板链间错配的碱基（如G-T、A-C错配）。④ 同源重组修复（HRR, Homologous Recombination Repair）：修复双链断裂（DSB），利用同源姐妹染色单体作为模板，高保真。⑤ 非同源末端连接（NHEJ, Non-Homologous End Joining）：修复双链断裂，直接将断裂末端连接，易产生插入/缺失突变。⑥ 直接修复（Direct Repair）：如光复活酶（photolyase）直接修复嘧啶二聚体；O⁶-甲基鸟嘌呤-DNA甲基转移酶（MGMT）直接修复甲基化碱基。"}, {"q": "请简要解释真核基因转录过程中，转录因子、组蛋白修饰酶、染色质重塑因子、RNA聚合酶、启动子、增强子各自的功能。", "a": "启动子：基因上游的DNA序列（如TATA盒），是RNA聚合酶及转录因子结合的核心区域，决定转录起始位点。增强子：远端顺式调控元件，可被特异性转录因子结合，通过染色质环与启动子区域接触，大幅增强转录活性。转录因子：包括通用转录因子（TFⅡA、B、D、E、F、H等）和特异性转录因子；前者组装形成转录前起始复合体（PIC），帮助RNA聚合酶定位，后者识别增强子或启动子近端元件，调控细胞特异性表达。RNA聚合酶Ⅱ：负责转录蛋白质编码基因，以DNA为模板合成mRNA前体。组蛋白修饰酶：对组蛋白N端尾进行共价修饰（乙酰化、甲基化、磷酸化等），改变染色质结构和招募效应蛋白，例如组蛋白乙酰转移酶（HAT）促进开放染色质，组蛋白去乙酰化酶（HDAC）抑制转录。染色质重塑因子（如SWI/SNF复合物）：利用ATP水解能量移动或驱逐核小体，使启动子/增强子区域的DNA暴露，便于转录因子和RNA聚合酶结合。"}];</script>
+<script>const examMetadata = {"title": "2024-2025 学年秋冬学期小测回忆卷", "description": "包含三次小测内容", "authors": "李建树"};
+const mcqs = [];
+const flashcards = [{"question": [{"type": "text", "content": "写出所有氨基酸的名称、结构简式、三字母缩写。"}], "answer": [{"type": "text", "content": "20种蛋白质氨基酸：甘氨酸（Gly，H₂N-CH₂-COOH）、丙氨酸（Ala，CH₃-CH(NH₂)-COOH）、缬氨酸（Val，(CH₃)₂CH-CH(NH₂)-COOH）、亮氨酸（Leu，(CH₃)₂CH-CH₂-CH(NH₂)-COOH）、异亮氨酸（Ile，CH₃CH₂CH(CH₃)-CH(NH₂)-COOH）、脯氨酸（Pro，吡咯烷-2-羧酸）、苯丙氨酸（Phe，C₆H₅-CH₂-CH(NH₂)-COOH）、色氨酸（Trp，吲哚-CH₂-CH(NH₂)-COOH）、甲硫氨酸（Met，CH₃-S-CH₂-CH₂-CH(NH₂)-COOH）、丝氨酸（Ser，HO-CH₂-CH(NH₂)-COOH）、苏氨酸（Thr，CH₃-CH(OH)-CH(NH₂)-COOH）、半胱氨酸（Cys，HS-CH₂-CH(NH₂)-COOH）、天冬酰胺（Asn，H₂N-CO-CH₂-CH(NH₂)-COOH）、谷氨酰胺（Gln，H₂N-CO-CH₂-CH₂-CH(NH₂)-COOH）、天冬氨酸（Asp，HOOC-CH₂-CH(NH₂)-COOH）、谷氨酸（Glu，HOOC-CH₂-CH₂-CH(NH₂)-COOH）、赖氨酸（Lys，H₂N-(CH₂)₄-CH(NH₂)-COOH）、精氨酸（Arg，H₂N-C(=NH)-NH-(CH₂)₃-CH(NH₂)-COOH）、组氨酸（His，咪唑-CH₂-CH(NH₂)-COOH）、酪氨酸（Tyr，HO-C₆H₄-CH₂-CH(NH₂)-COOH）。结构简式均以α-氨基酸通式 R-CH(NH₂)-COOH 表示，R基如上；三字母缩写为括号内字母。"}]}, {"question": [{"type": "text", "content": "写出三种构型的 DNA 的名称、特点。"}], "answer": [{"type": "text", "content": "B-DNA：最普遍生理构型，右手螺旋，直径约2.37 nm，螺距3.4 nm，每圈10.5个碱基对，大沟宽深，小沟窄浅，碱基垂直于螺旋轴。A-DNA：右手螺旋，较粗短，直径约2.55 nm，螺距2.5 nm，每圈11个碱基对，碱基倾角大，大沟极深，小沟极浅，见于脱水状态或RNA-DNA杂交双链。Z-DNA：左手螺旋，呈锯齿状，直径约1.8 nm，螺距4.5 nm，每圈12个碱基对，交替的嘌呤-嘧啶序列（如GC）易形成，大沟平坦，小沟窄深，可能与转录调控有关。"}]}, {"question": [{"type": "text", "content": "写出米-曼方程，并解释各参数及方程的意义。"}], "answer": [{"type": "text", "content": "方程：v = Vmax · [S] / (Km + [S])。参数：v为初始反应速率；Vmax为最大反应速率（酶完全被底物饱和时的速率）；[S]为底物浓度；Km为米氏常数，等于反应速率达Vmax/2时的底物浓度，反映酶与底物的亲和力（Km越小亲和力越大）。意义：定量描述底物浓度对酶促反应速率的影响，用于判断反应级数（[S]\u003c\u003eKm时近似零级）；可求得酶的催化效率和动力学参数，为抑制剂研究提供基础。"}]}, {"question": [{"type": "text", "content": "写出下列代谢步骤的关键限速酶：糖酵解、糖原合成与分解、磷酸戊糖途径、三羧酸循环、脂肪酸β-氧化、酮体合成、脂肪酸合成、甘油三酯合成、胆固醇合成、尿素循环、嘌呤核苷酸从头合成、嘧啶核苷酸从头合成。"}], "answer": [{"type": "text", "content": "糖酵解：磷酸果糖激酶-1（PFK-1）。糖原合成：糖原合酶。糖原分解：糖原磷酸化酶。磷酸戊糖途径：葡萄糖-6-磷酸脱氢酶（G6PD）。三羧酸循环：柠檬酸合酶（或异柠檬酸脱氢酶、α-酮戊二酸脱氢酶复合体，常考柠檬酸合酶）。脂肪酸β-氧化：肉碱棕榈酰转移酶Ⅰ（CPT-Ⅰ）。酮体合成：HMG-CoA合酶（线粒体）。脂肪酸合成：乙酰CoA羧化酶（ACC）。甘油三酯合成：甘油-3-磷酸酰基转移酶（或二酰甘油酰基转移酶DGAT）。胆固醇合成：HMG-CoA还原酶（内质网）。尿素循环：氨基甲酰磷酸合成酶Ⅰ（CPSⅠ）。嘌呤核苷酸从头合成：PRPP酰胺转移酶（谷氨酰胺磷酸核糖焦磷酸酰胺转移酶）。嘧啶核苷酸从头合成：氨基甲酰磷酸合成酶Ⅱ（CPSⅡ）或天冬氨酸转氨甲酰酶（ATCase）。"}]}, {"question": [{"type": "text", "content": "简述三羧酸循环和尿素循环是通过哪两个代谢中间产物联系起来的、如何联系起来的。"}], "answer": [{"type": "text", "content": "通过 草酰乙酸 和 天冬氨酸 联系起来。TCA循环中草酰乙酸经转氨作用（接受谷氨酸的氨基）生成天冬氨酸；天冬氨酸进入尿素循环，在精氨酸琥珀酸合成酶催化下与瓜氨酸缩合生成精氨酸琥珀酸，进而裂解为延胡索酸和精氨酸；延胡索酸可经延胡索酸酶水合、苹果酸脱氢酶氧化再生草酰乙酸，从而回补TCA循环。此过程同时将氨基从谷氨酸转移至尿素循环，实现氨的清除和碳骨架的循环利用。"}]}, {"question": [{"type": "text", "content": "请简述在饥饿状态下，一个脂肪细胞中的甘油三酯分子的部分碳架是如何转变为能为大脑神经元所用的葡萄糖分子的，请列出主要的代谢历程、关键调控酶和参与的组织和器官。"}], "answer": [{"type": "text", "content": "① 脂肪细胞中甘油三酯经激素敏感性脂肪酶（HSL）水解为甘油和脂肪酸。② 甘油经血液循环入肝，在肝中经甘油激酶磷酸化生成3-磷酸甘油，脱氢生成磷酸二羟丙酮，进入糖异生。③ 脂肪酸经β-氧化生成乙酰CoA，同时产生大量NADH和FADH₂，促进肝内糖异生（激活丙酮酸羧化酶，抑制丙酮酸脱氢酶）。④ 肝脏利用乳酸、丙氨酸等生糖前体，通过糖异生关键酶（丙酮酸羧化酶、PEP羧激酶、果糖-1,6-二磷酸酶、葡萄糖-6-磷酸酶）合成葡萄糖，释放入血。⑤ 大脑神经元利用血糖（葡萄糖）通过GLUT转运体摄取，经糖酵解和氧化磷酸化供能。关键调控酶：脂肪细胞的HSL、肝的甘油激酶、丙酮酸羧化酶、PEPCK、FBPase、G6Pase；激素调控（胰高血糖素升高激活PKA，磷酸化HSL和果糖-2,6-二磷酸酶等）。"}]}, {"question": [{"type": "text", "content": "在科研实践中，当使用质膜被通透化的细胞或纯化的线粒体来研究复合物Ⅰ的P/O比时，往往添加丙酮酸+苹果酸的底物组合，而非直接添加NADH。请简述为何丙酮酸+苹果酸可以特异性诱发依赖复合物Ⅰ的呼吸？"}], "answer": [{"type": "text", "content": "通透化细胞或纯化线粒体仍保留完整的内膜和基质酶。丙酮酸+苹果酸作为底物，通过基质中的苹果酸脱氢酶（MDH）催化：苹果酸→草酰乙酸+NADH（产生NADH），同时丙酮酸经丙酮酸脱氢酶复合体（PDH）生成乙酰CoA和NADH；这些NADH在基质内生成，仅能通过线粒体内膜上的复合物Ⅰ（NADH脱氢酶）将电子传递给泛醌，因此特异性依赖复合物Ⅰ进行呼吸。若直接添加外源NADH，由于NADH不能自由穿透线粒体内膜（需通过特定的转运体或穿梭系统），在纯化线粒体中无法有效进入基质到达复合物Ⅰ，因而无法特异地驱动复合物Ⅰ；在通透化细胞中，外源NADH可能被其他非特异性脱氢酶消耗或渗漏，造成干扰。"}]}, {"question": [{"type": "text", "content": "列出原核DNA复制过程中的5种以上关键蛋白及其作用。"}], "answer": [{"type": "text", "content": "DnaA：识别并结合复制起始点oriC，促进DNA双链解链。DnaB（解旋酶）：沿DNA 5′→3′方向移动，解开双链。DnaC：辅助DnaB装载到单链DNA上。单链结合蛋白（SSB）：稳定解开的单链DNA，防止复性。DNA聚合酶Ⅲ：复制的主要酶，负责前导链和后随链的合成（5′→3′聚合活性及3′→5′校对外切酶活性）。引物酶（DnaG）：合成RNA引物，提供3′-OH起始。DNA聚合酶Ⅰ：切除RNA引物，填补缺口（5′→3′外切酶活性及聚合活性）。DNA连接酶：连接后随链的冈崎片段。拓扑异构酶（DNA旋转酶/拓扑异构酶Ⅱ）：消除复制叉前方产生的正超螺旋。"}]}, {"question": [{"type": "text", "content": "列出4种以上DNA损伤修复途径（简称+英文全称），并列出其修复的损伤类型。"}], "answer": [{"type": "text", "content": "① 碱基切除修复（BER, Base Excision Repair）：修复单个碱基损伤（如脱氨基、氧化、烷基化产生的异常碱基）。② 核苷酸切除修复（NER, Nucleotide Excision Repair）：修复大块损伤，如嘧啶二聚体（紫外线引起的TT二聚体）、化学加合物（如苯并芘-DNA加合物）。③ 错配修复（MMR, Mismatch Repair）：修复DNA复制后新合成的链与模板链间错配的碱基（如G-T、A-C错配）。④ 同源重组修复（HRR, Homologous Recombination Repair）：修复双链断裂（DSB），利用同源姐妹染色单体作为模板，高保真。⑤ 非同源末端连接（NHEJ, Non-Homologous End Joining）：修复双链断裂，直接将断裂末端连接，易产生插入/缺失突变。⑥ 直接修复（Direct Repair）：如光复活酶（photolyase）直接修复嘧啶二聚体；O⁶-甲基鸟嘌呤-DNA甲基转移酶（MGMT）直接修复甲基化碱基。"}]}, {"question": [{"type": "text", "content": "请简要解释真核基因转录过程中，转录因子、组蛋白修饰酶、染色质重塑因子、RNA聚合酶、启动子、增强子各自的功能。"}], "answer": [{"type": "text", "content": "启动子：基因上游的DNA序列（如TATA盒），是RNA聚合酶及转录因子结合的核心区域，决定转录起始位点。增强子：远端顺式调控元件，可被特异性转录因子结合，通过染色质环与启动子区域接触，大幅增强转录活性。转录因子：包括通用转录因子（TFⅡA、B、D、E、F、H等）和特异性转录因子；前者组装形成转录前起始复合体（PIC），帮助RNA聚合酶定位，后者识别增强子或启动子近端元件，调控细胞特异性表达。RNA聚合酶Ⅱ：负责转录蛋白质编码基因，以DNA为模板合成mRNA前体。组蛋白修饰酶：对组蛋白N端尾进行共价修饰（乙酰化、甲基化、磷酸化等），改变染色质结构和招募效应蛋白，例如组蛋白乙酰转移酶（HAT）促进开放染色质，组蛋白去乙酰化酶（HDAC）抑制转录。染色质重塑因子（如SWI/SNF复合物）：利用ATP水解能量移动或驱逐核小体，使启动子/增强子区域的DNA暴露，便于转录因子和RNA聚合酶结合。"}]}];</script>
 
 <script type="text/babel">
-  const { useState, useEffect } = React;
+  const { useState, useLayoutEffect, useRef } = React;
 
   // 自定义 SVG 图标组件，替代有 bug 的 Lucide-React 库，解决 Infinity 冲突
   const CheckCircle2 = ({ size = 24, className = "" }) => (
@@ -557,36 +619,160 @@ const flashcards = [{"q": "写出所有氨基酸的名称、结构简式、三�
     </svg>
   );
 
-  const RichContent = ({ value, imageClassName = "max-h-72" }) => {
-    const content =
-      typeof value === "string"
-        ? { text: value, images: [] }
-        : { text: value?.text || "", images: value?.images || [] };
+  let mathJaxQueue = Promise.resolve();
+
+  const queueMathTask = (task) => {
+    mathJaxQueue = mathJaxQueue
+      .then(() => window.MathJax?.startup?.promise)
+      .then(task)
+      .catch((error) => console.error("MathJax typesetting failed", error));
+  };
+
+  const queueMathTypeset = (container, text, shouldSkip) => {
+    queueMathTask(() => {
+      const mathJax = window.MathJax;
+      if (
+        shouldSkip() ||
+        !container.isConnected ||
+        !mathJax?.typesetPromise
+      ) {
+        return;
+      }
+
+      mathJax.typesetClear?.([container]);
+      container.textContent = text || "";
+      return mathJax.typesetPromise([container]);
+    });
+  };
+
+  const MathText = ({ text, className = "" }) => {
+    const containerRef = useRef(null);
+
+    useLayoutEffect(() => {
+      const container = containerRef.current;
+      if (!container) return undefined;
+
+      if (!container.hasChildNodes()) {
+        container.textContent = text || "";
+      }
+      let disposed = false;
+
+      const typeset = () => {
+        const mathJax = window.MathJax;
+        if (disposed || !mathJax?.typesetPromise) return;
+        queueMathTypeset(container, text, () => disposed);
+      };
+
+      if (window.MathJax?.typesetPromise) {
+        typeset();
+      } else {
+        // Keep the source readable when the CDN is slow or unavailable.
+        container.textContent = text || "";
+        window.addEventListener("mathjax-ready", typeset, { once: true });
+      }
+
+      return () => {
+        disposed = true;
+        window.removeEventListener("mathjax-ready", typeset);
+        if (window.MathJax?.typesetClear) {
+          queueMathTask(() => window.MathJax.typesetClear([container]));
+        }
+      };
+    }, [text]);
 
     return (
-      <div className="min-w-0 space-y-3">
-        {content.text && (
-          <div className="whitespace-pre-wrap break-words">{content.text}</div>
-        )}
-        {content.images.map((image, index) => (
-          <figure key={`${image.src}-${index}`} className="space-y-1.5">
-            <img
-              src={image.src}
-              alt={image.alt || ""}
-              loading="lazy"
-              decoding="async"
-              className={`mx-auto w-auto max-w-full rounded-xl object-contain ${imageClassName}`}
-            />
-            {image.caption && (
-              <figcaption className="text-center text-xs font-normal opacity-70">
-                {image.caption}
-              </figcaption>
-            )}
-          </figure>
-        ))}
-      </div>
+      <div
+        ref={containerRef}
+        className={`math-content ${className}`}
+      ></div>
     );
   };
+
+  const alignmentClass = (alignment) => {
+    if (alignment === "right") return "text-right";
+    if (alignment === "middle") return "text-center";
+    return "text-left";
+  };
+
+  const ContentTable = ({ element }) => (
+    <div
+      className="max-w-full overflow-x-auto rounded-xl shadow-md"
+      onClick={(event) => event.stopPropagation()}
+    >
+      <table className="w-full min-w-max border-collapse bg-white text-sm font-normal text-slate-700">
+        {element.headers.length > 0 && (
+          <thead className="bg-brand-500/50 text-brand-950">
+            <tr className="border-b border-slate-300/50">
+              {element.headers.map((header, index) => (
+                <th
+                  key={index}
+                  scope="col"
+                  className={`px-4 py-3 font-bold ${alignmentClass(element.align[index])}`}
+                >
+                  <MathText text={header} />
+                </th>
+              ))}
+            </tr>
+          </thead>
+        )}
+        <tbody>
+          {element.rows.map((row, rowIndex) => (
+            <tr
+              key={rowIndex}
+              className="border-b border-slate-300/50 last:border-b-0"
+            >
+              {row.map((cell, cellIndex) => (
+                <td
+                  key={cellIndex}
+                  className={`px-4 py-3 ${alignmentClass(element.align[cellIndex])}`}
+                >
+                  <MathText text={cell} />
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+
+  const RichContent = ({ value = [], imageClassName = "max-h-72" }) => (
+    <div className="min-w-0 space-y-3">
+      {value.map((element, index) => {
+        if (element.type === "text") {
+          return (
+            <MathText
+              key={index}
+              text={element.content}
+              className="whitespace-pre-wrap break-words"
+            />
+          );
+        }
+        if (element.type === "image") {
+          return (
+            <figure key={index} className="space-y-1.5">
+              <img
+                src={element.src}
+                alt={element.alt || ""}
+                loading="lazy"
+                decoding="async"
+                className={`mx-auto w-auto max-w-full rounded-xl object-contain ${imageClassName}`}
+              />
+              {element.caption && (
+                <figcaption className="text-center text-xs font-normal opacity-70">
+                  {element.caption}
+                </figcaption>
+              )}
+            </figure>
+          );
+        }
+        if (element.type === "table") {
+          return <ContentTable key={index} element={element} />;
+        }
+        return null;
+      })}
+    </div>
+  );
 
   function App() {
     const [view, setView] = useState("menu"); // 'menu', 'quiz', 'flashcard'
@@ -613,9 +799,12 @@ const flashcards = [{"q": "写出所有氨基酸的名称、结构简式、三�
       setWrongAnswers([]);
     };
 
-    // 将旧版单值 c 和新版列表 c 统一为答案索引列表。
     const getCorrectAnswers = (question) =>
-      Array.isArray(question.c) ? question.c : [question.c];
+      question.options.reduce(
+        (answers, option, index) =>
+          option.correct ? [...answers, index] : answers,
+        [],
+      );
 
     const submitQuizAnswer = (userAnswers) => {
       if (isAnswerSubmitted || userAnswers.length === 0) return;
@@ -694,11 +883,14 @@ const flashcards = [{"q": "写出所有氨基酸的名称、结构简式、三�
               <BookOpen size={40} />
             </div>
             <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-3 break-words">
-              2024-2025 学年秋冬学期小测回忆卷
+              <MathText text={examMetadata.title} />
             </h1>
-            <p className="text-base sm:text-lg text-slate-500 leading-relaxed">
-              <p>包含三次小测内容</p><p>Made by 李建树</p>
-            </p>
+            <div className="space-y-1 text-base leading-relaxed text-slate-500 sm:text-lg">
+              {examMetadata.description && (
+                <MathText text={examMetadata.description} />
+              )}
+              <div>Made by {examMetadata.authors}</div>
+            </div>
           </div>
 
           <div
@@ -797,7 +989,7 @@ const flashcards = [{"q": "写出所有氨基酸的名称、结构简式、三�
                   </span>
                 </div>
                 <div className="text-lg sm:text-xl font-bold text-slate-800 leading-relaxed">
-                  <RichContent value={mcqs[currentIdx].q} />
+                  <RichContent value={mcqs[currentIdx].question} />
                 </div>
                 {getCorrectAnswers(mcqs[currentIdx]).length > 1 && (
                   <p className="text-sm text-slate-500 mt-3">
@@ -806,7 +998,7 @@ const flashcards = [{"q": "写出所有氨基酸的名称、结构简式、三�
                 )}
               </div>
               <div className="grid gap-3">
-                {mcqs[currentIdx].a.map((opt, i) => {
+                {mcqs[currentIdx].options.map((opt, i) => {
                   const correctAnswers = getCorrectAnswers(mcqs[currentIdx]);
                   const isSelected = selectedOptions.includes(i);
                   const isCorrectOption = correctAnswers.includes(i);
@@ -839,7 +1031,10 @@ const flashcards = [{"q": "写出所有氨基酸的名称、结构简式、三�
                           {String.fromCharCode(65 + i)}.
                         </span>
                         <div className="min-w-0 flex-1">
-                          <RichContent value={opt} imageClassName="max-h-48" />
+                          <RichContent
+                            value={[opt]}
+                            imageClassName="max-h-48"
+                          />
                         </div>
                       </div>
                       {isAnswerSubmitted && isCorrectOption && (
@@ -911,7 +1106,7 @@ const flashcards = [{"q": "写出所有氨基酸的名称、结构简式、三�
                           <span className="shrink-0">{idx + 1}.</span>
                           <div className="min-w-0 flex-1">
                             <RichContent
-                              value={item.q}
+                              value={item.question}
                               imageClassName="max-h-32"
                             />
                           </div>
@@ -947,6 +1142,34 @@ const flashcards = [{"q": "写出所有氨基酸的名称、结构简式、三�
               </div>
             </div>
           )}
+          
+          {/* 控制按钮 */}
+          <div className="flex items-center justify-between gap-2 sm:gap-4 mt-5 sm:mt-8">
+            <button
+              disabled={currentIdx === 0}
+              onClick={() => {
+                setCurrentIdx(currentIdx - 1);
+                setFlipped(false);
+              }}
+              className="min-h-12 flex flex-1 sm:flex-none items-center justify-center gap-1 sm:gap-2 px-3 sm:px-6 py-3 bg-white text-slate-600 hover:text-slate-800 border rounded-xl font-bold shadow-sm transition-all disabled:opacity-30 disabled:pointer-events-none"
+            >
+              <ChevronLeft size={20} /> 上一题
+            </button>
+            <button
+              onClick={() => {
+                if (currentIdx < mcqs.length - 1) {
+                  setCurrentIdx(currentIdx + 1);
+                  setFlipped(false);
+                } else {
+                  setView("menu");
+                }
+              }}
+              className="min-h-12 flex flex-1 sm:flex-none items-center justify-center gap-1 sm:gap-2 px-3 sm:px-6 py-3 bg-brand-800 hover:bg-brand-900 text-white rounded-xl font-bold shadow-sm transition-all"
+            >
+              {currentIdx === mcqs.length - 1 ? "完成复习" : "下一题"}{" "}
+              <ChevronRight size={20} />
+            </button>
+          </div>
 
           {/* 选择题快速导航模态框 */}
           {showNavModal && (
@@ -985,7 +1208,7 @@ const flashcards = [{"q": "写出所有氨基酸的名称、结构简式、三�
 
     if (view === "flashcard") {
       return (
-        <div className="max-w-2xl mx-auto pt-1 px-0 sm:pt-4 sm:px-4 md:pt-8">
+        <div className="flashcard-view min-h-full max-w-4xl mx-auto pt-1 px-0 sm:pt-4 sm:px-4 md:pt-8">
           {/* 导航头 */}
           <div className="flex items-center justify-between gap-2 mb-4 sm:mb-6">
             <button
@@ -1018,39 +1241,30 @@ const flashcards = [{"q": "写出所有氨基酸的名称、结构简式、三�
             ></div>
           </div>
 
-          {/* 翻转卡片结构 */}
+          {/* 自适应叠层翻转卡片 */}
           <div
             className={`flip-card ${flipped ? "flipped" : ""} w-full`}
             onClick={() => setFlipped((isFlipped) => !isFlipped)}
+            onKeyDown={(event) => {
+              if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                setFlipped((isFlipped) => !isFlipped);
+              }
+            }}
+            role="button"
+            tabIndex="0"
+            aria-label={flipped ? "返回查看问题" : "查看参考答案"}
           >
-            <div
-              className="flip-card-inner"
-              style={{
-                transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)",
-              }}
-            >
+            <div className="flip-card-inner">
               {/* 卡片正面 (问题) */}
-              <div className="flip-card-front bg-white border border-slate-200 text-slate-800 flex flex-col justify-between">
-                <div className="p-3 bg-brand-50 text-brand-600 rounded-full mt-4 self-center">
-                  <Lightbulb size={28} />
-                </div>
-                <div className="my-auto min-h-0 w-full overflow-y-auto overscroll-contain px-2 py-2 scrollbar-hide sm:px-4">
-                  <span className="text-xs font-bold text-slate-400 block mb-2">
-                    QUESTION {currentIdx + 1}
-                  </span>
-                  <div className="text-lg sm:text-xl font-bold leading-relaxed">
-                    <RichContent
-                      value={flashcards[currentIdx].q}
-                      imageClassName="max-h-48"
-                    />
-                  </div>
-                </div>
-                <p className="text-slate-400 text-xs font-medium pb-4 flex items-center gap-1 animate-pulse">
+              <div className="flip-card-front justify-start overflow-hidden bg-white border border-slate-200 text-slate-800">
+                <div className="flip-card-hint text-slate-500 text-xs sm:text-sm font-semibold">
                   <svg
-                    className="w-4 h-4"
+                    className="h-4 w-4 shrink-0"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
+                    aria-hidden="true"
                   >
                     <path
                       strokeLinecap="round"
@@ -1060,23 +1274,38 @@ const flashcards = [{"q": "写出所有氨基酸的名称、结构简式、三�
                     />
                   </svg>
                   点击卡片翻看参考答案
-                </p>
-              </div>
+                </div>
 
-              {/* 卡片背面 (要点解析) */}
-              <div className="flip-card-back bg-brand-950 text-white border border-brand-900 text-left items-start overflow-y-auto scrollbar-hide flex flex-col justify-between">
-                <div className="w-full">
-                  <h4 className="text-brand-300 font-bold mb-4 flex items-center gap-2 border-b border-brand-900 pb-2">
-                    <CheckCircle2 size={18} /> 核心要点 / 答案分析
-                  </h4>
-                  <div className="text-base leading-relaxed text-slate-200 font-medium">
+                <div className="relative z-10 flex w-full flex-col gap-6 sm:gap-8">
+                  <div className="flex w-fit items-center gap-2 rounded-full bg-brand-50 px-3 py-2 text-brand-700">
+                    <Lightbulb size={22} className="shrink-0" />
+                    <span className="text-xs font-bold uppercase tracking-wider">
+                      QUESTION {currentIdx + 1}
+                    </span>
+                  </div>
+                  <div className="w-full text-left text-lg sm:text-xl font-bold leading-relaxed">
                     <RichContent
-                      value={flashcards[currentIdx].a}
-                      imageClassName="max-h-48"
+                      value={flashcards[currentIdx].question}
+                      imageClassName="max-h-[60dvh]"
                     />
                   </div>
                 </div>
-                <p className="pt-6 text-slate-500 text-xs text-center w-full mt-auto">
+              </div>
+
+              {/* 卡片背面 (要点解析) */}
+              <div className="flip-card-back justify-between bg-brand-950 text-white border border-brand-900 text-left">
+                <div className="relative z-10 w-full">
+                  <h4 className="text-brand-300 font-bold mb-4 flex items-center gap-2 border-b border-brand-900 pb-2">
+                    <CheckCircle2 size={18} /> 参考答案
+                  </h4>
+                  <div className="text-base leading-relaxed text-slate-200 font-medium">
+                    <RichContent
+                      value={flashcards[currentIdx].answer}
+                      imageClassName="max-h-[60dvh]"
+                    />
+                  </div>
+                </div>
+                <p className="relative z-10 pt-8 text-slate-500 text-xs text-center w-full mt-auto">
                   点击卡片返回问题
                 </p>
               </div>

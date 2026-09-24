@@ -29,6 +29,31 @@
         },
       };
     </script>
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [
+            ["$", "$"],
+            ["\\(", "\\)"],
+          ],
+          displayMath: [
+            ["$$", "$$"],
+            ["\\[", "\\]"],
+          ],
+          processEscapes: true,
+        },
+        startup: {
+          // React owns the page content, so each content component asks MathJax
+          // to typeset itself after it is mounted or updated.
+          typeset: false,
+          ready() {
+            MathJax.startup.defaultReady();
+            window.dispatchEvent(new Event("mathjax-ready"));
+          },
+        },
+      };
+    </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -43,18 +68,35 @@
           Roboto,
           sans-serif;
       }
+      #root {
+        min-height: 100%;
+      }
+      .math-content {
+        max-width: 100%;
+        overflow-x: auto;
+        overflow-y: hidden;
+      }
+      .math-content mjx-container[display="true"] {
+        margin: 0.5em 0 !important;
+      }
       .flip-card {
         perspective: 1000px;
-        height: clamp(320px, 55dvh, 380px);
+        min-height: clamp(28rem, calc(100dvh - 18rem), 52rem);
+      }
+      .flip-card:focus-visible {
+        outline: 3px solid rgb(39 139 112 / 0.45);
+        outline-offset: 4px;
+        border-radius: 1.5rem;
       }
       .flip-card-inner {
         position: relative;
+        display: grid;
         width: 100%;
-        height: 100%;
-        text-align: center;
+        min-height: inherit;
+        text-align: left;
         -webkit-transform: rotateY(0deg);
         transform: rotateY(0deg);
-        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         -webkit-transform-style: preserve-3d;
         transform-style: preserve-3d;
         transform-origin: center;
@@ -67,15 +109,15 @@
       }
       .flip-card-front,
       .flip-card-back {
-        position: absolute;
+        position: relative;
+        grid-area: 1 / 1;
         width: 100%;
-        height: 100%;
+        min-height: inherit;
         -webkit-backface-visibility: hidden;
         backface-visibility: hidden;
         display: flex;
         flex-direction: column;
-        justify-content: center;
-        align-items: center;
+        align-items: stretch;
         padding: 2rem;
         border-radius: 1.5rem;
         box-shadow:
@@ -86,8 +128,19 @@
         -webkit-transform: rotateY(180deg);
         transform: rotateY(180deg);
       }
-      .scrollbar-hide::-webkit-scrollbar {
-        display: none;
+      .flip-card-hint {
+        position: absolute;
+        right: 1.5rem;
+        bottom: 1.5rem;
+        left: 1.5rem;
+        z-index: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.375rem;
+        opacity: 0.26;
+        pointer-events: none;
+        user-select: none;
       }
       .sidebar-shell {
         visibility: hidden;
@@ -164,6 +217,14 @@
         .flip-card-back {
           padding: 1rem;
           border-radius: 1rem;
+        }
+        .flip-card {
+          min-height: clamp(24rem, calc(100dvh - 15.5rem), 44rem);
+        }
+        .flip-card-hint {
+          right: 1rem;
+          bottom: 1rem;
+          left: 1rem;
         }
       }
       @media (prefers-reduced-motion: reduce) {
@@ -362,11 +423,12 @@
       <!-- 右侧主体内容区 -->
       <main class=".js-quiz-container min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-contain p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:p-5 md:p-8"><div id="root"></div>
 
-<script>const mcqs = [{"q": "下面哪个不是文献检索的目的", "a": ["促进信息交流", "提高科研效率", "增加文献数目", "促进学术交流"], "c": [2]}, {"q": "以下关于 PubMed 的说法错误的是", "a": ["由 NCBI 开发，由美国国家图书馆 (NLM) 维护", "主要收录生物医学及相关领域的文献", "支持使用 MeSH 进行主题词检索以增加效率", "所有文献均可免费获取全文"], "c": [3]}, {"q": "以下关于 MeSH 说法错误的是", "a": ["MeSH 是 Medical Subject Headings 的缩写", "MeSH 采用树状层级结构，包含主题词、副主题词等", "所有的文献都有 MeSH 主题词", "在检索 MeSH 主题词 (term) 时可以匹配到多个关键词 (key word)"], "c": [2]}, {"q": "在文献检索中, 若检索结果过多, 可采取以下哪些策略缩小范围", "a": ["使用布尔逻辑运算符 (AND、OR、NOT) 组合关键词", "使用双引号 (\" \") 进行精确短语检索", "利用字段限定符 (如 [AU] 表示作者，[TI] 表示标题) 限制检索范围", "以上三个都可以"], "c": [3]}, {"q": "Web of Science 的结果分析功能可用于", "a": ["识别某一研究课题涉及的主要学科领域", "查找在该研究方向上具有影响力的机构", "发现在该研究方向上高产且具有学术影响力的作者", "以上均可"], "c": [3]}, {"q": "A new drug trial reports a p-value of 0.03. This means", "a": ["There is a 3% probability of making a Type I error if the null hypothesis is true", "The probability that the null hypothesis is true is 0.03", "There is a 97% chance that the drug is effective", "The result is not statistically significant at the α = 0.05 level"], "c": [0]}, {"q": "Which of the following measures is most affected by outliers", "a": ["Mode", "Mean", "Median", "Interquartile Range (IQR)"], "c": [1]}, {"q": "Sensitivity refers to", "a": ["The proportion of people with the disease who test positive", "The proportion of people without the disease who test negative", "The probability that a positive test result truly indicates disease", "The ratio of true positives to false positives"], "c": [0]}, {"q": "In a comparison between a new drug and placebo, the 95% confidence interval for the difference in recovery time is (1.2, 4.5) days. Which statement is most appropriate", "a": ["There is a 95% probability that the true difference lies between 1.2 and 4.5 days", "We can be 95% confident that this specific interval contains the true population difference", "The result is not statistically significant because the interval is too wide", "The drug is highly effective because the 95% confidence interval does not include 0"], "c": [1]}, {"q": "The number of accidents per month follows a distribution with a mean of 2. What is the probability of observing zero accidents in a given month", "a": ["0.1353", "0.2707", "0.3679", "0.0183"], "c": [0]}, {"q": "A Type I error occurs when", "a": ["The null hypothesis is rejected when it is actually true", "The null hypothesis is accepted when it is actually false", "The alternative hypothesis is accepted when it is true", "The study has insufficient statistical power"], "c": [0]}, {"q": "In a case-control study, the best measure of association to use is", "a": ["Relative Risk (RR)", "Absolute Risk Reduction", "Odds Ratio (OR)", "Number Needed to Treat"], "c": [2]}, {"q": "In a normal distribution, approximately what percentage of data falls within ±1 standard deviation of the mean", "a": ["50%", "68%", "95%", "99.7%"], "c": [1]}, {"q": "What is the primary purpose of blinding in a clinical trial", "a": ["To increase sample size", "To reduce bias in the assessment of outcomes", "To ensure random allocation of participants", "To guarantee that the study is ethical"], "c": [1]}, {"q": "Which type of graph is most suitable for displaying the relationship between two continuous variables", "a": ["Bar chart", "Histogram", "Box plot", "Scatter plot"], "c": [3]}, {"q": "Researchers want to compare the mean systolic blood pressure (SBP) between two independent groups of patients: one receiving a new antihypertensive drug and the other receiving standard care. Which test is most appropriate for this analysis", "a": ["Two-sample independent t-test", "Paired t-test", "Chi-square test", "One-way ANOVA"], "c": [0]}, {"q": "A study investigates the mean of heart rate. Resting heart rate is measured in the same group volunteers before and after consuming a standardized dose of caffeine. Which test should be used to assess whether caffeine significantly changes heart rate?", "a": ["Two-sample independent t-test", "Paired t-test", "Chi-square test", "Mann-Whitney U test"], "c": [1]}, {"q": "Researchers compare median of recovery time between two treatments for a viral infection: Drug A and Drug B. The recovery time data are highly right-skewed. Which test is most suitable for comparing the central tendency of recovery time between the two groups?", "a": ["Wilcoxon Rank Sum test", "Chi-square test", "Kruskal-Wallis test", "Fisher's exact test"], "c": [0]}, {"q": "Researchers want to compare the median hemoglobin levels of patients admitted to three different hospitals. Hemoglobin values in all three groups are not normally distributed, which test is most appropriate to determine whether there is a statistically significant difference in median hemoglobin levels across the three hospitals", "a": ["Wilcoxon Rank Sum test", "Kruskal-Wallis test", "Paired t-test", "Chi-square test"], "c": [1]}, {"q": "In one-way ANOVA, the null hypothesis states that", "a": ["At least one group mean is different", "All group means are equal", "All group variances are equal", "The groups are dependent"], "c": [1]}];
-const flashcards = [{"q": "Cell Phone Radiation\n    The specific absorption rate of cell phone radiation is measured in watts per kilogram (W/kg). A sample of 11 cell phones yields the following SAR values:\n    1.5, 0.9, 1.3, 1.5, 1.3, 1.2, 1.4, 1.1, 1.3, 1.4, 1.2  \n1) Find the mean, median, standard deviation, variance, and range of this data set. Also, are these results statistics or parameters (6′)\n  2) Find amounts of radiation separating those that are significantly low and those that are significantly high. Is the lowest listed value significantly low (4′)\n  3) Is this data set continuous or discrete (1′)", "a": "Answer:\n    ① Mean = Σx / n = 14.1 / 11 = 1.28 (W/kg). Sorted: 0.9, 1.1, 1.2, 1.2, 1.3, 1.3, 1.3, 1.4, 1.4, 1.5, 1.5 → median = 1.3.\n    Variance (sample) = [Σx² − (Σx)²/n] / (n−1) = [18.39 − 198.81/11] / 10 = 0.3164/10 = 0.03164, so s = √0.03164 = 0.18.\n    Range = 1.5 − 0.9 = 0.6.\n    These are statistics (sample statistics, not population parameters).\n    ② Using the ±2 standard deviation rule: lower cutoff = mean − 2·s = 1.28 − 2×0.18 = 0.92; upper cutoff = 1.28 + 2×0.18 = 1.64. The lowest value 0.9 is below 0.92, so it is significantly low.\n    ③ The data are continuous (SAR can take any real value)."}, {"q": "Touch Therapy\n    A nine-year-old girl named Emily Rosa conducted an experiment to test whether touch therapy practitioners could detect a human energy field. In 280 trials, TT practitioners correctly identified the hand chosen by Emily in 123 trials. (A close look at therapeutic touch. JAMA. 1998 Apr 1;279(13):1005-10.)  \n1) If practitioners were merely guessing at random (as if flipping a fair coin), what is the theoretical probability of a correct guess (1′)\n  2) Based on the sample results, what is the best point estimate of the true success rate for touch therapy practitioners (1′)\n  3) Construct a 99% confidence interval for the true proportion of correct responses made by therapeutic touch practitioners (5′)", "a": "Answer:\n    ① Theoretical probability = 0.5 (since random guess between two hands).\n    ② Point estimate = 123/280 = 0.4393 (or 43.93%).\n    ③ For 99% CI, z = 2.576. Standard error = √[p̂(1−p̂)/n] = √[(0.4393×0.5607)/280] = 0.02966.\n    Margin of error = 2.576 × 0.02966 = 0.0764.\n    CI = (0.4393 − 0.0764, 0.4393 + 0.0764) = (0.3629, 0.5157) (or 36.29% to 51.57%)."}, {"q": "Sleep Duration Study\n    To investigate whether a certain group of adults is sleeping less than recommended, a random sample of n = 12 individuals was selected, the sample mean is x̄ = 6.83 hours and the sample standard deviation is s = 1.99 hours. Their original reported nightly sleep durations (in hours) are:\n    4, 8, 4, 4, 8, 6, 9, 7, 7, 10, 7, 8\n    Public health guidelines commonly recommend that adults sleep between 7 and 9 hours per night.\n    At the α = 0.05 significance level, test whether the population mean sleep duration is less than 7 hours.  \n1) State the null hypothesis (2′)\n  2) Calculate the appropriate test statistic (3′)\n  3) Make the conclusion (2′)", "a": "Answer:\n    ① H₀: μ = 7 (or μ ≥ 7) vs H₁: μ \u003c 7 (one‑tailed).\n    ② Test statistic: t = (x̄ − μ₀) / (s / √n) = (6.83 − 7) / (1.99 / √12) = −0.17 / 0.5745 = −0.296.\n    ③ Critical value for one‑tailed t with df = 11 at α = 0.05 is −1.796. Since t = −0.296 \u003e −1.796, we fail to reject H₀. There is not sufficient evidence to conclude that the population mean sleep duration is less than 7 hours."}, {"q": "BMI and Fasting Blood Glucose (FBG)\n    A study investigates whether Body Mass Index (BMI) can predict Fasting Blood Glucose (FBG) levels. Data from 12 adults are shown below:  \n| Participant | BMI (kg/m²) | FBG (mg/dL) |\n| :---------: | :---------: | :---------: |\n|      1      |     19      |     85      |\n|      2      |     20      |     90      |\n|      3      |     21      |     88      |\n|      4      |     22      |     95      |\n|      5      |     23      |     100     |\n|      6      |     24      |     96      |\n|      7      |     25      |     105     |\n|      8      |     26      |     112     |\n|      9      |     27      |     115     |\n|     10      |     28      |     118     |\n|     11      |     29      |     122     |\n|     12      |     30      |     128     |\n|   SUM   |     294     |    1254     |\n|  MEAN   |    24.5     |    104.5    |\n|   Σ(x−x̄)²   |     143     |    2253     |\n1) Fit a simple linear regression model and report the estimated regression equation (ŷ = b·x + a) (4′)\n  2) Test whether BMI significantly predicts FBG using an F-test at α = 0.05 (8′)\n  3) Use the fitted regression model to predict the FBG level for an individual with BMI = 26 kg/m² (2′)", "a": "Answer:\n    ① Compute Σ(x−x̄)(y−ȳ) = 558 (from given data).\n    Slope b = 558 / 143 = 3.9021. Intercept a = ȳ − b·x̄ = 104.5 − 3.9021×24.5 = 8.8986.\n    Regression equation: FBĜ = 3.90 × BMI + 8.90 (rounded to two decimals).\n    ② SST = Σ(y−ȳ)² = 2253. SSR = b·Σ(x−x̄)(y−ȳ) = 3.9021 × 558 = 2177.37.\n    SSE = SST − SSR = 2253 − 2177.37 = 75.63.\n    MSR = SSR / 1 = 2177.37; MSE = SSE / (n−2) = 75.63 / 10 = 7.563.\n    F = MSR / MSE = 2177.37 / 7.563 = 287.9.\n    Critical F(1,10) at α = 0.05 is about 4.96. Since 287.9 \u003e 4.96, we reject H₀ and conclude that BMI significantly predicts FBG.\n    ③ For BMI = 26: FBĜ = 3.9021×26 + 8.8986 = 101.4546 + 8.8986 = 110.35 mg/dL."}, {"q": "Supplement Use and Common Cold\n    A cohort of 200 adults was observed over winter to assess whether supplement use is associated with incidence of the common cold. The observed frequencies are:  \n|               | Cold (Yes) | Cold (No) | Row Total |\n| :-----------: | :--------: | :-------: | :-------: |\n|  Supplement   |     25     |    75     |    100    |\n| No Supplement |     40     |    60     |    100    |\n| Col Total |     65     |    135    |    200    |\nThe researcher wishes to test, at the α = 0.05 level, whether supplement use and cold incidence are independent.  \nPlease fill in the following table with expected frequencies and perform a Chi-square test (11′).\n|               | Cold (Yes) | Cold (No) |\n| :-----------: | :--------: | :-------: |\n|  Supplement   |            |           |\n| No Supplement |            |           |", "a": "Answer:\n    Expected frequencies (row total × col total / grand total):\n    Supplement \u0026 Cold Yes: 100×65/200 = 32.5\n    Supplement \u0026 Cold No: 100×135/200 = 67.5\n    No Supplement \u0026 Cold Yes: 100×65/200 = 32.5\n    No Supplement \u0026 Cold No: 100×135/200 = 67.5  \nCompleted table:  \n|               | Cold (Yes) | Cold (No) |\n| :-----------: | :--------: | :-------: |\n|  Supplement   |    32.5    |   67.5    |\n| No Supplement |    32.5    |   67.5    |\nChi‑square statistic:\nχ² = Σ (O−E)²/E = (25−32.5)²/32.5 + (75−67.5)²/67.5 + (40−32.5)²/32.5 + (60−67.5)²/67.5\n= 1.7308 + 0.8333 + 1.7308 + 0.8333 = 5.1282.\nDegrees of freedom = (2−1)(2−1) = 1. Critical χ²(1) at α = 0.05 is 3.841.\nSince 5.1282 \u003e 3.841, we reject H₀ of independence. There is a statistically significant association between supplement use and cold incidence."}];</script>
+<script>const examMetadata = {"title": "医学科学素养Ⅱ 2025-2026 学年秋学期期末回忆卷", "description": "", "authors": "李建树"};
+const mcqs = [{"question": [{"type": "text", "content": "下面哪个不是文献检索的目的"}], "options": [{"type": "text", "content": "促进信息交流", "correct": false}, {"type": "text", "content": "提高科研效率", "correct": false}, {"type": "text", "content": "增加文献数目", "correct": true}, {"type": "text", "content": "促进学术交流", "correct": false}]}, {"question": [{"type": "text", "content": "以下关于 PubMed 的说法错误的是"}], "options": [{"type": "text", "content": "由 NCBI 开发，由美国国家图书馆 (NLM) 维护", "correct": false}, {"type": "text", "content": "主要收录生物医学及相关领域的文献", "correct": false}, {"type": "text", "content": "支持使用 MeSH 进行主题词检索以增加效率", "correct": false}, {"type": "text", "content": "所有文献均可免费获取全文", "correct": true}]}, {"question": [{"type": "text", "content": "以下关于 MeSH 说法错误的是"}], "options": [{"type": "text", "content": "MeSH 是 Medical Subject Headings 的缩写", "correct": false}, {"type": "text", "content": "MeSH 采用树状层级结构，包含主题词、副主题词等", "correct": false}, {"type": "text", "content": "所有的文献都有 MeSH 主题词", "correct": true}, {"type": "text", "content": "在检索 MeSH 主题词 (term) 时可以匹配到多个关键词 (key word)", "correct": false}]}, {"question": [{"type": "text", "content": "在文献检索中, 若检索结果过多, 可采取以下哪些策略缩小范围"}], "options": [{"type": "text", "content": "使用布尔逻辑运算符 (AND、OR、NOT) 组合关键词", "correct": false}, {"type": "text", "content": "使用双引号 (\" \") 进行精确短语检索", "correct": false}, {"type": "text", "content": "利用字段限定符 (如 [AU] 表示作者，[TI] 表示标题) 限制检索范围", "correct": false}, {"type": "text", "content": "以上三个都可以", "correct": true}]}, {"question": [{"type": "text", "content": "Web of Science 的结果分析功能可用于"}], "options": [{"type": "text", "content": "识别某一研究课题涉及的主要学科领域", "correct": false}, {"type": "text", "content": "查找在该研究方向上具有影响力的机构", "correct": false}, {"type": "text", "content": "发现在该研究方向上高产且具有学术影响力的作者", "correct": false}, {"type": "text", "content": "以上均可", "correct": true}]}, {"question": [{"type": "text", "content": "A new drug trial reports a p-value of 0.03. This means"}], "options": [{"type": "text", "content": "There is a 3% probability of making a Type I error if the null hypothesis is true", "correct": true}, {"type": "text", "content": "The probability that the null hypothesis is true is 0.03", "correct": false}, {"type": "text", "content": "There is a 97% chance that the drug is effective", "correct": false}, {"type": "text", "content": "The result is not statistically significant at the α = 0.05 level", "correct": false}]}, {"question": [{"type": "text", "content": "Which of the following measures is most affected by outliers"}], "options": [{"type": "text", "content": "Mode", "correct": false}, {"type": "text", "content": "Mean", "correct": true}, {"type": "text", "content": "Median", "correct": false}, {"type": "text", "content": "Interquartile Range (IQR)", "correct": false}]}, {"question": [{"type": "text", "content": "Sensitivity refers to"}], "options": [{"type": "text", "content": "The proportion of people with the disease who test positive", "correct": true}, {"type": "text", "content": "The proportion of people without the disease who test negative", "correct": false}, {"type": "text", "content": "The probability that a positive test result truly indicates disease", "correct": false}, {"type": "text", "content": "The ratio of true positives to false positives", "correct": false}]}, {"question": [{"type": "text", "content": "In a comparison between a new drug and placebo, the 95% confidence interval for the difference in recovery time is (1.2, 4.5) days. Which statement is most appropriate"}], "options": [{"type": "text", "content": "There is a 95% probability that the true difference lies between 1.2 and 4.5 days", "correct": false}, {"type": "text", "content": "We can be 95% confident that this specific interval contains the true population difference", "correct": true}, {"type": "text", "content": "The result is not statistically significant because the interval is too wide", "correct": false}, {"type": "text", "content": "The drug is highly effective because the 95% confidence interval does not include 0", "correct": false}]}, {"question": [{"type": "text", "content": "The number of accidents per month follows a distribution with a mean of 2. What is the probability of observing zero accidents in a given month"}], "options": [{"type": "text", "content": "0.1353", "correct": true}, {"type": "text", "content": "0.2707", "correct": false}, {"type": "text", "content": "0.3679", "correct": false}, {"type": "text", "content": "0.0183", "correct": false}]}, {"question": [{"type": "text", "content": "A Type I error occurs when"}], "options": [{"type": "text", "content": "The null hypothesis is rejected when it is actually true", "correct": true}, {"type": "text", "content": "The null hypothesis is accepted when it is actually false", "correct": false}, {"type": "text", "content": "The alternative hypothesis is accepted when it is true", "correct": false}, {"type": "text", "content": "The study has insufficient statistical power", "correct": false}]}, {"question": [{"type": "text", "content": "In a case-control study, the best measure of association to use is"}], "options": [{"type": "text", "content": "Relative Risk (RR)", "correct": false}, {"type": "text", "content": "Absolute Risk Reduction", "correct": false}, {"type": "text", "content": "Odds Ratio (OR)", "correct": true}, {"type": "text", "content": "Number Needed to Treat", "correct": false}]}, {"question": [{"type": "text", "content": "In a normal distribution, approximately what percentage of data falls within ±1 standard deviation of the mean"}], "options": [{"type": "text", "content": "50%", "correct": false}, {"type": "text", "content": "68%", "correct": true}, {"type": "text", "content": "95%", "correct": false}, {"type": "text", "content": "99.7%", "correct": false}]}, {"question": [{"type": "text", "content": "What is the primary purpose of blinding in a clinical trial"}], "options": [{"type": "text", "content": "To increase sample size", "correct": false}, {"type": "text", "content": "To reduce bias in the assessment of outcomes", "correct": true}, {"type": "text", "content": "To ensure random allocation of participants", "correct": false}, {"type": "text", "content": "To guarantee that the study is ethical", "correct": false}]}, {"question": [{"type": "text", "content": "Which type of graph is most suitable for displaying the relationship between two continuous variables"}], "options": [{"type": "text", "content": "Bar chart", "correct": false}, {"type": "text", "content": "Histogram", "correct": false}, {"type": "text", "content": "Box plot", "correct": false}, {"type": "text", "content": "Scatter plot", "correct": true}]}, {"question": [{"type": "text", "content": "Researchers want to compare the mean systolic blood pressure (SBP) between two independent groups of patients: one receiving a new antihypertensive drug and the other receiving standard care. Which test is most appropriate for this analysis"}], "options": [{"type": "text", "content": "Two-sample independent t-test", "correct": true}, {"type": "text", "content": "Paired t-test", "correct": false}, {"type": "text", "content": "Chi-square test", "correct": false}, {"type": "text", "content": "One-way ANOVA", "correct": false}]}, {"question": [{"type": "text", "content": "A study investigates the mean of heart rate. Resting heart rate is measured in the same group volunteers before and after consuming a standardized dose of caffeine. Which test should be used to assess whether caffeine significantly changes heart rate?"}], "options": [{"type": "text", "content": "Two-sample independent t-test", "correct": false}, {"type": "text", "content": "Paired t-test", "correct": true}, {"type": "text", "content": "Chi-square test", "correct": false}, {"type": "text", "content": "Mann-Whitney U test", "correct": false}]}, {"question": [{"type": "text", "content": "Researchers compare median of recovery time between two treatments for a viral infection: Drug A and Drug B. The recovery time data are highly right-skewed. Which test is most suitable for comparing the central tendency of recovery time between the two groups?"}], "options": [{"type": "text", "content": "Wilcoxon Rank Sum test", "correct": true}, {"type": "text", "content": "Chi-square test", "correct": false}, {"type": "text", "content": "Kruskal-Wallis test", "correct": false}, {"type": "text", "content": "Fisher's exact test", "correct": false}]}, {"question": [{"type": "text", "content": "Researchers want to compare the median hemoglobin levels of patients admitted to three different hospitals. Hemoglobin values in all three groups are not normally distributed, which test is most appropriate to determine whether there is a statistically significant difference in median hemoglobin levels across the three hospitals"}], "options": [{"type": "text", "content": "Wilcoxon Rank Sum test", "correct": false}, {"type": "text", "content": "Kruskal-Wallis test", "correct": true}, {"type": "text", "content": "Paired t-test", "correct": false}, {"type": "text", "content": "Chi-square test", "correct": false}]}, {"question": [{"type": "text", "content": "In one-way ANOVA, the null hypothesis states that"}], "options": [{"type": "text", "content": "At least one group mean is different", "correct": false}, {"type": "text", "content": "All group means are equal", "correct": true}, {"type": "text", "content": "All group variances are equal", "correct": false}, {"type": "text", "content": "The groups are dependent", "correct": false}]}];
+const flashcards = [{"question": [{"type": "text", "content": "Cell Phone Radiation\n\n    The specific absorption rate of cell phone radiation is measured in watts per kilogram (W/kg). A sample of 11 cell phones yields the following SAR values:\n\n    1.5, 0.9, 1.3, 1.5, 1.3, 1.2, 1.4, 1.1, 1.3, 1.4, 1.2  \n\n1) Find the mean, median, standard deviation, variance, and range of this data set. Also, are these results statistics or parameters (6′)\n\n  2) Find amounts of radiation separating those that are significantly low and those that are significantly high. Is the lowest listed value significantly low (4′)\n\n  3) Is this data set continuous or discrete (1′)"}], "answer": [{"type": "text", "content": "Answer:\n\n    ① Mean = Σx / n = 14.1 / 11 = 1.28 (W/kg). Sorted: 0.9, 1.1, 1.2, 1.2, 1.3, 1.3, 1.3, 1.4, 1.4, 1.5, 1.5 → median = 1.3.\n\n    Variance (sample) = [Σx² − (Σx)²/n] / (n−1) = [18.39 − 198.81/11] / 10 = 0.3164/10 = 0.03164, so s = √0.03164 = 0.18.\n\n    Range = 1.5 − 0.9 = 0.6.\n\n    These are statistics (sample statistics, not population parameters).\n\n    ② Using the ±2 standard deviation rule: lower cutoff = mean − 2·s = 1.28 − 2×0.18 = 0.92; upper cutoff = 1.28 + 2×0.18 = 1.64. The lowest value 0.9 is below 0.92, so it is significantly low.\n\n    ③ The data are continuous (SAR can take any real value)."}]}, {"question": [{"type": "text", "content": "Touch Therapy\n\n    A nine-year-old girl named Emily Rosa conducted an experiment to test whether touch therapy practitioners could detect a human energy field. In 280 trials, TT practitioners correctly identified the hand chosen by Emily in 123 trials. (A close look at therapeutic touch. JAMA. 1998 Apr 1;279(13):1005-10.)  \n\n1) If practitioners were merely guessing at random (as if flipping a fair coin), what is the theoretical probability of a correct guess (1′)\n\n  2) Based on the sample results, what is the best point estimate of the true success rate for touch therapy practitioners (1′)\n\n  3) Construct a 99% confidence interval for the true proportion of correct responses made by therapeutic touch practitioners (5′)"}], "answer": [{"type": "text", "content": "Answer:\n\n    ① Theoretical probability = 0.5 (since random guess between two hands).\n\n    ② Point estimate = 123/280 = 0.4393 (or 43.93%).\n\n    ③ For 99% CI, z = 2.576. Standard error = √[p̂(1−p̂)/n] = √[(0.4393×0.5607)/280] = 0.02966.\n\n    Margin of error = 2.576 × 0.02966 = 0.0764.\n\n    CI = (0.4393 − 0.0764, 0.4393 + 0.0764) = (0.3629, 0.5157) (or 36.29% to 51.57%)."}]}, {"question": [{"type": "text", "content": "Sleep Duration Study\n\n    To investigate whether a certain group of adults is sleeping less than recommended, a random sample of n = 12 individuals was selected, the sample mean is x̄ = 6.83 hours and the sample standard deviation is s = 1.99 hours. Their original reported nightly sleep durations (in hours) are:\n\n    4, 8, 4, 4, 8, 6, 9, 7, 7, 10, 7, 8\n\n    Public health guidelines commonly recommend that adults sleep between 7 and 9 hours per night.\n\n    At the α = 0.05 significance level, test whether the population mean sleep duration is less than 7 hours.  \n\n1) State the null hypothesis (2′)\n\n  2) Calculate the appropriate test statistic (3′)\n\n  3) Make the conclusion (2′)"}], "answer": [{"type": "text", "content": "Answer:\n\n    ① H₀: μ = 7 (or μ ≥ 7) vs H₁: μ \u003c 7 (one‑tailed).\n\n    ② Test statistic: t = (x̄ − μ₀) / (s / √n) = (6.83 − 7) / (1.99 / √12) = −0.17 / 0.5745 = −0.296.\n\n    ③ Critical value for one‑tailed t with df = 11 at α = 0.05 is −1.796. Since t = −0.296 \u003e −1.796, we fail to reject H₀. There is not sufficient evidence to conclude that the population mean sleep duration is less than 7 hours."}]}, {"question": [{"type": "text", "content": "BMI and Fasting Blood Glucose (FBG)\n\n    A study investigates whether Body Mass Index (BMI) can predict Fasting Blood Glucose (FBG) levels. Data from 12 adults are shown below:"}, {"type": "table", "headers": ["Participant", "BMI (kg/m²)", "FBG (mg/dL)"], "rows": [["1", "19", "85"], ["2", "20", "90"], ["3", "21", "88"], ["4", "22", "95"], ["5", "23", "100"], ["6", "24", "96"], ["7", "25", "105"], ["8", "26", "112"], ["9", "27", "115"], ["10", "28", "118"], ["11", "29", "122"], ["12", "30", "128"], ["SUM", "294", "1254"], ["MEAN", "24.5", "104.5"], ["Σ(x−x̄)²", "143", "2253"]], "align": ["middle", "middle", "middle"]}, {"type": "text", "content": "1) Fit a simple linear regression model and report the estimated regression equation (ŷ = b·x + a) (4′)\n\n  2) Test whether BMI significantly predicts FBG using an F-test at α = 0.05 (8′)\n\n  3) Use the fitted regression model to predict the FBG level for an individual with BMI = 26 kg/m² (2′)"}], "answer": [{"type": "text", "content": "Answer:\n\n    ① Compute Σ(x−x̄)(y−ȳ) = 558 (from given data).\n\n    Slope b = 558 / 143 = 3.9021. Intercept a = ȳ − b·x̄ = 104.5 − 3.9021×24.5 = 8.8986.\n\n    Regression equation: FBĜ = 3.90 × BMI + 8.90 (rounded to two decimals).\n\n    ② SST = Σ(y−ȳ)² = 2253. SSR = b·Σ(x−x̄)(y−ȳ) = 3.9021 × 558 = 2177.37.\n\n    SSE = SST − SSR = 2253 − 2177.37 = 75.63.\n\n    MSR = SSR / 1 = 2177.37; MSE = SSE / (n−2) = 75.63 / 10 = 7.563.\n\n    F = MSR / MSE = 2177.37 / 7.563 = 287.9.\n\n    Critical F(1,10) at α = 0.05 is about 4.96. Since 287.9 \u003e 4.96, we reject H₀ and conclude that BMI significantly predicts FBG.\n\n    ③ For BMI = 26: FBĜ = 3.9021×26 + 8.8986 = 101.4546 + 8.8986 = 110.35 mg/dL."}]}, {"question": [{"type": "text", "content": "Supplement Use and Common Cold\n\n    A cohort of 200 adults was observed over winter to assess whether supplement use is associated with incidence of the common cold. The observed frequencies are:"}, {"type": "table", "headers": ["", "Cold (Yes)", "Cold (No)", "Row Total"], "rows": [["Supplement", "25", "75", "100"], ["No Supplement", "40", "60", "100"], ["Col Total", "65", "135", "200"]], "align": ["middle", "middle", "middle", "middle"]}, {"type": "text", "content": "The researcher wishes to test, at the α = 0.05 level, whether supplement use and cold incidence are independent.  \n\nPlease fill in the following table with expected frequencies and perform a Chi-square test (11′)."}, {"type": "table", "headers": ["", "Cold (Yes)", "Cold (No)"], "rows": [["Supplement", "", ""], ["No Supplement", "", ""]], "align": ["middle", "middle", "middle"]}], "answer": [{"type": "text", "content": "Answer:\n\n    Expected frequencies (row total × col total / grand total):\n\n    Supplement \u0026 Cold Yes: 100×65/200 = 32.5\n\n    Supplement \u0026 Cold No: 100×135/200 = 67.5\n\n    No Supplement \u0026 Cold Yes: 100×65/200 = 32.5\n\n    No Supplement \u0026 Cold No: 100×135/200 = 67.5  \n\nCompleted table:"}, {"type": "table", "headers": ["", "Cold (Yes)", "Cold (No)"], "rows": [["Supplement", "32.5", "67.5"], ["No Supplement", "32.5", "67.5"]], "align": ["middle", "middle", "middle"]}, {"type": "text", "content": "Chi‑square statistic:\n\nχ² = Σ (O−E)²/E = (25−32.5)²/32.5 + (75−67.5)²/67.5 + (40−32.5)²/32.5 + (60−67.5)²/67.5\n\n= 1.7308 + 0.8333 + 1.7308 + 0.8333 = 5.1282.\n\nDegrees of freedom = (2−1)(2−1) = 1. Critical χ²(1) at α = 0.05 is 3.841.\n\nSince 5.1282 \u003e 3.841, we reject H₀ of independence. There is a statistically significant association between supplement use and cold incidence."}]}];</script>
 
 <script type="text/babel">
-  const { useState, useEffect } = React;
+  const { useState, useLayoutEffect, useRef } = React;
 
   // 自定义 SVG 图标组件，替代有 bug 的 Lucide-React 库，解决 Infinity 冲突
   const CheckCircle2 = ({ size = 24, className = "" }) => (
@@ -557,36 +619,160 @@ const flashcards = [{"q": "Cell Phone Radiation\n    The specific absorption rat
     </svg>
   );
 
-  const RichContent = ({ value, imageClassName = "max-h-72" }) => {
-    const content =
-      typeof value === "string"
-        ? { text: value, images: [] }
-        : { text: value?.text || "", images: value?.images || [] };
+  let mathJaxQueue = Promise.resolve();
+
+  const queueMathTask = (task) => {
+    mathJaxQueue = mathJaxQueue
+      .then(() => window.MathJax?.startup?.promise)
+      .then(task)
+      .catch((error) => console.error("MathJax typesetting failed", error));
+  };
+
+  const queueMathTypeset = (container, text, shouldSkip) => {
+    queueMathTask(() => {
+      const mathJax = window.MathJax;
+      if (
+        shouldSkip() ||
+        !container.isConnected ||
+        !mathJax?.typesetPromise
+      ) {
+        return;
+      }
+
+      mathJax.typesetClear?.([container]);
+      container.textContent = text || "";
+      return mathJax.typesetPromise([container]);
+    });
+  };
+
+  const MathText = ({ text, className = "" }) => {
+    const containerRef = useRef(null);
+
+    useLayoutEffect(() => {
+      const container = containerRef.current;
+      if (!container) return undefined;
+
+      if (!container.hasChildNodes()) {
+        container.textContent = text || "";
+      }
+      let disposed = false;
+
+      const typeset = () => {
+        const mathJax = window.MathJax;
+        if (disposed || !mathJax?.typesetPromise) return;
+        queueMathTypeset(container, text, () => disposed);
+      };
+
+      if (window.MathJax?.typesetPromise) {
+        typeset();
+      } else {
+        // Keep the source readable when the CDN is slow or unavailable.
+        container.textContent = text || "";
+        window.addEventListener("mathjax-ready", typeset, { once: true });
+      }
+
+      return () => {
+        disposed = true;
+        window.removeEventListener("mathjax-ready", typeset);
+        if (window.MathJax?.typesetClear) {
+          queueMathTask(() => window.MathJax.typesetClear([container]));
+        }
+      };
+    }, [text]);
 
     return (
-      <div className="min-w-0 space-y-3">
-        {content.text && (
-          <div className="whitespace-pre-wrap break-words">{content.text}</div>
-        )}
-        {content.images.map((image, index) => (
-          <figure key={`${image.src}-${index}`} className="space-y-1.5">
-            <img
-              src={image.src}
-              alt={image.alt || ""}
-              loading="lazy"
-              decoding="async"
-              className={`mx-auto w-auto max-w-full rounded-xl object-contain ${imageClassName}`}
-            />
-            {image.caption && (
-              <figcaption className="text-center text-xs font-normal opacity-70">
-                {image.caption}
-              </figcaption>
-            )}
-          </figure>
-        ))}
-      </div>
+      <div
+        ref={containerRef}
+        className={`math-content ${className}`}
+      ></div>
     );
   };
+
+  const alignmentClass = (alignment) => {
+    if (alignment === "right") return "text-right";
+    if (alignment === "middle") return "text-center";
+    return "text-left";
+  };
+
+  const ContentTable = ({ element }) => (
+    <div
+      className="max-w-full overflow-x-auto rounded-xl shadow-md"
+      onClick={(event) => event.stopPropagation()}
+    >
+      <table className="w-full min-w-max border-collapse bg-white text-sm font-normal text-slate-700">
+        {element.headers.length > 0 && (
+          <thead className="bg-brand-500/50 text-brand-950">
+            <tr className="border-b border-slate-300/50">
+              {element.headers.map((header, index) => (
+                <th
+                  key={index}
+                  scope="col"
+                  className={`px-4 py-3 font-bold ${alignmentClass(element.align[index])}`}
+                >
+                  <MathText text={header} />
+                </th>
+              ))}
+            </tr>
+          </thead>
+        )}
+        <tbody>
+          {element.rows.map((row, rowIndex) => (
+            <tr
+              key={rowIndex}
+              className="border-b border-slate-300/50 last:border-b-0"
+            >
+              {row.map((cell, cellIndex) => (
+                <td
+                  key={cellIndex}
+                  className={`px-4 py-3 ${alignmentClass(element.align[cellIndex])}`}
+                >
+                  <MathText text={cell} />
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+
+  const RichContent = ({ value = [], imageClassName = "max-h-72" }) => (
+    <div className="min-w-0 space-y-3">
+      {value.map((element, index) => {
+        if (element.type === "text") {
+          return (
+            <MathText
+              key={index}
+              text={element.content}
+              className="whitespace-pre-wrap break-words"
+            />
+          );
+        }
+        if (element.type === "image") {
+          return (
+            <figure key={index} className="space-y-1.5">
+              <img
+                src={element.src}
+                alt={element.alt || ""}
+                loading="lazy"
+                decoding="async"
+                className={`mx-auto w-auto max-w-full rounded-xl object-contain ${imageClassName}`}
+              />
+              {element.caption && (
+                <figcaption className="text-center text-xs font-normal opacity-70">
+                  {element.caption}
+                </figcaption>
+              )}
+            </figure>
+          );
+        }
+        if (element.type === "table") {
+          return <ContentTable key={index} element={element} />;
+        }
+        return null;
+      })}
+    </div>
+  );
 
   function App() {
     const [view, setView] = useState("menu"); // 'menu', 'quiz', 'flashcard'
@@ -613,9 +799,12 @@ const flashcards = [{"q": "Cell Phone Radiation\n    The specific absorption rat
       setWrongAnswers([]);
     };
 
-    // 将旧版单值 c 和新版列表 c 统一为答案索引列表。
     const getCorrectAnswers = (question) =>
-      Array.isArray(question.c) ? question.c : [question.c];
+      question.options.reduce(
+        (answers, option, index) =>
+          option.correct ? [...answers, index] : answers,
+        [],
+      );
 
     const submitQuizAnswer = (userAnswers) => {
       if (isAnswerSubmitted || userAnswers.length === 0) return;
@@ -694,11 +883,14 @@ const flashcards = [{"q": "Cell Phone Radiation\n    The specific absorption rat
               <BookOpen size={40} />
             </div>
             <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-3 break-words">
-              医学科学素养Ⅱ 2025-2026 学年秋学期期末回忆卷
+              <MathText text={examMetadata.title} />
             </h1>
-            <p className="text-base sm:text-lg text-slate-500 leading-relaxed">
-              <p></p><p>Made by 李建树</p>
-            </p>
+            <div className="space-y-1 text-base leading-relaxed text-slate-500 sm:text-lg">
+              {examMetadata.description && (
+                <MathText text={examMetadata.description} />
+              )}
+              <div>Made by {examMetadata.authors}</div>
+            </div>
           </div>
 
           <div
@@ -797,7 +989,7 @@ const flashcards = [{"q": "Cell Phone Radiation\n    The specific absorption rat
                   </span>
                 </div>
                 <div className="text-lg sm:text-xl font-bold text-slate-800 leading-relaxed">
-                  <RichContent value={mcqs[currentIdx].q} />
+                  <RichContent value={mcqs[currentIdx].question} />
                 </div>
                 {getCorrectAnswers(mcqs[currentIdx]).length > 1 && (
                   <p className="text-sm text-slate-500 mt-3">
@@ -806,7 +998,7 @@ const flashcards = [{"q": "Cell Phone Radiation\n    The specific absorption rat
                 )}
               </div>
               <div className="grid gap-3">
-                {mcqs[currentIdx].a.map((opt, i) => {
+                {mcqs[currentIdx].options.map((opt, i) => {
                   const correctAnswers = getCorrectAnswers(mcqs[currentIdx]);
                   const isSelected = selectedOptions.includes(i);
                   const isCorrectOption = correctAnswers.includes(i);
@@ -839,7 +1031,10 @@ const flashcards = [{"q": "Cell Phone Radiation\n    The specific absorption rat
                           {String.fromCharCode(65 + i)}.
                         </span>
                         <div className="min-w-0 flex-1">
-                          <RichContent value={opt} imageClassName="max-h-48" />
+                          <RichContent
+                            value={[opt]}
+                            imageClassName="max-h-48"
+                          />
                         </div>
                       </div>
                       {isAnswerSubmitted && isCorrectOption && (
@@ -911,7 +1106,7 @@ const flashcards = [{"q": "Cell Phone Radiation\n    The specific absorption rat
                           <span className="shrink-0">{idx + 1}.</span>
                           <div className="min-w-0 flex-1">
                             <RichContent
-                              value={item.q}
+                              value={item.question}
                               imageClassName="max-h-32"
                             />
                           </div>
@@ -947,6 +1142,34 @@ const flashcards = [{"q": "Cell Phone Radiation\n    The specific absorption rat
               </div>
             </div>
           )}
+          
+          {/* 控制按钮 */}
+          <div className="flex items-center justify-between gap-2 sm:gap-4 mt-5 sm:mt-8">
+            <button
+              disabled={currentIdx === 0}
+              onClick={() => {
+                setCurrentIdx(currentIdx - 1);
+                setFlipped(false);
+              }}
+              className="min-h-12 flex flex-1 sm:flex-none items-center justify-center gap-1 sm:gap-2 px-3 sm:px-6 py-3 bg-white text-slate-600 hover:text-slate-800 border rounded-xl font-bold shadow-sm transition-all disabled:opacity-30 disabled:pointer-events-none"
+            >
+              <ChevronLeft size={20} /> 上一题
+            </button>
+            <button
+              onClick={() => {
+                if (currentIdx < mcqs.length - 1) {
+                  setCurrentIdx(currentIdx + 1);
+                  setFlipped(false);
+                } else {
+                  setView("menu");
+                }
+              }}
+              className="min-h-12 flex flex-1 sm:flex-none items-center justify-center gap-1 sm:gap-2 px-3 sm:px-6 py-3 bg-brand-800 hover:bg-brand-900 text-white rounded-xl font-bold shadow-sm transition-all"
+            >
+              {currentIdx === mcqs.length - 1 ? "完成复习" : "下一题"}{" "}
+              <ChevronRight size={20} />
+            </button>
+          </div>
 
           {/* 选择题快速导航模态框 */}
           {showNavModal && (
@@ -985,7 +1208,7 @@ const flashcards = [{"q": "Cell Phone Radiation\n    The specific absorption rat
 
     if (view === "flashcard") {
       return (
-        <div className="max-w-2xl mx-auto pt-1 px-0 sm:pt-4 sm:px-4 md:pt-8">
+        <div className="flashcard-view min-h-full max-w-4xl mx-auto pt-1 px-0 sm:pt-4 sm:px-4 md:pt-8">
           {/* 导航头 */}
           <div className="flex items-center justify-between gap-2 mb-4 sm:mb-6">
             <button
@@ -1018,39 +1241,30 @@ const flashcards = [{"q": "Cell Phone Radiation\n    The specific absorption rat
             ></div>
           </div>
 
-          {/* 翻转卡片结构 */}
+          {/* 自适应叠层翻转卡片 */}
           <div
             className={`flip-card ${flipped ? "flipped" : ""} w-full`}
             onClick={() => setFlipped((isFlipped) => !isFlipped)}
+            onKeyDown={(event) => {
+              if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                setFlipped((isFlipped) => !isFlipped);
+              }
+            }}
+            role="button"
+            tabIndex="0"
+            aria-label={flipped ? "返回查看问题" : "查看参考答案"}
           >
-            <div
-              className="flip-card-inner"
-              style={{
-                transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)",
-              }}
-            >
+            <div className="flip-card-inner">
               {/* 卡片正面 (问题) */}
-              <div className="flip-card-front bg-white border border-slate-200 text-slate-800 flex flex-col justify-between">
-                <div className="p-3 bg-brand-50 text-brand-600 rounded-full mt-4 self-center">
-                  <Lightbulb size={28} />
-                </div>
-                <div className="my-auto min-h-0 w-full overflow-y-auto overscroll-contain px-2 py-2 scrollbar-hide sm:px-4">
-                  <span className="text-xs font-bold text-slate-400 block mb-2">
-                    QUESTION {currentIdx + 1}
-                  </span>
-                  <div className="text-lg sm:text-xl font-bold leading-relaxed">
-                    <RichContent
-                      value={flashcards[currentIdx].q}
-                      imageClassName="max-h-48"
-                    />
-                  </div>
-                </div>
-                <p className="text-slate-400 text-xs font-medium pb-4 flex items-center gap-1 animate-pulse">
+              <div className="flip-card-front justify-start overflow-hidden bg-white border border-slate-200 text-slate-800">
+                <div className="flip-card-hint text-slate-500 text-xs sm:text-sm font-semibold">
                   <svg
-                    className="w-4 h-4"
+                    className="h-4 w-4 shrink-0"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
+                    aria-hidden="true"
                   >
                     <path
                       strokeLinecap="round"
@@ -1060,23 +1274,38 @@ const flashcards = [{"q": "Cell Phone Radiation\n    The specific absorption rat
                     />
                   </svg>
                   点击卡片翻看参考答案
-                </p>
-              </div>
+                </div>
 
-              {/* 卡片背面 (要点解析) */}
-              <div className="flip-card-back bg-brand-950 text-white border border-brand-900 text-left items-start overflow-y-auto scrollbar-hide flex flex-col justify-between">
-                <div className="w-full">
-                  <h4 className="text-brand-300 font-bold mb-4 flex items-center gap-2 border-b border-brand-900 pb-2">
-                    <CheckCircle2 size={18} /> 核心要点 / 答案分析
-                  </h4>
-                  <div className="text-base leading-relaxed text-slate-200 font-medium">
+                <div className="relative z-10 flex w-full flex-col gap-6 sm:gap-8">
+                  <div className="flex w-fit items-center gap-2 rounded-full bg-brand-50 px-3 py-2 text-brand-700">
+                    <Lightbulb size={22} className="shrink-0" />
+                    <span className="text-xs font-bold uppercase tracking-wider">
+                      QUESTION {currentIdx + 1}
+                    </span>
+                  </div>
+                  <div className="w-full text-left text-lg sm:text-xl font-bold leading-relaxed">
                     <RichContent
-                      value={flashcards[currentIdx].a}
-                      imageClassName="max-h-48"
+                      value={flashcards[currentIdx].question}
+                      imageClassName="max-h-[60dvh]"
                     />
                   </div>
                 </div>
-                <p className="pt-6 text-slate-500 text-xs text-center w-full mt-auto">
+              </div>
+
+              {/* 卡片背面 (要点解析) */}
+              <div className="flip-card-back justify-between bg-brand-950 text-white border border-brand-900 text-left">
+                <div className="relative z-10 w-full">
+                  <h4 className="text-brand-300 font-bold mb-4 flex items-center gap-2 border-b border-brand-900 pb-2">
+                    <CheckCircle2 size={18} /> 参考答案
+                  </h4>
+                  <div className="text-base leading-relaxed text-slate-200 font-medium">
+                    <RichContent
+                      value={flashcards[currentIdx].answer}
+                      imageClassName="max-h-[60dvh]"
+                    />
+                  </div>
+                </div>
+                <p className="relative z-10 pt-8 text-slate-500 text-xs text-center w-full mt-auto">
                   点击卡片返回问题
                 </p>
               </div>

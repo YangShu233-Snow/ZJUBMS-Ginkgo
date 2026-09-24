@@ -29,6 +29,31 @@
         },
       };
     </script>
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [
+            ["$", "$"],
+            ["\\(", "\\)"],
+          ],
+          displayMath: [
+            ["$$", "$$"],
+            ["\\[", "\\]"],
+          ],
+          processEscapes: true,
+        },
+        startup: {
+          // React owns the page content, so each content component asks MathJax
+          // to typeset itself after it is mounted or updated.
+          typeset: false,
+          ready() {
+            MathJax.startup.defaultReady();
+            window.dispatchEvent(new Event("mathjax-ready"));
+          },
+        },
+      };
+    </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -43,18 +68,35 @@
           Roboto,
           sans-serif;
       }
+      #root {
+        min-height: 100%;
+      }
+      .math-content {
+        max-width: 100%;
+        overflow-x: auto;
+        overflow-y: hidden;
+      }
+      .math-content mjx-container[display="true"] {
+        margin: 0.5em 0 !important;
+      }
       .flip-card {
         perspective: 1000px;
-        height: clamp(320px, 55dvh, 380px);
+        min-height: clamp(28rem, calc(100dvh - 18rem), 52rem);
+      }
+      .flip-card:focus-visible {
+        outline: 3px solid rgb(39 139 112 / 0.45);
+        outline-offset: 4px;
+        border-radius: 1.5rem;
       }
       .flip-card-inner {
         position: relative;
+        display: grid;
         width: 100%;
-        height: 100%;
-        text-align: center;
+        min-height: inherit;
+        text-align: left;
         -webkit-transform: rotateY(0deg);
         transform: rotateY(0deg);
-        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         -webkit-transform-style: preserve-3d;
         transform-style: preserve-3d;
         transform-origin: center;
@@ -67,15 +109,15 @@
       }
       .flip-card-front,
       .flip-card-back {
-        position: absolute;
+        position: relative;
+        grid-area: 1 / 1;
         width: 100%;
-        height: 100%;
+        min-height: inherit;
         -webkit-backface-visibility: hidden;
         backface-visibility: hidden;
         display: flex;
         flex-direction: column;
-        justify-content: center;
-        align-items: center;
+        align-items: stretch;
         padding: 2rem;
         border-radius: 1.5rem;
         box-shadow:
@@ -86,8 +128,19 @@
         -webkit-transform: rotateY(180deg);
         transform: rotateY(180deg);
       }
-      .scrollbar-hide::-webkit-scrollbar {
-        display: none;
+      .flip-card-hint {
+        position: absolute;
+        right: 1.5rem;
+        bottom: 1.5rem;
+        left: 1.5rem;
+        z-index: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.375rem;
+        opacity: 0.26;
+        pointer-events: none;
+        user-select: none;
       }
       .sidebar-shell {
         visibility: hidden;
@@ -164,6 +217,14 @@
         .flip-card-back {
           padding: 1rem;
           border-radius: 1rem;
+        }
+        .flip-card {
+          min-height: clamp(24rem, calc(100dvh - 15.5rem), 44rem);
+        }
+        .flip-card-hint {
+          right: 1rem;
+          bottom: 1rem;
+          left: 1rem;
         }
       }
       @media (prefers-reduced-motion: reduce) {
@@ -362,11 +423,12 @@
       <!-- 右侧主体内容区 -->
       <main class=".js-quiz-container min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-contain p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:p-5 md:p-8"><div id="root"></div>
 
-<script>const mcqs = [{"q": "Which of these numbers cannot be a probability?", "a": ["-0.5", "0.999", "0", "1"], "c": [0]}, {"q": "We screened the blood type in 200 peoples, the results are: 50 have type A blood, 60 have B blood type, 60 have O blood type and 30 have type AB blood. If a person from this group is selected at random, what is the probability that this person has O blood type?", "a": ["0.35", "0.30", "0.34", "0.1"], "c": [1]}, {"q": "Which of the following random variables is discrete.", "a": ["Income", "height", "The number of myopic eyes", "Weight"], "c": [2]}, {"q": "Which statement must be FALSE of the probability distribution?", "a": ["The sum of the probabilities is equal to 1", "The probabilities are NOT greater than 1.", "The sum of the probabilities is greater than 1 and the respective probabilities are between 0 and 1.", "The probabilities are not less than 0."], "c": [2]}, {"q": "In a study of 1000 people, investigators observed who was bitten by a flea and who subsequently developed plague. 600 people were bitten by a flea. 400 out of 600 people developed plague. 400 people have never been bitten by a flea, 100 out of them developed plague. What's the relative risk of people with flea bitten developing plague?", "a": ["2", "2.67", "3", "4/3"], "c": [1]}, {"q": "Suppose the smoking habits of the parents are independent and the probability that the mother is a current smoker is 0.4, whereas the probability that the father is a current smoker is 0.5. what is the probability that both the father and mother are current smokers?", "a": ["0.2", "0.5", "0.4", "0.9"], "c": [0]}, {"q": "Suppose the smoking habits of the parents are independent and the probability that the mother is a current smoker is 0.4, whereas the probability that the father is a current smoker is 0.5. Consider the subgroup of families where the mother is not a current smoker, what is the probability that the father is a current smoker?", "a": ["0.2", "0.5", "0.4", "0.9"], "c": [1]}, {"q": "An investigator wishes to study a particular environmental factor, namely, the relationship of cigarette-smoking habits in the parents to the presence or absence of asthma in their oldest child living in the household in the 5- to 9-year-old age range. Suppose that the investigator finds that: if both the mother and father are current smokers then the probability of their offspring having asthma is 0.15; if the mother is a current smoker and the father is not, then the probability of their offspring having asthma is 0.13; if the father is a current smoker and the mother is not, then the probability of their offspring having asthma is 0.05; if neither parent is a current smoker, then the probability of their offspring having asthma is 0.04; the probability that the father is a current smoker is 0.5; if the father is a current smoker then the probability that the mother is a current smoker is 0.6; if the father is NOT a current smoker then the probability that the mother is a current smoker is 0.2. What is the probability that the offspring will have asthma?", "a": ["0.37", "0.755", "0.084", "0.639"], "c": [2]}, {"q": "An investigator wishes to study a particular environmental factor, namely, the relationship of cigarette-smoking habits in the parents to the presence or absence of asthma in their oldest child living in the household in the 5- to 9-year-old age range. Suppose that the investigator finds that: if both the mother and father are current smokers then the probability of their offspring having asthma is 0.15; if the mother is a current smoker and the father is not, then the probability of their offspring having asthma is 0.13; if the father is a current smoker and the mother is not, then the probability of their offspring having asthma is 0.05; if neither parent is a current smoker, then the probability of their offspring having asthma is 0.04; the probability that the father is a current smoker is 0.5; if the father is a current smoker then the probability that the mother is a current smoker is 0.6; if the father is NOT a current smoker then the probability that the mother is a current smoker is 0.2. Suppose a child has asthma what is the probability that the father is a current smoker?", "a": ["0.495", "0.655", "0.690", "0.757"], "c": [1]}, {"q": "An investigator wishes to study a particular environmental factor, namely, the relationship of cigarette-smoking habits in the parents to the presence or absence of asthma in their oldest child living in the household in the 5- to 9-year-old age range. Suppose that the investigator finds that: if both the mother and father are current smokers then the probability of their offspring having asthma is 0.15; if the mother is a current smoker and the father is not, then the probability of their offspring having asthma is 0.13; if the father is a current smoker and the mother is not, then the probability of their offspring having asthma is 0.05; if neither parent is a current smoker, then the probability of their offspring having asthma is 0.04; the probability that the father is a current smoker is 0.5; if the father is a current smoker then the probability that the mother is a current smoker is 0.6; if the father is NOT a current smoker then the probability that the mother is a current smoker is 0.2. Suppose a child has asthma what is the probability that the mother is a current smoker?", "a": ["0.495", "0.690", "0.757", "0.758"], "c": [1]}, {"q": "An investigator wishes to study a particular environmental factor, namely, the relationship of cigarette-smoking habits in the parents to the presence or absence of asthma in their oldest child living in the household in the 5- to 9-year-old age range. Suppose that the investigator finds that: if both the mother and father are current smokers then the probability of their offspring having asthma is 0.15; if the mother is a current smoker and the father is not, then the probability of their offspring having asthma is 0.13; if the father is a current smoker and the mother is not, then the probability of their offspring having asthma is 0.05; if neither parent is a current smoker, then the probability of their offspring having asthma is 0.04; the probability that the father is a current smoker is 0.5; if the father is a current smoker then the probability that the mother is a current smoker is 0.6; if the father is NOT a current smoker then the probability that the mother is a current smoker is 0.2. Suppose a child doesn't have asthma what is the probability that the father is a current smoker?", "a": ["0.373", "0.757", "0.486", "0.445"], "c": [2]}, {"q": "An investigator wishes to study a particular environmental factor, namely, the relationship of cigarette-smoking habits in the parents to the presence or absence of asthma in their oldest child living in the household in the 5- to 9-year-old age range. Suppose that the investigator finds that: if both the mother and father are current smokers then the probability of their offspring having asthma is 0.15; if the mother is a current smoker and the father is not, then the probability of their offspring having asthma is 0.13; if the father is a current smoker and the mother is not, then the probability of their offspring having asthma is 0.05; if neither parent is a current smoker, then the probability of their offspring having asthma is 0.04; the probability that the father is a current smoker is 0.5; if the father is a current smoker then the probability that the mother is a current smoker is 0.6; if the father is NOT a current smoker then the probability that the mother is a current smoker is 0.2. Suppose a child doesn't have asthma what is the probability that the mother is a current smoker?", "a": ["0.486", "0.373", "0.757", "0.445"], "c": [1]}, {"q": "If A and B are independent, then ( ).", "a": ["P(A∩B)=P(A)·P(B)", "P(A∩B)=P(A)+P(B)", "P(A∩B)=P(A)-P(B)", "P(A∩B)=P(A)+P(B)-P(A)·P(B)"], "c": [0]}, {"q": "False Negative is equal to", "a": ["Positive predictive value", "1 - specificity", "1 - sensitivity", "Negative predictive value"], "c": [2]}, {"q": "The probability that the test will correctly diagnose a case is referring to ...?", "a": ["Sensitivity", "Specificity", "1 - sensitivity", "Negative predictive value"], "c": [0]}, {"q": "( ) tells you how likely it is for someone who tests negative (screen negative) to not have the disease?", "a": ["Positive predictive value", "1 - specificity", "1 - sensitivity", "Negative predictive value"], "c": [3]}, {"q": "False positive is equal to", "a": ["Positive predictive value", "1 - specificity", "1 - sensitivity", "Negative predictive value"], "c": [1]}, {"q": "( ) tells you how likely it is for someone who tests positive (screen positive) to actually have the disease?", "a": ["Positive predictive value", "1 - specificity", "1 - sensitivity", "Negative predictive value"], "c": [0]}, {"q": "( ) is the probability that the test is negative given the person does not have a disease?", "a": ["The specificity", "The sensitivity", "Positive predictive value", "Negative predictive value"], "c": [0]}, {"q": "( ) is the probability that the test is positive given the person has a disease?", "a": ["The specificity", "The sensitivity", "Positive predictive value", "Negative predictive value"], "c": [1]}, {"q": "Suppose x = c(1,2,3,2,5,4,5) in R, which of the following function is to get the frequency of x?", "a": ["mean(x)", "table(x)", "freq(x)", "max(x)"], "c": [1]}, {"q": "Suppose x = c(1,2,3,2,5,4,5), which of the following is to calculate the range of x in R?", "a": ["range(x)", "max(x) - min(x)", "max(x)", "summary(x)"], "c": [1]}, {"q": "The discrete random variable X has probability function: x=0,1,2,3 时 P(X=x)=3a,2a,a,b. Which statement is true?", "a": ["5a + b = 1", "6a + b = 1", "5a + 2b = 1", "7a + b = 1"], "c": [1]}, {"q": "Please calculate the specificity of the Diagnostic test using the data in the following data. Gold Standard: Caries 24, no Caries 2, Total 26; Diagnostic test: no Caries 21, no Caries 58, Total 79; Total: 45, 60, 105.", "a": ["0.45", "0.97", "0.54", "0.78"], "c": [1]}, {"q": "The length of survival time for the patients is", "a": ["a continuous random variable", "a discrete random variable", "NOT a random variable", "is a constant"], "c": [0]}];
+<script>const examMetadata = {"title": "2025-2026 学年秋学期医学科学素养Ⅱ练习与小测2", "description": "线上计分小测", "authors": "佚名"};
+const mcqs = [{"question": [{"type": "text", "content": "Which of these numbers cannot be a probability?"}], "options": [{"type": "text", "content": "-0.5", "correct": true}, {"type": "text", "content": "0.999", "correct": false}, {"type": "text", "content": "0", "correct": false}, {"type": "text", "content": "1", "correct": false}]}, {"question": [{"type": "text", "content": "We screened the blood type in 200 peoples, the results are: 50 have type A blood, 60 have B blood type, 60 have O blood type and 30 have type AB blood. If a person from this group is selected at random, what is the probability that this person has O blood type?"}], "options": [{"type": "text", "content": "0.35", "correct": false}, {"type": "text", "content": "0.30", "correct": true}, {"type": "text", "content": "0.34", "correct": false}, {"type": "text", "content": "0.1", "correct": false}]}, {"question": [{"type": "text", "content": "Which of the following random variables is discrete."}], "options": [{"type": "text", "content": "Income", "correct": false}, {"type": "text", "content": "height", "correct": false}, {"type": "text", "content": "The number of myopic eyes", "correct": true}, {"type": "text", "content": "Weight", "correct": false}]}, {"question": [{"type": "text", "content": "Which statement must be FALSE of the probability distribution?"}], "options": [{"type": "text", "content": "The sum of the probabilities is equal to 1", "correct": false}, {"type": "text", "content": "The probabilities are NOT greater than 1.", "correct": false}, {"type": "text", "content": "The sum of the probabilities is greater than 1 and the respective probabilities are between 0 and 1.", "correct": true}, {"type": "text", "content": "The probabilities are not less than 0.", "correct": false}]}, {"question": [{"type": "text", "content": "In a study of 1000 people, investigators observed who was bitten by a flea and who subsequently developed plague. 600 people were bitten by a flea. 400 out of 600 people developed plague. 400 people have never been bitten by a flea, 100 out of them developed plague. What's the relative risk of people with flea bitten developing plague?"}], "options": [{"type": "text", "content": "2", "correct": false}, {"type": "text", "content": "2.67", "correct": true}, {"type": "text", "content": "3", "correct": false}, {"type": "text", "content": "4/3", "correct": false}]}, {"question": [{"type": "text", "content": "Suppose the smoking habits of the parents are independent and the probability that the mother is a current smoker is 0.4, whereas the probability that the father is a current smoker is 0.5. what is the probability that both the father and mother are current smokers?"}], "options": [{"type": "text", "content": "0.2", "correct": true}, {"type": "text", "content": "0.5", "correct": false}, {"type": "text", "content": "0.4", "correct": false}, {"type": "text", "content": "0.9", "correct": false}]}, {"question": [{"type": "text", "content": "Suppose the smoking habits of the parents are independent and the probability that the mother is a current smoker is 0.4, whereas the probability that the father is a current smoker is 0.5. Consider the subgroup of families where the mother is not a current smoker, what is the probability that the father is a current smoker?"}], "options": [{"type": "text", "content": "0.2", "correct": false}, {"type": "text", "content": "0.5", "correct": true}, {"type": "text", "content": "0.4", "correct": false}, {"type": "text", "content": "0.9", "correct": false}]}, {"question": [{"type": "text", "content": "An investigator wishes to study a particular environmental factor, namely, the relationship of cigarette-smoking habits in the parents to the presence or absence of asthma in their oldest child living in the household in the 5- to 9-year-old age range. Suppose that the investigator finds that: if both the mother and father are current smokers then the probability of their offspring having asthma is 0.15; if the mother is a current smoker and the father is not, then the probability of their offspring having asthma is 0.13; if the father is a current smoker and the mother is not, then the probability of their offspring having asthma is 0.05; if neither parent is a current smoker, then the probability of their offspring having asthma is 0.04; the probability that the father is a current smoker is 0.5; if the father is a current smoker then the probability that the mother is a current smoker is 0.6; if the father is NOT a current smoker then the probability that the mother is a current smoker is 0.2. What is the probability that the offspring will have asthma?"}], "options": [{"type": "text", "content": "0.37", "correct": false}, {"type": "text", "content": "0.755", "correct": false}, {"type": "text", "content": "0.084", "correct": true}, {"type": "text", "content": "0.639", "correct": false}]}, {"question": [{"type": "text", "content": "An investigator wishes to study a particular environmental factor, namely, the relationship of cigarette-smoking habits in the parents to the presence or absence of asthma in their oldest child living in the household in the 5- to 9-year-old age range. Suppose that the investigator finds that: if both the mother and father are current smokers then the probability of their offspring having asthma is 0.15; if the mother is a current smoker and the father is not, then the probability of their offspring having asthma is 0.13; if the father is a current smoker and the mother is not, then the probability of their offspring having asthma is 0.05; if neither parent is a current smoker, then the probability of their offspring having asthma is 0.04; the probability that the father is a current smoker is 0.5; if the father is a current smoker then the probability that the mother is a current smoker is 0.6; if the father is NOT a current smoker then the probability that the mother is a current smoker is 0.2. Suppose a child has asthma what is the probability that the father is a current smoker?"}], "options": [{"type": "text", "content": "0.495", "correct": false}, {"type": "text", "content": "0.655", "correct": true}, {"type": "text", "content": "0.690", "correct": false}, {"type": "text", "content": "0.757", "correct": false}]}, {"question": [{"type": "text", "content": "An investigator wishes to study a particular environmental factor, namely, the relationship of cigarette-smoking habits in the parents to the presence or absence of asthma in their oldest child living in the household in the 5- to 9-year-old age range. Suppose that the investigator finds that: if both the mother and father are current smokers then the probability of their offspring having asthma is 0.15; if the mother is a current smoker and the father is not, then the probability of their offspring having asthma is 0.13; if the father is a current smoker and the mother is not, then the probability of their offspring having asthma is 0.05; if neither parent is a current smoker, then the probability of their offspring having asthma is 0.04; the probability that the father is a current smoker is 0.5; if the father is a current smoker then the probability that the mother is a current smoker is 0.6; if the father is NOT a current smoker then the probability that the mother is a current smoker is 0.2. Suppose a child has asthma what is the probability that the mother is a current smoker?"}], "options": [{"type": "text", "content": "0.495", "correct": false}, {"type": "text", "content": "0.690", "correct": true}, {"type": "text", "content": "0.757", "correct": false}, {"type": "text", "content": "0.758", "correct": false}]}, {"question": [{"type": "text", "content": "An investigator wishes to study a particular environmental factor, namely, the relationship of cigarette-smoking habits in the parents to the presence or absence of asthma in their oldest child living in the household in the 5- to 9-year-old age range. Suppose that the investigator finds that: if both the mother and father are current smokers then the probability of their offspring having asthma is 0.15; if the mother is a current smoker and the father is not, then the probability of their offspring having asthma is 0.13; if the father is a current smoker and the mother is not, then the probability of their offspring having asthma is 0.05; if neither parent is a current smoker, then the probability of their offspring having asthma is 0.04; the probability that the father is a current smoker is 0.5; if the father is a current smoker then the probability that the mother is a current smoker is 0.6; if the father is NOT a current smoker then the probability that the mother is a current smoker is 0.2. Suppose a child doesn't have asthma what is the probability that the father is a current smoker?"}], "options": [{"type": "text", "content": "0.373", "correct": false}, {"type": "text", "content": "0.757", "correct": false}, {"type": "text", "content": "0.486", "correct": true}, {"type": "text", "content": "0.445", "correct": false}]}, {"question": [{"type": "text", "content": "An investigator wishes to study a particular environmental factor, namely, the relationship of cigarette-smoking habits in the parents to the presence or absence of asthma in their oldest child living in the household in the 5- to 9-year-old age range. Suppose that the investigator finds that: if both the mother and father are current smokers then the probability of their offspring having asthma is 0.15; if the mother is a current smoker and the father is not, then the probability of their offspring having asthma is 0.13; if the father is a current smoker and the mother is not, then the probability of their offspring having asthma is 0.05; if neither parent is a current smoker, then the probability of their offspring having asthma is 0.04; the probability that the father is a current smoker is 0.5; if the father is a current smoker then the probability that the mother is a current smoker is 0.6; if the father is NOT a current smoker then the probability that the mother is a current smoker is 0.2. Suppose a child doesn't have asthma what is the probability that the mother is a current smoker?"}], "options": [{"type": "text", "content": "0.486", "correct": false}, {"type": "text", "content": "0.373", "correct": true}, {"type": "text", "content": "0.757", "correct": false}, {"type": "text", "content": "0.445", "correct": false}]}, {"question": [{"type": "text", "content": "If A and B are independent, then ( )."}], "options": [{"type": "text", "content": "P(A∩B)=P(A)·P(B)", "correct": true}, {"type": "text", "content": "P(A∩B)=P(A)+P(B)", "correct": false}, {"type": "text", "content": "P(A∩B)=P(A)-P(B)", "correct": false}, {"type": "text", "content": "P(A∩B)=P(A)+P(B)-P(A)·P(B)", "correct": false}]}, {"question": [{"type": "text", "content": "False Negative is equal to"}], "options": [{"type": "text", "content": "Positive predictive value", "correct": false}, {"type": "text", "content": "1 - specificity", "correct": false}, {"type": "text", "content": "1 - sensitivity", "correct": true}, {"type": "text", "content": "Negative predictive value", "correct": false}]}, {"question": [{"type": "text", "content": "The probability that the test will correctly diagnose a case is referring to ...?"}], "options": [{"type": "text", "content": "Sensitivity", "correct": true}, {"type": "text", "content": "Specificity", "correct": false}, {"type": "text", "content": "1 - sensitivity", "correct": false}, {"type": "text", "content": "Negative predictive value", "correct": false}]}, {"question": [{"type": "text", "content": "( ) tells you how likely it is for someone who tests negative (screen negative) to not have the disease?"}], "options": [{"type": "text", "content": "Positive predictive value", "correct": false}, {"type": "text", "content": "1 - specificity", "correct": false}, {"type": "text", "content": "1 - sensitivity", "correct": false}, {"type": "text", "content": "Negative predictive value", "correct": true}]}, {"question": [{"type": "text", "content": "False positive is equal to"}], "options": [{"type": "text", "content": "Positive predictive value", "correct": false}, {"type": "text", "content": "1 - specificity", "correct": true}, {"type": "text", "content": "1 - sensitivity", "correct": false}, {"type": "text", "content": "Negative predictive value", "correct": false}]}, {"question": [{"type": "text", "content": "( ) tells you how likely it is for someone who tests positive (screen positive) to actually have the disease?"}], "options": [{"type": "text", "content": "Positive predictive value", "correct": true}, {"type": "text", "content": "1 - specificity", "correct": false}, {"type": "text", "content": "1 - sensitivity", "correct": false}, {"type": "text", "content": "Negative predictive value", "correct": false}]}, {"question": [{"type": "text", "content": "( ) is the probability that the test is negative given the person does not have a disease?"}], "options": [{"type": "text", "content": "The specificity", "correct": true}, {"type": "text", "content": "The sensitivity", "correct": false}, {"type": "text", "content": "Positive predictive value", "correct": false}, {"type": "text", "content": "Negative predictive value", "correct": false}]}, {"question": [{"type": "text", "content": "( ) is the probability that the test is positive given the person has a disease?"}], "options": [{"type": "text", "content": "The specificity", "correct": false}, {"type": "text", "content": "The sensitivity", "correct": true}, {"type": "text", "content": "Positive predictive value", "correct": false}, {"type": "text", "content": "Negative predictive value", "correct": false}]}, {"question": [{"type": "text", "content": "Suppose x = c(1,2,3,2,5,4,5) in R, which of the following function is to get the frequency of x?"}], "options": [{"type": "text", "content": "mean(x)", "correct": false}, {"type": "text", "content": "table(x)", "correct": true}, {"type": "text", "content": "freq(x)", "correct": false}, {"type": "text", "content": "max(x)", "correct": false}]}, {"question": [{"type": "text", "content": "Suppose x = c(1,2,3,2,5,4,5), which of the following is to calculate the range of x in R?"}], "options": [{"type": "text", "content": "range(x)", "correct": false}, {"type": "text", "content": "max(x) - min(x)", "correct": true}, {"type": "text", "content": "max(x)", "correct": false}, {"type": "text", "content": "summary(x)", "correct": false}]}, {"question": [{"type": "text", "content": "The discrete random variable X has probability function:\n  $$P(X=x)=\\begin{cases}a(3-x), \u0026 x=0,1,2,\\\\b, \u0026 x=3.\\end{cases}$$"}, {"type": "table", "headers": ["$x$", "0", "1", "2", "3"], "rows": [["$P(X=x)$", "$3a$", "$2a$", "$a$", "$b$"]], "align": ["left", "left", "left", "left", "left"]}], "options": [{"type": "text", "content": "5a + b = 1", "correct": false}, {"type": "text", "content": "6a + b = 1", "correct": true}, {"type": "text", "content": "5a + 2b = 1", "correct": false}, {"type": "text", "content": "7a + b = 1", "correct": false}]}, {"question": [{"type": "text", "content": "Please calculate the specificity of the Diagnostic test using the data in the following data. Gold Standard: Caries 24, no Caries 2, Total 26; Diagnostic test: no Caries 21, no Caries 58, Total 79; Total: 45, 60, 105."}], "options": [{"type": "text", "content": "0.45", "correct": false}, {"type": "text", "content": "0.97", "correct": true}, {"type": "text", "content": "0.54", "correct": false}, {"type": "text", "content": "0.78", "correct": false}]}, {"question": [{"type": "text", "content": "The length of survival time for the patients is"}], "options": [{"type": "text", "content": "a continuous random variable", "correct": true}, {"type": "text", "content": "a discrete random variable", "correct": false}, {"type": "text", "content": "NOT a random variable", "correct": false}, {"type": "text", "content": "is a constant", "correct": false}]}];
 const flashcards = [];</script>
 
 <script type="text/babel">
-  const { useState, useEffect } = React;
+  const { useState, useLayoutEffect, useRef } = React;
 
   // 自定义 SVG 图标组件，替代有 bug 的 Lucide-React 库，解决 Infinity 冲突
   const CheckCircle2 = ({ size = 24, className = "" }) => (
@@ -557,36 +619,160 @@ const flashcards = [];</script>
     </svg>
   );
 
-  const RichContent = ({ value, imageClassName = "max-h-72" }) => {
-    const content =
-      typeof value === "string"
-        ? { text: value, images: [] }
-        : { text: value?.text || "", images: value?.images || [] };
+  let mathJaxQueue = Promise.resolve();
+
+  const queueMathTask = (task) => {
+    mathJaxQueue = mathJaxQueue
+      .then(() => window.MathJax?.startup?.promise)
+      .then(task)
+      .catch((error) => console.error("MathJax typesetting failed", error));
+  };
+
+  const queueMathTypeset = (container, text, shouldSkip) => {
+    queueMathTask(() => {
+      const mathJax = window.MathJax;
+      if (
+        shouldSkip() ||
+        !container.isConnected ||
+        !mathJax?.typesetPromise
+      ) {
+        return;
+      }
+
+      mathJax.typesetClear?.([container]);
+      container.textContent = text || "";
+      return mathJax.typesetPromise([container]);
+    });
+  };
+
+  const MathText = ({ text, className = "" }) => {
+    const containerRef = useRef(null);
+
+    useLayoutEffect(() => {
+      const container = containerRef.current;
+      if (!container) return undefined;
+
+      if (!container.hasChildNodes()) {
+        container.textContent = text || "";
+      }
+      let disposed = false;
+
+      const typeset = () => {
+        const mathJax = window.MathJax;
+        if (disposed || !mathJax?.typesetPromise) return;
+        queueMathTypeset(container, text, () => disposed);
+      };
+
+      if (window.MathJax?.typesetPromise) {
+        typeset();
+      } else {
+        // Keep the source readable when the CDN is slow or unavailable.
+        container.textContent = text || "";
+        window.addEventListener("mathjax-ready", typeset, { once: true });
+      }
+
+      return () => {
+        disposed = true;
+        window.removeEventListener("mathjax-ready", typeset);
+        if (window.MathJax?.typesetClear) {
+          queueMathTask(() => window.MathJax.typesetClear([container]));
+        }
+      };
+    }, [text]);
 
     return (
-      <div className="min-w-0 space-y-3">
-        {content.text && (
-          <div className="whitespace-pre-wrap break-words">{content.text}</div>
-        )}
-        {content.images.map((image, index) => (
-          <figure key={`${image.src}-${index}`} className="space-y-1.5">
-            <img
-              src={image.src}
-              alt={image.alt || ""}
-              loading="lazy"
-              decoding="async"
-              className={`mx-auto w-auto max-w-full rounded-xl object-contain ${imageClassName}`}
-            />
-            {image.caption && (
-              <figcaption className="text-center text-xs font-normal opacity-70">
-                {image.caption}
-              </figcaption>
-            )}
-          </figure>
-        ))}
-      </div>
+      <div
+        ref={containerRef}
+        className={`math-content ${className}`}
+      ></div>
     );
   };
+
+  const alignmentClass = (alignment) => {
+    if (alignment === "right") return "text-right";
+    if (alignment === "middle") return "text-center";
+    return "text-left";
+  };
+
+  const ContentTable = ({ element }) => (
+    <div
+      className="max-w-full overflow-x-auto rounded-xl shadow-md"
+      onClick={(event) => event.stopPropagation()}
+    >
+      <table className="w-full min-w-max border-collapse bg-white text-sm font-normal text-slate-700">
+        {element.headers.length > 0 && (
+          <thead className="bg-brand-500/50 text-brand-950">
+            <tr className="border-b border-slate-300/50">
+              {element.headers.map((header, index) => (
+                <th
+                  key={index}
+                  scope="col"
+                  className={`px-4 py-3 font-bold ${alignmentClass(element.align[index])}`}
+                >
+                  <MathText text={header} />
+                </th>
+              ))}
+            </tr>
+          </thead>
+        )}
+        <tbody>
+          {element.rows.map((row, rowIndex) => (
+            <tr
+              key={rowIndex}
+              className="border-b border-slate-300/50 last:border-b-0"
+            >
+              {row.map((cell, cellIndex) => (
+                <td
+                  key={cellIndex}
+                  className={`px-4 py-3 ${alignmentClass(element.align[cellIndex])}`}
+                >
+                  <MathText text={cell} />
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+
+  const RichContent = ({ value = [], imageClassName = "max-h-72" }) => (
+    <div className="min-w-0 space-y-3">
+      {value.map((element, index) => {
+        if (element.type === "text") {
+          return (
+            <MathText
+              key={index}
+              text={element.content}
+              className="whitespace-pre-wrap break-words"
+            />
+          );
+        }
+        if (element.type === "image") {
+          return (
+            <figure key={index} className="space-y-1.5">
+              <img
+                src={element.src}
+                alt={element.alt || ""}
+                loading="lazy"
+                decoding="async"
+                className={`mx-auto w-auto max-w-full rounded-xl object-contain ${imageClassName}`}
+              />
+              {element.caption && (
+                <figcaption className="text-center text-xs font-normal opacity-70">
+                  {element.caption}
+                </figcaption>
+              )}
+            </figure>
+          );
+        }
+        if (element.type === "table") {
+          return <ContentTable key={index} element={element} />;
+        }
+        return null;
+      })}
+    </div>
+  );
 
   function App() {
     const [view, setView] = useState("menu"); // 'menu', 'quiz', 'flashcard'
@@ -613,9 +799,12 @@ const flashcards = [];</script>
       setWrongAnswers([]);
     };
 
-    // 将旧版单值 c 和新版列表 c 统一为答案索引列表。
     const getCorrectAnswers = (question) =>
-      Array.isArray(question.c) ? question.c : [question.c];
+      question.options.reduce(
+        (answers, option, index) =>
+          option.correct ? [...answers, index] : answers,
+        [],
+      );
 
     const submitQuizAnswer = (userAnswers) => {
       if (isAnswerSubmitted || userAnswers.length === 0) return;
@@ -694,11 +883,14 @@ const flashcards = [];</script>
               <BookOpen size={40} />
             </div>
             <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-3 break-words">
-              2025-2026 学年秋学期医学科学素养Ⅱ练习与小测2
+              <MathText text={examMetadata.title} />
             </h1>
-            <p className="text-base sm:text-lg text-slate-500 leading-relaxed">
-              <p>"线上计分小测"</p><p>Made by "佚名"</p>
-            </p>
+            <div className="space-y-1 text-base leading-relaxed text-slate-500 sm:text-lg">
+              {examMetadata.description && (
+                <MathText text={examMetadata.description} />
+              )}
+              <div>Made by {examMetadata.authors}</div>
+            </div>
           </div>
 
           <div
@@ -797,7 +989,7 @@ const flashcards = [];</script>
                   </span>
                 </div>
                 <div className="text-lg sm:text-xl font-bold text-slate-800 leading-relaxed">
-                  <RichContent value={mcqs[currentIdx].q} />
+                  <RichContent value={mcqs[currentIdx].question} />
                 </div>
                 {getCorrectAnswers(mcqs[currentIdx]).length > 1 && (
                   <p className="text-sm text-slate-500 mt-3">
@@ -806,7 +998,7 @@ const flashcards = [];</script>
                 )}
               </div>
               <div className="grid gap-3">
-                {mcqs[currentIdx].a.map((opt, i) => {
+                {mcqs[currentIdx].options.map((opt, i) => {
                   const correctAnswers = getCorrectAnswers(mcqs[currentIdx]);
                   const isSelected = selectedOptions.includes(i);
                   const isCorrectOption = correctAnswers.includes(i);
@@ -839,7 +1031,10 @@ const flashcards = [];</script>
                           {String.fromCharCode(65 + i)}.
                         </span>
                         <div className="min-w-0 flex-1">
-                          <RichContent value={opt} imageClassName="max-h-48" />
+                          <RichContent
+                            value={[opt]}
+                            imageClassName="max-h-48"
+                          />
                         </div>
                       </div>
                       {isAnswerSubmitted && isCorrectOption && (
@@ -911,7 +1106,7 @@ const flashcards = [];</script>
                           <span className="shrink-0">{idx + 1}.</span>
                           <div className="min-w-0 flex-1">
                             <RichContent
-                              value={item.q}
+                              value={item.question}
                               imageClassName="max-h-32"
                             />
                           </div>
@@ -947,6 +1142,34 @@ const flashcards = [];</script>
               </div>
             </div>
           )}
+          
+          {/* 控制按钮 */}
+          <div className="flex items-center justify-between gap-2 sm:gap-4 mt-5 sm:mt-8">
+            <button
+              disabled={currentIdx === 0}
+              onClick={() => {
+                setCurrentIdx(currentIdx - 1);
+                setFlipped(false);
+              }}
+              className="min-h-12 flex flex-1 sm:flex-none items-center justify-center gap-1 sm:gap-2 px-3 sm:px-6 py-3 bg-white text-slate-600 hover:text-slate-800 border rounded-xl font-bold shadow-sm transition-all disabled:opacity-30 disabled:pointer-events-none"
+            >
+              <ChevronLeft size={20} /> 上一题
+            </button>
+            <button
+              onClick={() => {
+                if (currentIdx < mcqs.length - 1) {
+                  setCurrentIdx(currentIdx + 1);
+                  setFlipped(false);
+                } else {
+                  setView("menu");
+                }
+              }}
+              className="min-h-12 flex flex-1 sm:flex-none items-center justify-center gap-1 sm:gap-2 px-3 sm:px-6 py-3 bg-brand-800 hover:bg-brand-900 text-white rounded-xl font-bold shadow-sm transition-all"
+            >
+              {currentIdx === mcqs.length - 1 ? "完成复习" : "下一题"}{" "}
+              <ChevronRight size={20} />
+            </button>
+          </div>
 
           {/* 选择题快速导航模态框 */}
           {showNavModal && (
@@ -985,7 +1208,7 @@ const flashcards = [];</script>
 
     if (view === "flashcard") {
       return (
-        <div className="max-w-2xl mx-auto pt-1 px-0 sm:pt-4 sm:px-4 md:pt-8">
+        <div className="flashcard-view min-h-full max-w-4xl mx-auto pt-1 px-0 sm:pt-4 sm:px-4 md:pt-8">
           {/* 导航头 */}
           <div className="flex items-center justify-between gap-2 mb-4 sm:mb-6">
             <button
@@ -1018,39 +1241,30 @@ const flashcards = [];</script>
             ></div>
           </div>
 
-          {/* 翻转卡片结构 */}
+          {/* 自适应叠层翻转卡片 */}
           <div
             className={`flip-card ${flipped ? "flipped" : ""} w-full`}
             onClick={() => setFlipped((isFlipped) => !isFlipped)}
+            onKeyDown={(event) => {
+              if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                setFlipped((isFlipped) => !isFlipped);
+              }
+            }}
+            role="button"
+            tabIndex="0"
+            aria-label={flipped ? "返回查看问题" : "查看参考答案"}
           >
-            <div
-              className="flip-card-inner"
-              style={{
-                transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)",
-              }}
-            >
+            <div className="flip-card-inner">
               {/* 卡片正面 (问题) */}
-              <div className="flip-card-front bg-white border border-slate-200 text-slate-800 flex flex-col justify-between">
-                <div className="p-3 bg-brand-50 text-brand-600 rounded-full mt-4 self-center">
-                  <Lightbulb size={28} />
-                </div>
-                <div className="my-auto min-h-0 w-full overflow-y-auto overscroll-contain px-2 py-2 scrollbar-hide sm:px-4">
-                  <span className="text-xs font-bold text-slate-400 block mb-2">
-                    QUESTION {currentIdx + 1}
-                  </span>
-                  <div className="text-lg sm:text-xl font-bold leading-relaxed">
-                    <RichContent
-                      value={flashcards[currentIdx].q}
-                      imageClassName="max-h-48"
-                    />
-                  </div>
-                </div>
-                <p className="text-slate-400 text-xs font-medium pb-4 flex items-center gap-1 animate-pulse">
+              <div className="flip-card-front justify-start overflow-hidden bg-white border border-slate-200 text-slate-800">
+                <div className="flip-card-hint text-slate-500 text-xs sm:text-sm font-semibold">
                   <svg
-                    className="w-4 h-4"
+                    className="h-4 w-4 shrink-0"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
+                    aria-hidden="true"
                   >
                     <path
                       strokeLinecap="round"
@@ -1060,23 +1274,38 @@ const flashcards = [];</script>
                     />
                   </svg>
                   点击卡片翻看参考答案
-                </p>
-              </div>
+                </div>
 
-              {/* 卡片背面 (要点解析) */}
-              <div className="flip-card-back bg-brand-950 text-white border border-brand-900 text-left items-start overflow-y-auto scrollbar-hide flex flex-col justify-between">
-                <div className="w-full">
-                  <h4 className="text-brand-300 font-bold mb-4 flex items-center gap-2 border-b border-brand-900 pb-2">
-                    <CheckCircle2 size={18} /> 核心要点 / 答案分析
-                  </h4>
-                  <div className="text-base leading-relaxed text-slate-200 font-medium">
+                <div className="relative z-10 flex w-full flex-col gap-6 sm:gap-8">
+                  <div className="flex w-fit items-center gap-2 rounded-full bg-brand-50 px-3 py-2 text-brand-700">
+                    <Lightbulb size={22} className="shrink-0" />
+                    <span className="text-xs font-bold uppercase tracking-wider">
+                      QUESTION {currentIdx + 1}
+                    </span>
+                  </div>
+                  <div className="w-full text-left text-lg sm:text-xl font-bold leading-relaxed">
                     <RichContent
-                      value={flashcards[currentIdx].a}
-                      imageClassName="max-h-48"
+                      value={flashcards[currentIdx].question}
+                      imageClassName="max-h-[60dvh]"
                     />
                   </div>
                 </div>
-                <p className="pt-6 text-slate-500 text-xs text-center w-full mt-auto">
+              </div>
+
+              {/* 卡片背面 (要点解析) */}
+              <div className="flip-card-back justify-between bg-brand-950 text-white border border-brand-900 text-left">
+                <div className="relative z-10 w-full">
+                  <h4 className="text-brand-300 font-bold mb-4 flex items-center gap-2 border-b border-brand-900 pb-2">
+                    <CheckCircle2 size={18} /> 参考答案
+                  </h4>
+                  <div className="text-base leading-relaxed text-slate-200 font-medium">
+                    <RichContent
+                      value={flashcards[currentIdx].answer}
+                      imageClassName="max-h-[60dvh]"
+                    />
+                  </div>
+                </div>
+                <p className="relative z-10 pt-8 text-slate-500 text-xs text-center w-full mt-auto">
                   点击卡片返回问题
                 </p>
               </div>

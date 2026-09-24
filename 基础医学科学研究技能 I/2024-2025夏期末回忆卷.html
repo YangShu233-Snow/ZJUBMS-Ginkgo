@@ -29,6 +29,31 @@
         },
       };
     </script>
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [
+            ["$", "$"],
+            ["\\(", "\\)"],
+          ],
+          displayMath: [
+            ["$$", "$$"],
+            ["\\[", "\\]"],
+          ],
+          processEscapes: true,
+        },
+        startup: {
+          // React owns the page content, so each content component asks MathJax
+          // to typeset itself after it is mounted or updated.
+          typeset: false,
+          ready() {
+            MathJax.startup.defaultReady();
+            window.dispatchEvent(new Event("mathjax-ready"));
+          },
+        },
+      };
+    </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"></script>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -43,18 +68,35 @@
           Roboto,
           sans-serif;
       }
+      #root {
+        min-height: 100%;
+      }
+      .math-content {
+        max-width: 100%;
+        overflow-x: auto;
+        overflow-y: hidden;
+      }
+      .math-content mjx-container[display="true"] {
+        margin: 0.5em 0 !important;
+      }
       .flip-card {
         perspective: 1000px;
-        height: clamp(320px, 55dvh, 380px);
+        min-height: clamp(28rem, calc(100dvh - 18rem), 52rem);
+      }
+      .flip-card:focus-visible {
+        outline: 3px solid rgb(39 139 112 / 0.45);
+        outline-offset: 4px;
+        border-radius: 1.5rem;
       }
       .flip-card-inner {
         position: relative;
+        display: grid;
         width: 100%;
-        height: 100%;
-        text-align: center;
+        min-height: inherit;
+        text-align: left;
         -webkit-transform: rotateY(0deg);
         transform: rotateY(0deg);
-        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         -webkit-transform-style: preserve-3d;
         transform-style: preserve-3d;
         transform-origin: center;
@@ -67,15 +109,15 @@
       }
       .flip-card-front,
       .flip-card-back {
-        position: absolute;
+        position: relative;
+        grid-area: 1 / 1;
         width: 100%;
-        height: 100%;
+        min-height: inherit;
         -webkit-backface-visibility: hidden;
         backface-visibility: hidden;
         display: flex;
         flex-direction: column;
-        justify-content: center;
-        align-items: center;
+        align-items: stretch;
         padding: 2rem;
         border-radius: 1.5rem;
         box-shadow:
@@ -86,8 +128,19 @@
         -webkit-transform: rotateY(180deg);
         transform: rotateY(180deg);
       }
-      .scrollbar-hide::-webkit-scrollbar {
-        display: none;
+      .flip-card-hint {
+        position: absolute;
+        right: 1.5rem;
+        bottom: 1.5rem;
+        left: 1.5rem;
+        z-index: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.375rem;
+        opacity: 0.26;
+        pointer-events: none;
+        user-select: none;
       }
       .sidebar-shell {
         visibility: hidden;
@@ -164,6 +217,14 @@
         .flip-card-back {
           padding: 1rem;
           border-radius: 1rem;
+        }
+        .flip-card {
+          min-height: clamp(24rem, calc(100dvh - 15.5rem), 44rem);
+        }
+        .flip-card-hint {
+          right: 1rem;
+          bottom: 1rem;
+          left: 1rem;
         }
       }
       @media (prefers-reduced-motion: reduce) {
@@ -362,11 +423,12 @@
       <!-- 右侧主体内容区 -->
       <main class=".js-quiz-container min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-contain p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:p-5 md:p-8"><div id="root"></div>
 
-<script>const mcqs = [{"q": "实验室中以下哪个操作是不正确的：", "a": ["使用移液枪枪头时候保持竖直", "实验后清洁超净工作台台面", "用嘴吹灭酒精灯", "实验前阅读实验步骤"], "c": [2]}, {"q": "PCR中各个阶段中，通常哪一步温度最低：", "a": ["预变性", "退火", "延伸", "最终延伸", "变性"], "c": [1]}, {"q": "PCR中引物作用：", "a": ["为DNA聚合酶提供模板", "为PCR反应提供能量", "溶解DNA", "与特定DNA片段配对，起始DNA合成"], "c": [3]}, {"q": "电泳DNA分子迁移速率主要取决于：", "a": ["形状", "长度", "电荷量", "纯度", "碱基序列"], "c": [1]}, {"q": "质粒小提最后洗脱质粒所用的试剂：", "a": ["TE或去离子水", "酚氯仿", "乙醇", "异丙醇", "氯化钠溶液"], "c": [0]}, {"q": "限制酶识别切割序列的特点：", "a": ["回文序列", "随机序列", "富含CG的序列", "单一重复序列"], "c": [0]}, {"q": "在Western blot中，封闭的作用：", "a": ["增强与一抗的结合", "防止与非特异性抗体结合，降低背景信号", "标记二抗", "有利于显色"], "c": [1]}, {"q": "在分子克隆时，为得到含有目标质粒的细菌，会向培养基中加什么：", "a": ["生长因子", "抗生素", "诱导剂", "显色剂", "缓冲液"], "c": [1]}, {"q": "在分子克隆时，载体的作用是：", "a": ["携带目标基因进入细胞", "扩增目标基因", "标记目标基因", "作为目标基因的模板"], "c": [0]}, {"q": "在SDS-PAGE实验中，SDS的作用：", "a": ["作为还原剂，破坏蛋白质的二硫键", "破坏蛋白质的二级和三级结构，使其均匀的带负电", "使得蛋白带上正电"], "c": [1]}, {"q": "用什么染料对凝胶中的蛋白质进行染色：", "a": ["银染", "溴酚蓝", "考马斯亮蓝", "丽春红", "苏丹红"], "c": [2]}, {"q": "什么是感受态细胞：", "a": ["一定条件下，可以使细胞接受外来的质粒", "可以进行细胞增殖"], "c": [0]}, {"q": "以下哪个是不正确的无菌操作：", "a": ["用带手套的手触摸培养瓶内壁", "倒平板等操作在酒精灯火焰旁进行", "使用一次性无菌耗材", "在超净工作台内打开试剂盖子", "尽量不移动工作台内的物品"], "c": [0]}, {"q": "细胞传代的作用是：", "a": ["诱导细胞分化", "控制细胞密度，更新培养基", "筛选目的细胞"], "c": [1]}, {"q": "在阿拉伯糖诱导表达的实验中，使用阿拉伯糖的目的：", "a": ["稳定表达的蛋白产物", "与AraC蛋白结合，诱导相应基因表达", "作为培养的碳源"], "c": [1]}, {"q": "请为以下PCR步骤排序：", "a": ["A → B → C → D → E", "A → C → B → D → E", "A → B → D → C → E", "B → C → D → A → E"], "c": [0]}, {"q": "请为以下质粒克隆步骤排序：", "a": ["I → H → B → G → J → E → C → A → F → D", "H → I → B → G → J → E → C → A → F → D", "B → G → J → H → I → E → C → A → F → D", "I → B → G → J → H → E → C → A → F → D"], "c": [0]}, {"q": "三种抗体蛋白分别为160kDa，60kDa和20kDa，请问三者在SEC色谱中的洗脱顺序：", "a": ["A → B → C", "B → A → C", "C → B → A", "A → C → B"], "c": [0]}, {"q": "细胞转染的顺序是：", "a": ["A → B → C → D → E", "A → C → B → D → E", "B → A → C → D → E", "A → B → D → C → E"], "c": [0]}, {"q": "质粒小提步骤的顺序是：", "a": ["A → B → C → D → E → F → G → H", "B → C → D → A → E → F → G → H", "A → B → C → E → D → F → G → H", "A → B → D → C → E → F → G → H"], "c": [0]}];
-const flashcards = [{"q": "请为以下PCR步骤排序（A. 预变性 B. 变性 C. 退火 D. 延伸 E. 最终延伸）：", "a": "正确的顺序是：A → B → C → D → E"}, {"q": "请为以下质粒克隆步骤排序（A. 挑菌培养 B. PCR C. 细菌转化 D. 质粒测序 E. 连接载体和DNA insert F. 从细菌中提取质粒 G. 跑琼脂糖凝胶电泳检测PCR产物 H. DNA模板的提取与定量 I. 生物信息学分析 J. 切琼脂糖凝胶提取DNA）：", "a": "正确的顺序是：I → H → B → G → J → E → C → A → F → D"}, {"q": "三种抗体蛋白分别为160kDa，60kDa和20kDa，请问三者在SEC色谱中的洗脱顺序：", "a": "洗脱顺序为：160kDa先洗脱，其次是60kDa，最后是20kDa。因为SEC（尺寸排阻色谱）中，分子量大的蛋白先被洗脱。"}, {"q": "细胞转染的顺序是（A. 细菌与质粒混合 B. 冰上30min C. 42摄氏度热激+冰上培养 D. 加LB培养基培养 E. 涂板后37摄氏度培养）：", "a": "正确的顺序是：A → B → C → D → E"}, {"q": "质粒小提步骤的顺序是（A. 菌株提取 B. 重悬 C. 裂解 D. 中和 E. 离心上清 F. 过柱 G. 漂洗 H. 洗脱）：", "a": "正确的顺序是：A → B → C → D → E → F → G → H"}, {"q": "有一个六孔板进行细胞转染，已知DNA质粒溶液为1 μg/μL。六孔板的培养基为2 mL，每个孔需要加入1 μg的DNA质粒。（i）一共需要加入多少微克的DNA质粒？（ii）一共需要多少微升的DNA质粒溶液？（iii）已知脂质体与DNA的比例为3 μL：1 μg，一共需要多少微升转染试剂溶液？", "a": "（i）六孔板共6个孔，每孔1 μg，共需6 μg DNA质粒。（ii）DNA质粒溶液浓度为1 μg/μL，因此需要6 μL溶液。（iii）脂质体与DNA比例为3 μL：1 μg，共需 6 μg × 3 μL/μg = 18 μL 转染试剂。"}, {"q": "要进行细胞传代。从培养皿上消化下来的细胞悬液有10 mL，已知细胞浓度为2.5 × 10^6 cells/mL。传代后的每个培养皿5 × 10^4个细胞，共传代5个培养皿。（i）现有细胞数总量是多少？（ii）传代5个培养皿所需要的细胞总量是多少？（iii）进行传代所需要取用的细胞悬液的体积是多少？", "a": "（i）现有细胞总数 = 10 mL × 2.5 × 10^6 cells/mL = 2.5 × 10^7 cells。（ii）5个培养皿共需细胞 = 5 × 5 × 10^4 = 2.5 × 10^5 cells。（iii）所需细胞悬液体积 = 2.5 × 10^5 / 2.5 × 10^6 = 0.1 mL = 100 μL。"}, {"q": "四个细胞计数板大方格的细胞数目分别是65，72，58，61，每个大方格的体积是0.1 μL。细胞稀释倍数为5倍，那么原有液体当中1 mL的细胞数是多少？", "a": "四个大格平均细胞数 = (65 + 72 + 58 + 61) / 4 = 64 个。每大格体积0.1 μL，则浓度 = 64 / 0.1 = 640 cells/μL。考虑稀释倍数5倍，原液浓度 = 640 × 5 = 3200 cells/μL = 3.2 × 10^6 cells/mL。因此原有液体中1 mL的细胞数为3.2 × 10^6个。"}, {"q": "简述Sanger测序原理。为什么Sanger测序时要同时加dNTPs和ddNTPs？", "a": "Sanger测序原理：利用DNA聚合酶催化DNA链合成，在反应体系中加入四种正常的脱氧核苷三磷酸（dNTPs）和少量荧光标记的双脱氧核苷三磷酸（ddNTPs）。ddNTPs缺乏3'-OH基团，一旦掺入正在合成的DNA链中，链延伸即终止。通过控制ddNTP与dNTP的比例，可产生一系列长度不同的DNA片段，这些片段以末端ddNTP的碱基决定终止位置。经毛细管电泳分离后，根据荧光信号读取DNA序列。同时加入dNTPs和ddNTPs是为了让DNA链既能正常延伸（dNTPs），又能在随机位置被ddNTP终止，从而获得所有可能长度的片段，用于测序分析。"}, {"q": "在贴壁细胞的传代培养过程中为什么要用PBS洗三遍细胞？", "a": "用PBS洗三遍细胞的主要目的是去除残留的血清和培养基成分。血清中含有蛋白酶抑制剂，会干扰后续胰蛋白酶的消化作用；同时，培养基中的Ca²⁺和Mg²⁺等离子也会影响胰蛋白酶的活性。充分洗涤后，胰蛋白酶能够更有效地解离细胞间连接和细胞与培养皿底部的黏附，提高消化效率和细胞状态的一致性。"}, {"q": "你在研究一种药物，它可以抑制细胞内的Target X蛋白质。请用Western Blot实验，验证你的药物的抑制Target X蛋白能力。要求写出Western Blot的实验步骤，以及各步骤的目的。", "a": "实验步骤如下：(1)细胞处理与蛋白提取：将细胞分为对照组和给药组，给药组加入待测药物处理适当时间。收集细胞，加入含蛋白酶抑制剂的裂解液裂解细胞，离心取上清，获得总蛋白。目的：获取待检测的蛋白质样本，药物处理用于观察其对Target X蛋白表达的影响。(2)蛋白定量：使用BCA法或Bradford法测定各组蛋白浓度，调整各样本上样量一致。目的：确保上样总蛋白量相同，便于后续比较各组间Target X蛋白的表达差异。(3)SDS-PAGE电泳：将等量的蛋白样本加入上样缓冲液，煮沸变性后上样至聚丙烯酰胺凝胶，进行电泳分离。目的：根据分子量大小分离蛋白质混合物，使不同蛋白在凝胶上按条带分布。(4)转膜（电转）：将凝胶上的蛋白转移至PVDF或硝酸纤维素膜上。目的：将蛋白从凝胶转移到固相载体（膜）上，便于后续抗体杂交和检测。(5)封闭：将膜放入含5%脱脂牛奶或BSA的封闭液中，室温孵育1小时或4°C过夜。目的：封闭膜上未结合蛋白的区域，减少非特异性抗体结合，降低背景信号。(6)一抗孵育：加入针对Target X蛋白的特异性一抗（可同时加入内参蛋白一抗，如GAPDH或β-actin），室温孵育1-2小时或4°C过夜。目的：使一抗与膜上Target X蛋白特异性结合，指示Target X的位置和表达量。(7)洗膜：用TBST缓冲液洗膜3-5次，每次5-10分钟。目的：洗去未结合的一抗，降低背景干扰。(8)二抗孵育：加入与一抗对应的HRP标记二抗，室温孵育1小时。目的：二抗与一抗结合，通过HRP酶活性实现信号放大，便于后续显色检测。(9)洗膜：用TBST洗膜3-5次，每次5-10分钟。目的：去除未结合的二抗，减少背景信号。(10)显色检测：加入ECL化学发光底物，避光反应后用凝胶成像系统或X光片曝光成像。目的：通过HRP催化底物发光，检测Target X蛋白和内参蛋白的条带位置和信号强度。(11)图像分析与数据处理：使用ImageJ等软件分析条带灰度值，计算Target X条带与内参条带的相对表达量，比较对照组与给药组的差异。目的：定量评估药物对Target X蛋白表达的抑制效果。"}];</script>
+<script>const examMetadata = {"title": "基础医学科学研究技能 I 期末考试", "description": "共26题，满分100分，时间2小时", "authors": "强基2401，强基2402"};
+const mcqs = [{"question": [{"type": "text", "content": "实验室中以下哪个操作是不正确的："}], "options": [{"type": "text", "content": "使用移液枪枪头时候保持竖直", "correct": false}, {"type": "text", "content": "实验后清洁超净工作台台面", "correct": false}, {"type": "text", "content": "用嘴吹灭酒精灯", "correct": true}, {"type": "text", "content": "实验前阅读实验步骤", "correct": false}]}, {"question": [{"type": "text", "content": "PCR中各个阶段中，通常哪一步温度最低："}], "options": [{"type": "text", "content": "预变性", "correct": false}, {"type": "text", "content": "退火", "correct": true}, {"type": "text", "content": "延伸", "correct": false}, {"type": "text", "content": "最终延伸", "correct": false}, {"type": "text", "content": "变性", "correct": false}]}, {"question": [{"type": "text", "content": "PCR中引物作用："}], "options": [{"type": "text", "content": "为DNA聚合酶提供模板", "correct": false}, {"type": "text", "content": "为PCR反应提供能量", "correct": false}, {"type": "text", "content": "溶解DNA", "correct": false}, {"type": "text", "content": "与特定DNA片段配对，起始DNA合成", "correct": true}]}, {"question": [{"type": "text", "content": "电泳DNA分子迁移速率主要取决于："}], "options": [{"type": "text", "content": "形状", "correct": false}, {"type": "text", "content": "长度", "correct": true}, {"type": "text", "content": "电荷量", "correct": false}, {"type": "text", "content": "纯度", "correct": false}, {"type": "text", "content": "碱基序列", "correct": false}]}, {"question": [{"type": "text", "content": "质粒小提最后洗脱质粒所用的试剂："}], "options": [{"type": "text", "content": "TE或去离子水", "correct": true}, {"type": "text", "content": "酚氯仿", "correct": false}, {"type": "text", "content": "乙醇", "correct": false}, {"type": "text", "content": "异丙醇", "correct": false}, {"type": "text", "content": "氯化钠溶液", "correct": false}]}, {"question": [{"type": "text", "content": "限制酶识别切割序列的特点："}], "options": [{"type": "text", "content": "回文序列", "correct": true}, {"type": "text", "content": "随机序列", "correct": false}, {"type": "text", "content": "富含CG的序列", "correct": false}, {"type": "text", "content": "单一重复序列", "correct": false}]}, {"question": [{"type": "text", "content": "在Western blot中，封闭的作用："}], "options": [{"type": "text", "content": "增强与一抗的结合", "correct": false}, {"type": "text", "content": "防止与非特异性抗体结合，降低背景信号", "correct": true}, {"type": "text", "content": "标记二抗", "correct": false}, {"type": "text", "content": "有利于显色", "correct": false}]}, {"question": [{"type": "text", "content": "在分子克隆时，为得到含有目标质粒的细菌，会向培养基中加什么："}], "options": [{"type": "text", "content": "生长因子", "correct": false}, {"type": "text", "content": "抗生素", "correct": true}, {"type": "text", "content": "诱导剂", "correct": false}, {"type": "text", "content": "显色剂", "correct": false}, {"type": "text", "content": "缓冲液", "correct": false}]}, {"question": [{"type": "text", "content": "在分子克隆时，载体的作用是："}], "options": [{"type": "text", "content": "携带目标基因进入细胞", "correct": true}, {"type": "text", "content": "扩增目标基因", "correct": false}, {"type": "text", "content": "标记目标基因", "correct": false}, {"type": "text", "content": "作为目标基因的模板", "correct": false}]}, {"question": [{"type": "text", "content": "在SDS-PAGE实验中，SDS的作用："}], "options": [{"type": "text", "content": "作为还原剂，破坏蛋白质的二硫键", "correct": false}, {"type": "text", "content": "破坏蛋白质的二级和三级结构，使其均匀的带负电", "correct": true}, {"type": "text", "content": "使得蛋白带上正电", "correct": false}]}, {"question": [{"type": "text", "content": "用什么染料对凝胶中的蛋白质进行染色："}], "options": [{"type": "text", "content": "银染", "correct": false}, {"type": "text", "content": "溴酚蓝", "correct": false}, {"type": "text", "content": "考马斯亮蓝", "correct": true}, {"type": "text", "content": "丽春红", "correct": false}, {"type": "text", "content": "苏丹红", "correct": false}]}, {"question": [{"type": "text", "content": "什么是感受态细胞："}], "options": [{"type": "text", "content": "一定条件下，可以使细胞接受外来的质粒", "correct": true}, {"type": "text", "content": "可以进行细胞增殖", "correct": false}]}, {"question": [{"type": "text", "content": "以下哪个是不正确的无菌操作："}], "options": [{"type": "text", "content": "用带手套的手触摸培养瓶内壁", "correct": true}, {"type": "text", "content": "倒平板等操作在酒精灯火焰旁进行", "correct": false}, {"type": "text", "content": "使用一次性无菌耗材", "correct": false}, {"type": "text", "content": "在超净工作台内打开试剂盖子", "correct": false}, {"type": "text", "content": "尽量不移动工作台内的物品", "correct": false}]}, {"question": [{"type": "text", "content": "细胞传代的作用是："}], "options": [{"type": "text", "content": "诱导细胞分化", "correct": false}, {"type": "text", "content": "控制细胞密度，更新培养基", "correct": true}, {"type": "text", "content": "筛选目的细胞", "correct": false}]}, {"question": [{"type": "text", "content": "在阿拉伯糖诱导表达的实验中，使用阿拉伯糖的目的："}], "options": [{"type": "text", "content": "稳定表达的蛋白产物", "correct": false}, {"type": "text", "content": "与AraC蛋白结合，诱导相应基因表达", "correct": true}, {"type": "text", "content": "作为培养的碳源", "correct": false}]}, {"question": [{"type": "text", "content": "请为以下PCR步骤排序："}], "options": [{"type": "text", "content": "A → B → C → D → E", "correct": true}, {"type": "text", "content": "A → C → B → D → E", "correct": false}, {"type": "text", "content": "A → B → D → C → E", "correct": false}, {"type": "text", "content": "B → C → D → A → E", "correct": false}]}, {"question": [{"type": "text", "content": "请为以下质粒克隆步骤排序："}], "options": [{"type": "text", "content": "I → H → B → G → J → E → C → A → F → D", "correct": true}, {"type": "text", "content": "H → I → B → G → J → E → C → A → F → D", "correct": false}, {"type": "text", "content": "B → G → J → H → I → E → C → A → F → D", "correct": false}, {"type": "text", "content": "I → B → G → J → H → E → C → A → F → D", "correct": false}]}, {"question": [{"type": "text", "content": "三种抗体蛋白分别为160kDa，60kDa和20kDa，请问三者在SEC色谱中的洗脱顺序："}], "options": [{"type": "text", "content": "A → B → C", "correct": true}, {"type": "text", "content": "B → A → C", "correct": false}, {"type": "text", "content": "C → B → A", "correct": false}, {"type": "text", "content": "A → C → B", "correct": false}]}, {"question": [{"type": "text", "content": "细胞转染的顺序是："}], "options": [{"type": "text", "content": "A → B → C → D → E", "correct": true}, {"type": "text", "content": "A → C → B → D → E", "correct": false}, {"type": "text", "content": "B → A → C → D → E", "correct": false}, {"type": "text", "content": "A → B → D → C → E", "correct": false}]}, {"question": [{"type": "text", "content": "质粒小提步骤的顺序是："}], "options": [{"type": "text", "content": "A → B → C → D → E → F → G → H", "correct": true}, {"type": "text", "content": "B → C → D → A → E → F → G → H", "correct": false}, {"type": "text", "content": "A → B → C → E → D → F → G → H", "correct": false}, {"type": "text", "content": "A → B → D → C → E → F → G → H", "correct": false}]}];
+const flashcards = [{"question": [{"type": "text", "content": "请为以下PCR步骤排序（A. 预变性 B. 变性 C. 退火 D. 延伸 E. 最终延伸）："}], "answer": [{"type": "text", "content": "正确的顺序是：A → B → C → D → E"}]}, {"question": [{"type": "text", "content": "请为以下质粒克隆步骤排序（A. 挑菌培养 B. PCR C. 细菌转化 D. 质粒测序 E. 连接载体和DNA insert F. 从细菌中提取质粒 G. 跑琼脂糖凝胶电泳检测PCR产物 H. DNA模板的提取与定量 I. 生物信息学分析 J. 切琼脂糖凝胶提取DNA）："}], "answer": [{"type": "text", "content": "正确的顺序是：I → H → B → G → J → E → C → A → F → D"}]}, {"question": [{"type": "text", "content": "三种抗体蛋白分别为160kDa，60kDa和20kDa，请问三者在SEC色谱中的洗脱顺序："}], "answer": [{"type": "text", "content": "洗脱顺序为：160kDa先洗脱，其次是60kDa，最后是20kDa。因为SEC（尺寸排阻色谱）中，分子量大的蛋白先被洗脱。"}]}, {"question": [{"type": "text", "content": "细胞转染的顺序是（A. 细菌与质粒混合 B. 冰上30min C. 42摄氏度热激+冰上培养 D. 加LB培养基培养 E. 涂板后37摄氏度培养）："}], "answer": [{"type": "text", "content": "正确的顺序是：A → B → C → D → E"}]}, {"question": [{"type": "text", "content": "质粒小提步骤的顺序是（A. 菌株提取 B. 重悬 C. 裂解 D. 中和 E. 离心上清 F. 过柱 G. 漂洗 H. 洗脱）："}], "answer": [{"type": "text", "content": "正确的顺序是：A → B → C → D → E → F → G → H"}]}, {"question": [{"type": "text", "content": "有一个六孔板进行细胞转染，已知DNA质粒溶液为1 μg/μL。六孔板的培养基为2 mL，每个孔需要加入1 μg的DNA质粒。（i）一共需要加入多少微克的DNA质粒？（ii）一共需要多少微升的DNA质粒溶液？（iii）已知脂质体与DNA的比例为3 μL：1 μg，一共需要多少微升转染试剂溶液？"}], "answer": [{"type": "text", "content": "（i）六孔板共6个孔，每孔1 μg，共需6 μg DNA质粒。（ii）DNA质粒溶液浓度为1 μg/μL，因此需要6 μL溶液。（iii）脂质体与DNA比例为3 μL：1 μg，共需 6 μg × 3 μL/μg = 18 μL 转染试剂。"}]}, {"question": [{"type": "text", "content": "要进行细胞传代。从培养皿上消化下来的细胞悬液有10 mL，已知细胞浓度为2.5 × 10^6 cells/mL。传代后的每个培养皿5 × 10^4个细胞，共传代5个培养皿。（i）现有细胞数总量是多少？（ii）传代5个培养皿所需要的细胞总量是多少？（iii）进行传代所需要取用的细胞悬液的体积是多少？"}], "answer": [{"type": "text", "content": "（i）现有细胞总数 = 10 mL × 2.5 × 10^6 cells/mL = 2.5 × 10^7 cells。（ii）5个培养皿共需细胞 = 5 × 5 × 10^4 = 2.5 × 10^5 cells。（iii）所需细胞悬液体积 = 2.5 × 10^5 / 2.5 × 10^6 = 0.1 mL = 100 μL。"}]}, {"question": [{"type": "text", "content": "四个细胞计数板大方格的细胞数目分别是65，72，58，61，每个大方格的体积是0.1 μL。细胞稀释倍数为5倍，那么原有液体当中1 mL的细胞数是多少？"}], "answer": [{"type": "text", "content": "四个大格平均细胞数 = (65 + 72 + 58 + 61) / 4 = 64 个。每大格体积0.1 μL，则浓度 = 64 / 0.1 = 640 cells/μL。考虑稀释倍数5倍，原液浓度 = 640 × 5 = 3200 cells/μL = 3.2 × 10^6 cells/mL。因此原有液体中1 mL的细胞数为3.2 × 10^6个。"}]}, {"question": [{"type": "text", "content": "简述Sanger测序原理。为什么Sanger测序时要同时加dNTPs和ddNTPs？"}], "answer": [{"type": "text", "content": "Sanger测序原理：利用DNA聚合酶催化DNA链合成，在反应体系中加入四种正常的脱氧核苷三磷酸（dNTPs）和少量荧光标记的双脱氧核苷三磷酸（ddNTPs）。ddNTPs缺乏3'-OH基团，一旦掺入正在合成的DNA链中，链延伸即终止。通过控制ddNTP与dNTP的比例，可产生一系列长度不同的DNA片段，这些片段以末端ddNTP的碱基决定终止位置。经毛细管电泳分离后，根据荧光信号读取DNA序列。同时加入dNTPs和ddNTPs是为了让DNA链既能正常延伸（dNTPs），又能在随机位置被ddNTP终止，从而获得所有可能长度的片段，用于测序分析。"}]}, {"question": [{"type": "text", "content": "在贴壁细胞的传代培养过程中为什么要用PBS洗三遍细胞？"}], "answer": [{"type": "text", "content": "用PBS洗三遍细胞的主要目的是去除残留的血清和培养基成分。血清中含有蛋白酶抑制剂，会干扰后续胰蛋白酶的消化作用；同时，培养基中的Ca²⁺和Mg²⁺等离子也会影响胰蛋白酶的活性。充分洗涤后，胰蛋白酶能够更有效地解离细胞间连接和细胞与培养皿底部的黏附，提高消化效率和细胞状态的一致性。"}]}, {"question": [{"type": "text", "content": "你在研究一种药物，它可以抑制细胞内的Target X蛋白质。请用Western Blot实验，验证你的药物的抑制Target X蛋白能力。要求写出Western Blot的实验步骤，以及各步骤的目的。"}], "answer": [{"type": "text", "content": "实验步骤如下：(1)细胞处理与蛋白提取：将细胞分为对照组和给药组，给药组加入待测药物处理适当时间。收集细胞，加入含蛋白酶抑制剂的裂解液裂解细胞，离心取上清，获得总蛋白。目的：获取待检测的蛋白质样本，药物处理用于观察其对Target X蛋白表达的影响。(2)蛋白定量：使用BCA法或Bradford法测定各组蛋白浓度，调整各样本上样量一致。目的：确保上样总蛋白量相同，便于后续比较各组间Target X蛋白的表达差异。(3)SDS-PAGE电泳：将等量的蛋白样本加入上样缓冲液，煮沸变性后上样至聚丙烯酰胺凝胶，进行电泳分离。目的：根据分子量大小分离蛋白质混合物，使不同蛋白在凝胶上按条带分布。(4)转膜（电转）：将凝胶上的蛋白转移至PVDF或硝酸纤维素膜上。目的：将蛋白从凝胶转移到固相载体（膜）上，便于后续抗体杂交和检测。(5)封闭：将膜放入含5%脱脂牛奶或BSA的封闭液中，室温孵育1小时或4°C过夜。目的：封闭膜上未结合蛋白的区域，减少非特异性抗体结合，降低背景信号。(6)一抗孵育：加入针对Target X蛋白的特异性一抗（可同时加入内参蛋白一抗，如GAPDH或β-actin），室温孵育1-2小时或4°C过夜。目的：使一抗与膜上Target X蛋白特异性结合，指示Target X的位置和表达量。(7)洗膜：用TBST缓冲液洗膜3-5次，每次5-10分钟。目的：洗去未结合的一抗，降低背景干扰。(8)二抗孵育：加入与一抗对应的HRP标记二抗，室温孵育1小时。目的：二抗与一抗结合，通过HRP酶活性实现信号放大，便于后续显色检测。(9)洗膜：用TBST洗膜3-5次，每次5-10分钟。目的：去除未结合的二抗，减少背景信号。(10)显色检测：加入ECL化学发光底物，避光反应后用凝胶成像系统或X光片曝光成像。目的：通过HRP催化底物发光，检测Target X蛋白和内参蛋白的条带位置和信号强度。(11)图像分析与数据处理：使用ImageJ等软件分析条带灰度值，计算Target X条带与内参条带的相对表达量，比较对照组与给药组的差异。目的：定量评估药物对Target X蛋白表达的抑制效果。"}]}];</script>
 
 <script type="text/babel">
-  const { useState, useEffect } = React;
+  const { useState, useLayoutEffect, useRef } = React;
 
   // 自定义 SVG 图标组件，替代有 bug 的 Lucide-React 库，解决 Infinity 冲突
   const CheckCircle2 = ({ size = 24, className = "" }) => (
@@ -557,36 +619,160 @@ const flashcards = [{"q": "请为以下PCR步骤排序（A. 预变性 B. 变性 
     </svg>
   );
 
-  const RichContent = ({ value, imageClassName = "max-h-72" }) => {
-    const content =
-      typeof value === "string"
-        ? { text: value, images: [] }
-        : { text: value?.text || "", images: value?.images || [] };
+  let mathJaxQueue = Promise.resolve();
+
+  const queueMathTask = (task) => {
+    mathJaxQueue = mathJaxQueue
+      .then(() => window.MathJax?.startup?.promise)
+      .then(task)
+      .catch((error) => console.error("MathJax typesetting failed", error));
+  };
+
+  const queueMathTypeset = (container, text, shouldSkip) => {
+    queueMathTask(() => {
+      const mathJax = window.MathJax;
+      if (
+        shouldSkip() ||
+        !container.isConnected ||
+        !mathJax?.typesetPromise
+      ) {
+        return;
+      }
+
+      mathJax.typesetClear?.([container]);
+      container.textContent = text || "";
+      return mathJax.typesetPromise([container]);
+    });
+  };
+
+  const MathText = ({ text, className = "" }) => {
+    const containerRef = useRef(null);
+
+    useLayoutEffect(() => {
+      const container = containerRef.current;
+      if (!container) return undefined;
+
+      if (!container.hasChildNodes()) {
+        container.textContent = text || "";
+      }
+      let disposed = false;
+
+      const typeset = () => {
+        const mathJax = window.MathJax;
+        if (disposed || !mathJax?.typesetPromise) return;
+        queueMathTypeset(container, text, () => disposed);
+      };
+
+      if (window.MathJax?.typesetPromise) {
+        typeset();
+      } else {
+        // Keep the source readable when the CDN is slow or unavailable.
+        container.textContent = text || "";
+        window.addEventListener("mathjax-ready", typeset, { once: true });
+      }
+
+      return () => {
+        disposed = true;
+        window.removeEventListener("mathjax-ready", typeset);
+        if (window.MathJax?.typesetClear) {
+          queueMathTask(() => window.MathJax.typesetClear([container]));
+        }
+      };
+    }, [text]);
 
     return (
-      <div className="min-w-0 space-y-3">
-        {content.text && (
-          <div className="whitespace-pre-wrap break-words">{content.text}</div>
-        )}
-        {content.images.map((image, index) => (
-          <figure key={`${image.src}-${index}`} className="space-y-1.5">
-            <img
-              src={image.src}
-              alt={image.alt || ""}
-              loading="lazy"
-              decoding="async"
-              className={`mx-auto w-auto max-w-full rounded-xl object-contain ${imageClassName}`}
-            />
-            {image.caption && (
-              <figcaption className="text-center text-xs font-normal opacity-70">
-                {image.caption}
-              </figcaption>
-            )}
-          </figure>
-        ))}
-      </div>
+      <div
+        ref={containerRef}
+        className={`math-content ${className}`}
+      ></div>
     );
   };
+
+  const alignmentClass = (alignment) => {
+    if (alignment === "right") return "text-right";
+    if (alignment === "middle") return "text-center";
+    return "text-left";
+  };
+
+  const ContentTable = ({ element }) => (
+    <div
+      className="max-w-full overflow-x-auto rounded-xl shadow-md"
+      onClick={(event) => event.stopPropagation()}
+    >
+      <table className="w-full min-w-max border-collapse bg-white text-sm font-normal text-slate-700">
+        {element.headers.length > 0 && (
+          <thead className="bg-brand-500/50 text-brand-950">
+            <tr className="border-b border-slate-300/50">
+              {element.headers.map((header, index) => (
+                <th
+                  key={index}
+                  scope="col"
+                  className={`px-4 py-3 font-bold ${alignmentClass(element.align[index])}`}
+                >
+                  <MathText text={header} />
+                </th>
+              ))}
+            </tr>
+          </thead>
+        )}
+        <tbody>
+          {element.rows.map((row, rowIndex) => (
+            <tr
+              key={rowIndex}
+              className="border-b border-slate-300/50 last:border-b-0"
+            >
+              {row.map((cell, cellIndex) => (
+                <td
+                  key={cellIndex}
+                  className={`px-4 py-3 ${alignmentClass(element.align[cellIndex])}`}
+                >
+                  <MathText text={cell} />
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+
+  const RichContent = ({ value = [], imageClassName = "max-h-72" }) => (
+    <div className="min-w-0 space-y-3">
+      {value.map((element, index) => {
+        if (element.type === "text") {
+          return (
+            <MathText
+              key={index}
+              text={element.content}
+              className="whitespace-pre-wrap break-words"
+            />
+          );
+        }
+        if (element.type === "image") {
+          return (
+            <figure key={index} className="space-y-1.5">
+              <img
+                src={element.src}
+                alt={element.alt || ""}
+                loading="lazy"
+                decoding="async"
+                className={`mx-auto w-auto max-w-full rounded-xl object-contain ${imageClassName}`}
+              />
+              {element.caption && (
+                <figcaption className="text-center text-xs font-normal opacity-70">
+                  {element.caption}
+                </figcaption>
+              )}
+            </figure>
+          );
+        }
+        if (element.type === "table") {
+          return <ContentTable key={index} element={element} />;
+        }
+        return null;
+      })}
+    </div>
+  );
 
   function App() {
     const [view, setView] = useState("menu"); // 'menu', 'quiz', 'flashcard'
@@ -613,9 +799,12 @@ const flashcards = [{"q": "请为以下PCR步骤排序（A. 预变性 B. 变性 
       setWrongAnswers([]);
     };
 
-    // 将旧版单值 c 和新版列表 c 统一为答案索引列表。
     const getCorrectAnswers = (question) =>
-      Array.isArray(question.c) ? question.c : [question.c];
+      question.options.reduce(
+        (answers, option, index) =>
+          option.correct ? [...answers, index] : answers,
+        [],
+      );
 
     const submitQuizAnswer = (userAnswers) => {
       if (isAnswerSubmitted || userAnswers.length === 0) return;
@@ -694,11 +883,14 @@ const flashcards = [{"q": "请为以下PCR步骤排序（A. 预变性 B. 变性 
               <BookOpen size={40} />
             </div>
             <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-3 break-words">
-              基础医学科学研究技能 I 期末考试
+              <MathText text={examMetadata.title} />
             </h1>
-            <p className="text-base sm:text-lg text-slate-500 leading-relaxed">
-              <p>共26题，满分100分，时间2小时</p><p>Made by 强基2401，强基2402</p>
-            </p>
+            <div className="space-y-1 text-base leading-relaxed text-slate-500 sm:text-lg">
+              {examMetadata.description && (
+                <MathText text={examMetadata.description} />
+              )}
+              <div>Made by {examMetadata.authors}</div>
+            </div>
           </div>
 
           <div
@@ -797,7 +989,7 @@ const flashcards = [{"q": "请为以下PCR步骤排序（A. 预变性 B. 变性 
                   </span>
                 </div>
                 <div className="text-lg sm:text-xl font-bold text-slate-800 leading-relaxed">
-                  <RichContent value={mcqs[currentIdx].q} />
+                  <RichContent value={mcqs[currentIdx].question} />
                 </div>
                 {getCorrectAnswers(mcqs[currentIdx]).length > 1 && (
                   <p className="text-sm text-slate-500 mt-3">
@@ -806,7 +998,7 @@ const flashcards = [{"q": "请为以下PCR步骤排序（A. 预变性 B. 变性 
                 )}
               </div>
               <div className="grid gap-3">
-                {mcqs[currentIdx].a.map((opt, i) => {
+                {mcqs[currentIdx].options.map((opt, i) => {
                   const correctAnswers = getCorrectAnswers(mcqs[currentIdx]);
                   const isSelected = selectedOptions.includes(i);
                   const isCorrectOption = correctAnswers.includes(i);
@@ -839,7 +1031,10 @@ const flashcards = [{"q": "请为以下PCR步骤排序（A. 预变性 B. 变性 
                           {String.fromCharCode(65 + i)}.
                         </span>
                         <div className="min-w-0 flex-1">
-                          <RichContent value={opt} imageClassName="max-h-48" />
+                          <RichContent
+                            value={[opt]}
+                            imageClassName="max-h-48"
+                          />
                         </div>
                       </div>
                       {isAnswerSubmitted && isCorrectOption && (
@@ -911,7 +1106,7 @@ const flashcards = [{"q": "请为以下PCR步骤排序（A. 预变性 B. 变性 
                           <span className="shrink-0">{idx + 1}.</span>
                           <div className="min-w-0 flex-1">
                             <RichContent
-                              value={item.q}
+                              value={item.question}
                               imageClassName="max-h-32"
                             />
                           </div>
@@ -947,6 +1142,34 @@ const flashcards = [{"q": "请为以下PCR步骤排序（A. 预变性 B. 变性 
               </div>
             </div>
           )}
+          
+          {/* 控制按钮 */}
+          <div className="flex items-center justify-between gap-2 sm:gap-4 mt-5 sm:mt-8">
+            <button
+              disabled={currentIdx === 0}
+              onClick={() => {
+                setCurrentIdx(currentIdx - 1);
+                setFlipped(false);
+              }}
+              className="min-h-12 flex flex-1 sm:flex-none items-center justify-center gap-1 sm:gap-2 px-3 sm:px-6 py-3 bg-white text-slate-600 hover:text-slate-800 border rounded-xl font-bold shadow-sm transition-all disabled:opacity-30 disabled:pointer-events-none"
+            >
+              <ChevronLeft size={20} /> 上一题
+            </button>
+            <button
+              onClick={() => {
+                if (currentIdx < mcqs.length - 1) {
+                  setCurrentIdx(currentIdx + 1);
+                  setFlipped(false);
+                } else {
+                  setView("menu");
+                }
+              }}
+              className="min-h-12 flex flex-1 sm:flex-none items-center justify-center gap-1 sm:gap-2 px-3 sm:px-6 py-3 bg-brand-800 hover:bg-brand-900 text-white rounded-xl font-bold shadow-sm transition-all"
+            >
+              {currentIdx === mcqs.length - 1 ? "完成复习" : "下一题"}{" "}
+              <ChevronRight size={20} />
+            </button>
+          </div>
 
           {/* 选择题快速导航模态框 */}
           {showNavModal && (
@@ -985,7 +1208,7 @@ const flashcards = [{"q": "请为以下PCR步骤排序（A. 预变性 B. 变性 
 
     if (view === "flashcard") {
       return (
-        <div className="max-w-2xl mx-auto pt-1 px-0 sm:pt-4 sm:px-4 md:pt-8">
+        <div className="flashcard-view min-h-full max-w-4xl mx-auto pt-1 px-0 sm:pt-4 sm:px-4 md:pt-8">
           {/* 导航头 */}
           <div className="flex items-center justify-between gap-2 mb-4 sm:mb-6">
             <button
@@ -1018,39 +1241,30 @@ const flashcards = [{"q": "请为以下PCR步骤排序（A. 预变性 B. 变性 
             ></div>
           </div>
 
-          {/* 翻转卡片结构 */}
+          {/* 自适应叠层翻转卡片 */}
           <div
             className={`flip-card ${flipped ? "flipped" : ""} w-full`}
             onClick={() => setFlipped((isFlipped) => !isFlipped)}
+            onKeyDown={(event) => {
+              if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                setFlipped((isFlipped) => !isFlipped);
+              }
+            }}
+            role="button"
+            tabIndex="0"
+            aria-label={flipped ? "返回查看问题" : "查看参考答案"}
           >
-            <div
-              className="flip-card-inner"
-              style={{
-                transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)",
-              }}
-            >
+            <div className="flip-card-inner">
               {/* 卡片正面 (问题) */}
-              <div className="flip-card-front bg-white border border-slate-200 text-slate-800 flex flex-col justify-between">
-                <div className="p-3 bg-brand-50 text-brand-600 rounded-full mt-4 self-center">
-                  <Lightbulb size={28} />
-                </div>
-                <div className="my-auto min-h-0 w-full overflow-y-auto overscroll-contain px-2 py-2 scrollbar-hide sm:px-4">
-                  <span className="text-xs font-bold text-slate-400 block mb-2">
-                    QUESTION {currentIdx + 1}
-                  </span>
-                  <div className="text-lg sm:text-xl font-bold leading-relaxed">
-                    <RichContent
-                      value={flashcards[currentIdx].q}
-                      imageClassName="max-h-48"
-                    />
-                  </div>
-                </div>
-                <p className="text-slate-400 text-xs font-medium pb-4 flex items-center gap-1 animate-pulse">
+              <div className="flip-card-front justify-start overflow-hidden bg-white border border-slate-200 text-slate-800">
+                <div className="flip-card-hint text-slate-500 text-xs sm:text-sm font-semibold">
                   <svg
-                    className="w-4 h-4"
+                    className="h-4 w-4 shrink-0"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
+                    aria-hidden="true"
                   >
                     <path
                       strokeLinecap="round"
@@ -1060,23 +1274,38 @@ const flashcards = [{"q": "请为以下PCR步骤排序（A. 预变性 B. 变性 
                     />
                   </svg>
                   点击卡片翻看参考答案
-                </p>
-              </div>
+                </div>
 
-              {/* 卡片背面 (要点解析) */}
-              <div className="flip-card-back bg-brand-950 text-white border border-brand-900 text-left items-start overflow-y-auto scrollbar-hide flex flex-col justify-between">
-                <div className="w-full">
-                  <h4 className="text-brand-300 font-bold mb-4 flex items-center gap-2 border-b border-brand-900 pb-2">
-                    <CheckCircle2 size={18} /> 核心要点 / 答案分析
-                  </h4>
-                  <div className="text-base leading-relaxed text-slate-200 font-medium">
+                <div className="relative z-10 flex w-full flex-col gap-6 sm:gap-8">
+                  <div className="flex w-fit items-center gap-2 rounded-full bg-brand-50 px-3 py-2 text-brand-700">
+                    <Lightbulb size={22} className="shrink-0" />
+                    <span className="text-xs font-bold uppercase tracking-wider">
+                      QUESTION {currentIdx + 1}
+                    </span>
+                  </div>
+                  <div className="w-full text-left text-lg sm:text-xl font-bold leading-relaxed">
                     <RichContent
-                      value={flashcards[currentIdx].a}
-                      imageClassName="max-h-48"
+                      value={flashcards[currentIdx].question}
+                      imageClassName="max-h-[60dvh]"
                     />
                   </div>
                 </div>
-                <p className="pt-6 text-slate-500 text-xs text-center w-full mt-auto">
+              </div>
+
+              {/* 卡片背面 (要点解析) */}
+              <div className="flip-card-back justify-between bg-brand-950 text-white border border-brand-900 text-left">
+                <div className="relative z-10 w-full">
+                  <h4 className="text-brand-300 font-bold mb-4 flex items-center gap-2 border-b border-brand-900 pb-2">
+                    <CheckCircle2 size={18} /> 参考答案
+                  </h4>
+                  <div className="text-base leading-relaxed text-slate-200 font-medium">
+                    <RichContent
+                      value={flashcards[currentIdx].answer}
+                      imageClassName="max-h-[60dvh]"
+                    />
+                  </div>
+                </div>
+                <p className="relative z-10 pt-8 text-slate-500 text-xs text-center w-full mt-auto">
                   点击卡片返回问题
                 </p>
               </div>
