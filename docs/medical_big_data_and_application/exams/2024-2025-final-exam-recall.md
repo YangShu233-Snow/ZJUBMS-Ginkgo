@@ -105,8 +105,6 @@ description:
 ---
 
 - What are the properties of a `list` in `R`?
-  - Supports only a single data type, unordered
-  - [x] Contains multiple element types, ordered
   - Supports only a single data type, ordered
   - [x] Contains multiple element types, ordered
 
@@ -122,8 +120,6 @@ description:
 
 - How to access the secondary name in a `list`?
   - `list[2, ]`
-  - `list[2, ]`
-  - [x] `list[[2]]`
   - [x] `list[[2]]`
 
 ---
@@ -191,15 +187,15 @@ description:
 ---
 
 - Please explain the following:
-    1. Sensitivity vs Specificity
-    2. A gold standard test
-    3. Area Under the Curve (AUC)
+        1. Sensitivity vs Specificity
+        2. A gold standard test
+        3. Area Under the Curve (AUC)
   - (1) Sensitivity: proportion of true positives correctly identified (TP/(TP+FN)); Specificity: proportion of true negatives correctly identified (TN/(TN+FP)). (2) Gold standard test: the best available reference standard for diagnosing a condition, against which new tests are evaluated. (3) AUC: the area under the ROC curve, measuring overall diagnostic accuracy; 0.5 = no discrimination, 1.0 = perfect.
 
 ---
 
 - Please list three biases in the assessment of test performance and propose mitigation strategies.
-  - 1. Verification bias (work-up bias): mitigate by applying reference standard to all patients regardless of test results. 2. Spectrum bias: mitigate by including diverse patient populations (mild to severe disease, different comorbidities). 3. Incorporation bias: mitigate by ensuring reference standard does not include the test being evaluated.
+  - (1) Verification bias (work-up bias): mitigate by applying reference standard to all patients regardless of test results. 2. Spectrum bias: mitigate by including diverse patient populations (mild to severe disease, different comorbidities). 3. Incorporation bias: mitigate by ensuring reference standard does not include the test being evaluated.
 
 ---
 

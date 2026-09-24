@@ -10,7 +10,7 @@ nav:
   - 医学生命基础:
       - 2024-2025秋冬期末回忆卷: docs/Medical_Life_Fundamentals/2024-2025_Winter_Final.md
   - 基础医学科学研究技能 I:
-      - 2024-2025夏期末回忆卷: docs/BMS_Science_Skills_I/2024-2025_Spring_Final.md
+      - 2024-2025春期末回忆卷: docs/BMS_Science_Skills_I/2024-2025_Spring_Final.md
       - 2024-2025冬期末回忆卷: docs/BMS_Science_Skills_I/2024-2025_Winter_Final.md
   - 普通化学实验（甲）:
       - 2024-2025秋冬期末回忆卷: docs/General_Chemistry_Experiment_A/普化实验甲回忆卷.md
@@ -25,8 +25,14 @@ nav:
   - 感染与免疫学:
       - 2025-2026秋冬小测卷: docs/infectious_diseases_and_immunity/quizzes/quizzes.md
   - 医学大数据与应用: 
-      - 2024-2025冬期末回忆卷: docs/medical_big_data_and_application/exams/2024-2025-final-exam-recall.md
+      - 2024-2025夏期末回忆卷: docs/medical_big_data_and_application/exams/2024-2025-final-exam-recall.md
   - 医学生物物理学:
       - 2024-2025春期末回忆卷: docs/medical_biophysics/exams/2024-2025-final-exam-recall.md
   - 医学科学素养 II:
-      - 2025-2026秋期末回忆卷: docs/medical_science_literacy_2/exams/2025-2026-final-exam-recall.md
+      - 2025-2026秋期末回忆卷: docs/Medical_Science_literacy_2/exams/2025-2026-final-exam-recall.md
+      - 2025-2026秋小测卷 1: docs/Medical_Science_literacy_2/quizzes/20245-2026_Autmn_1.md
+      - 2025-2026秋小测卷 2: docs/Medical_Science_literacy_2/quizzes/20245-2026_Autmn_2.md
+      - 2025-2026秋小测卷 3: docs/Medical_Science_literacy_2/quizzes/20245-2026_Autmn_3.md
+      - 2025-2026秋小测卷 4: docs/Medical_Science_literacy_2/quizzes/20245-2026_Autmn_4.md
+      - 2025-2026秋小测卷 4 补测: docs/Medical_Science_literacy_2/quizzes/20245-2026_Autmn_4_1.md
+      - 2025-2026秋小测卷 5: docs/Medical_Science_literacy_2/quizzes/20245-2026_Autmn_5.md
