@@ -68,6 +68,24 @@
           Roboto,
           sans-serif;
       }
+      .app-viewport {
+        height: 100vh;
+      }
+      @supports (height: 100dvh) {
+        .app-viewport {
+          height: 100dvh;
+        }
+      }
+      .app-main {
+        padding-bottom: max(
+          1.5rem,
+          calc(env(safe-area-inset-bottom, 0px) + 1.5rem)
+        ) !important;
+        scroll-padding-bottom: max(
+          1.5rem,
+          calc(env(safe-area-inset-bottom, 0px) + 1.5rem)
+        );
+      }
       #root {
         min-height: 100%;
       }
@@ -227,6 +245,42 @@
           left: 1rem;
         }
       }
+      @media (min-width: 768px) and (max-height: 820px) and (orientation: landscape) {
+        .app-viewport {
+          height: 100svh;
+        }
+        .app-main {
+          padding-top: 1rem !important;
+          padding-bottom: max(
+            5.5rem,
+            calc(env(safe-area-inset-bottom, 0px) + 4.5rem)
+          ) !important;
+          scroll-padding-bottom: max(
+            5.5rem,
+            calc(env(safe-area-inset-bottom, 0px) + 4.5rem)
+          );
+        }
+        .study-view {
+          padding-top: 0 !important;
+        }
+        .study-view-header {
+          margin-bottom: 0.75rem !important;
+        }
+        .study-view-progress {
+          margin-bottom: 1rem !important;
+        }
+        .study-view-controls {
+          margin-top: 1rem !important;
+        }
+        .flip-card {
+          min-height: clamp(20rem, calc(100vh - 14rem), 36rem);
+          min-height: clamp(20rem, calc(100svh - 14rem), 36rem);
+        }
+        .flip-card-front,
+        .flip-card-back {
+          padding: 1.25rem;
+        }
+      }
       @media (prefers-reduced-motion: reduce) {
         .sidebar-shell aside,
         .js-sidebar-backdrop {
@@ -235,7 +289,7 @@
       }
     </style>
   </head>
-  <body class="h-screen h-[100dvh] overflow-hidden bg-slate-50 text-slate-800">
+  <body class="app-viewport overflow-hidden bg-slate-50 text-slate-800">
     <div class="flex h-full w-full flex-col md:flex-row">
       <!-- 移动端顶部导航 -->
       <header class="flex h-14 shrink-0 items-center gap-3 border-b border-slate-200 bg-white px-3 md:hidden">
@@ -298,7 +352,7 @@
       </div>
       <div class="js-link-container ml-3 space-y-0.5 border-l-2 border-slate-200 pl-2 md:space-y-1 md:border-l md:border-slate-100">
         <!-- 子链接将会被 append 到这里 -->
-      <a href="../%E5%9F%BA%E7%A1%80%E5%8C%BB%E5%AD%A6%E7%A7%91%E5%AD%A6%E7%A0%94%E7%A9%B6%E6%8A%80%E8%83%BD%20I/2024-2025%E5%A4%8F%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025夏期末回忆卷<!-- 链接文本占位 -->
+      <a href="../%E5%9F%BA%E7%A1%80%E5%8C%BB%E5%AD%A6%E7%A7%91%E5%AD%A6%E7%A0%94%E7%A9%B6%E6%8A%80%E8%83%BD%20I/2024-2025%E6%98%A5%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025春期末回忆卷<!-- 链接文本占位 -->
     </a>
   <a href="../%E5%9F%BA%E7%A1%80%E5%8C%BB%E5%AD%A6%E7%A7%91%E5%AD%A6%E7%A0%94%E7%A9%B6%E6%8A%80%E8%83%BD%20I/2024-2025%E5%86%AC%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025冬期末回忆卷<!-- 链接文本占位 -->
     </a>
@@ -363,7 +417,7 @@
       </div>
       <div class="js-link-container ml-3 space-y-0.5 border-l-2 border-slate-200 pl-2 md:space-y-1 md:border-l md:border-slate-100">
         <!-- 子链接将会被 append 到这里 -->
-      <a href="../%E5%8C%BB%E5%AD%A6%E5%A4%A7%E6%95%B0%E6%8D%AE%E4%B8%8E%E5%BA%94%E7%94%A8/2024-2025%E5%86%AC%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025冬期末回忆卷<!-- 链接文本占位 -->
+      <a href="../%E5%8C%BB%E5%AD%A6%E5%A4%A7%E6%95%B0%E6%8D%AE%E4%B8%8E%E5%BA%94%E7%94%A8/2024-2025%E5%A4%8F%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025夏期末回忆卷<!-- 链接文本占位 -->
     </a>
   </div>
     </div>
@@ -421,14 +475,14 @@
 </div>
 
       <!-- 右侧主体内容区 -->
-      <main class=".js-quiz-container min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-contain p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:p-5 md:p-8"><div id="root"></div>
+      <main class=".js-quiz-container app-main min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-contain p-3 sm:p-5 md:p-8"><div id="root"></div>
 
 <script>const examMetadata = {"title": "2025-2026 学年秋学期医学科学素养Ⅱ练习与小测1", "description": "计分小测", "authors": "佚名"};
-const mcqs = [{"question": [{"type": "text", "content": "Measures of central tendency are"}], "options": [{"type": "text", "content": "descriptive statistics that identify the best single value for representing a set of data.", "correct": true}, {"type": "text", "content": "inferential statistics that identify the best single value for representing a set of data.", "correct": false}, {"type": "text", "content": "inferential statistics that identify the spread of the scores in a data set.", "correct": false}, {"type": "text", "content": "descriptive statistics that identify the spread of the scores in a data set.", "correct": false}]}, {"question": [{"type": "text", "content": "Given the following data set, what is the value of the median? [2, 3, 5, 6, 2, 1, 3, 2, 5, 7]"}], "options": [{"type": "text", "content": "2", "correct": false}, {"type": "text", "content": "10", "correct": false}, {"type": "text", "content": "3", "correct": true}, {"type": "text", "content": "3.5", "correct": false}]}, {"question": [{"type": "text", "content": "Which of the following provides a measure of central location for the random variable of blood type?"}], "options": [{"type": "text", "content": "standard deviation", "correct": false}, {"type": "text", "content": "mean", "correct": false}, {"type": "text", "content": "variance", "correct": false}, {"type": "text", "content": "mode", "correct": true}]}, {"question": [{"type": "text", "content": "Which of the following is NOT a characteristic of the mean?"}], "options": [{"type": "text", "content": "It is unique for a specific dataset.", "correct": false}, {"type": "text", "content": "It is affected by extreme scores.", "correct": false}, {"type": "text", "content": "The sum of the deviations about the mean is 0.", "correct": false}, {"type": "text", "content": "It is best used with categorical data.", "correct": true}]}, {"question": [{"type": "text", "content": "The median is"}], "options": [{"type": "text", "content": "the best representation for every set of data.", "correct": false}, {"type": "text", "content": "the statistical or arithmetic average.", "correct": false}, {"type": "text", "content": "the most frequently occurring score.", "correct": false}, {"type": "text", "content": "the value that divides a dataset into two equal halves when the data is arranged in ascending or descending order.", "correct": true}]}, {"question": [{"type": "text", "content": "Which of the following is true regarding factors affecting variability?"}], "options": [{"type": "text", "content": "The independent variable should not affect variability.", "correct": false}, {"type": "text", "content": "Greater variability is found in smaller samples.", "correct": true}, {"type": "text", "content": "An insensitive dependent measure will produce a lot of variability.", "correct": false}, {"type": "text", "content": "Random sampling results in distributions with large amounts of variability.", "correct": false}]}, {"question": [{"type": "text", "content": "Use the following data set to answer this question and the next two questions. Value:Frequency pairs are 9:8, 8:12, 6:2, 5:4, 4:3, 3:7, 2:3, 1:4. What is the value of the mean?"}], "options": [{"type": "text", "content": "5.65", "correct": true}, {"type": "text", "content": "7", "correct": false}, {"type": "text", "content": "6.34", "correct": false}, {"type": "text", "content": "4.75", "correct": false}]}, {"question": [{"type": "text", "content": "Using the same data set as in the previous question, what is the median?"}], "options": [{"type": "text", "content": "7", "correct": false}, {"type": "text", "content": "6", "correct": true}, {"type": "text", "content": "6.34", "correct": false}, {"type": "text", "content": "4.75", "correct": false}]}, {"question": [{"type": "text", "content": "How would you describe this distribution? (Use the same data set as in the previous questions.)"}], "options": [{"type": "text", "content": "negatively skewed", "correct": true}, {"type": "text", "content": "rectangular", "correct": false}, {"type": "text", "content": "approximately normal", "correct": false}, {"type": "text", "content": "positively skewed", "correct": false}]}, {"question": [{"type": "text", "content": "The median is a measure of"}], "options": [{"type": "text", "content": "relative dispersion", "correct": false}, {"type": "text", "content": "relative location", "correct": false}, {"type": "text", "content": "absolute dispersion", "correct": false}, {"type": "text", "content": "central location", "correct": true}]}, {"question": [{"type": "text", "content": "The difference between the largest and the smallest data values is the"}], "options": [{"type": "text", "content": "variance", "correct": false}, {"type": "text", "content": "coefficient of variation", "correct": false}, {"type": "text", "content": "interquartile range", "correct": false}, {"type": "text", "content": "range", "correct": true}]}, {"question": [{"type": "text", "content": "Which of the following provides a measure of central location for the categorical data?"}], "options": [{"type": "text", "content": "standard deviation", "correct": false}, {"type": "text", "content": "median", "correct": false}, {"type": "text", "content": "mean", "correct": false}, {"type": "text", "content": "mode", "correct": true}]}, {"question": [{"type": "text", "content": "Please find the 15% percentile of the following data: 19,21,25,24,25,22,24,21,20,20,21,24,26,21,27,23,21,22,20,22"}], "options": [{"type": "text", "content": "21.5", "correct": false}, {"type": "text", "content": "20", "correct": true}, {"type": "text", "content": "21", "correct": false}, {"type": "text", "content": "20.5", "correct": false}]}, {"question": [{"type": "text", "content": "Please find the median of the following data: 19,21,25,24,25,22,24,21,20,20,21,24,26,21,27,23,21,22,20,22"}], "options": [{"type": "text", "content": "22", "correct": true}, {"type": "text", "content": "20", "correct": false}, {"type": "text", "content": "21", "correct": false}, {"type": "text", "content": "20.5", "correct": false}]}, {"question": [{"type": "text", "content": "Please find the SD of the following data (sample SD): 19,21,25,24,25,22,24,21,20,20,21,24,26,21,27,23,21,22,20,22"}], "options": [{"type": "text", "content": "2.34", "correct": false}, {"type": "text", "content": "2.23", "correct": true}, {"type": "text", "content": "3.23", "correct": false}, {"type": "text", "content": "3.32", "correct": false}]}];
+const mcqs = [{"question": [{"type": "text", "content": "Measures of central tendency are"}], "options": [{"type": "text", "content": "descriptive statistics that identify the best single value for representing a set of data.", "correct": true}, {"type": "text", "content": "inferential statistics that identify the best single value for representing a set of data.", "correct": false}, {"type": "text", "content": "inferential statistics that identify the spread of the scores in a data set.", "correct": false}, {"type": "text", "content": "descriptive statistics that identify the spread of the scores in a data set.", "correct": false}]}, {"question": [{"type": "text", "content": "Given the following data set, what is the value of the median? [2, 3, 5, 6, 2, 1, 3, 2, 5, 7]"}], "options": [{"type": "text", "content": "2", "correct": false}, {"type": "text", "content": "10", "correct": false}, {"type": "text", "content": "3", "correct": true}, {"type": "text", "content": "3.5", "correct": false}]}, {"question": [{"type": "text", "content": "Which of the following provides a measure of central location for the random variable of blood type?"}], "options": [{"type": "text", "content": "standard deviation", "correct": false}, {"type": "text", "content": "mean", "correct": false}, {"type": "text", "content": "variance", "correct": false}, {"type": "text", "content": "mode", "correct": true}]}, {"question": [{"type": "text", "content": "Which of the following is NOT a characteristic of the mean?"}], "options": [{"type": "text", "content": "It is unique for a specific dataset.", "correct": false}, {"type": "text", "content": "It is affected by extreme scores.", "correct": false}, {"type": "text", "content": "The sum of the deviations about the mean is 0.", "correct": false}, {"type": "text", "content": "It is best used with categorical data.", "correct": true}]}, {"question": [{"type": "text", "content": "The median is"}], "options": [{"type": "text", "content": "the best representation for every set of data.", "correct": false}, {"type": "text", "content": "the statistical or arithmetic average.", "correct": false}, {"type": "text", "content": "the most frequently occurring score.", "correct": false}, {"type": "text", "content": "the value that divides a dataset into two equal halves when the data is arranged in ascending or descending order.", "correct": true}]}, {"question": [{"type": "text", "content": "Which of the following is true regarding factors affecting variability?"}], "options": [{"type": "text", "content": "The independent variable should not affect variability.", "correct": false}, {"type": "text", "content": "Greater variability is found in smaller samples.", "correct": true}, {"type": "text", "content": "An insensitive dependent measure will produce a lot of variability.", "correct": false}, {"type": "text", "content": "Random sampling results in distributions with large amounts of variability.", "correct": false}]}, {"question": [{"type": "text", "content": "Use the following data set to answer this question and the next two questions. What is the value of the mean?"}, {"type": "table", "headers": ["Value", "Frequency"], "rows": [["9", "8"], ["8", "12"], ["6", "2"], ["5", "4"], ["4", "3"], ["3", "7"], ["2", "3"], ["1", "4"]], "align": ["left", "right"]}], "options": [{"type": "text", "content": "5.65", "correct": true}, {"type": "text", "content": "7", "correct": false}, {"type": "text", "content": "6.34", "correct": false}, {"type": "text", "content": "4.75", "correct": false}]}, {"question": [{"type": "text", "content": "Using the same data set as in the previous question, what is the median?"}], "options": [{"type": "text", "content": "7", "correct": false}, {"type": "text", "content": "6", "correct": true}, {"type": "text", "content": "6.34", "correct": false}, {"type": "text", "content": "4.75", "correct": false}]}, {"question": [{"type": "text", "content": "How would you describe this distribution? (Use the same data set as in the previous questions.)"}], "options": [{"type": "text", "content": "negatively skewed", "correct": true}, {"type": "text", "content": "rectangular", "correct": false}, {"type": "text", "content": "approximately normal", "correct": false}, {"type": "text", "content": "positively skewed", "correct": false}]}, {"question": [{"type": "text", "content": "The median is a measure of"}], "options": [{"type": "text", "content": "relative dispersion", "correct": false}, {"type": "text", "content": "relative location", "correct": false}, {"type": "text", "content": "absolute dispersion", "correct": false}, {"type": "text", "content": "central location", "correct": true}]}, {"question": [{"type": "text", "content": "The difference between the largest and the smallest data values is the"}], "options": [{"type": "text", "content": "variance", "correct": false}, {"type": "text", "content": "coefficient of variation", "correct": false}, {"type": "text", "content": "interquartile range", "correct": false}, {"type": "text", "content": "range", "correct": true}]}, {"question": [{"type": "text", "content": "Which of the following provides a measure of central location for the categorical data?"}], "options": [{"type": "text", "content": "standard deviation", "correct": false}, {"type": "text", "content": "median", "correct": false}, {"type": "text", "content": "mean", "correct": false}, {"type": "text", "content": "mode", "correct": true}]}, {"question": [{"type": "text", "content": "Please find the 15% percentile of the following data: 19,21,25,24,25,22,24,21,20,20,21,24,26,21,27,23,21,22,20,22"}], "options": [{"type": "text", "content": "21.5", "correct": false}, {"type": "text", "content": "20", "correct": true}, {"type": "text", "content": "21", "correct": false}, {"type": "text", "content": "20.5", "correct": false}]}, {"question": [{"type": "text", "content": "Please find the median of the following data: 19,21,25,24,25,22,24,21,20,20,21,24,26,21,27,23,21,22,20,22"}], "options": [{"type": "text", "content": "22", "correct": true}, {"type": "text", "content": "20", "correct": false}, {"type": "text", "content": "21", "correct": false}, {"type": "text", "content": "20.5", "correct": false}]}, {"question": [{"type": "text", "content": "Please find the SD of the following data (sample SD): 19,21,25,24,25,22,24,21,20,20,21,24,26,21,27,23,21,22,20,22"}], "options": [{"type": "text", "content": "2.34", "correct": false}, {"type": "text", "content": "2.23", "correct": true}, {"type": "text", "content": "3.23", "correct": false}, {"type": "text", "content": "3.32", "correct": false}]}];
 const flashcards = [];</script>
 
 <script type="text/babel">
-  const { useState, useLayoutEffect, useRef } = React;
+  const { useState, useEffect, useLayoutEffect, useRef, useCallback } = React;
 
   // 自定义 SVG 图标组件，替代有 bug 的 Lucide-React 库，解决 Infinity 冲突
   const CheckCircle2 = ({ size = 24, className = "" }) => (
@@ -788,6 +842,76 @@ const flashcards = [];</script>
     const [wrongAnswers, setWrongAnswers] = useState([]);
     const hasMcqs = mcqs.length > 0;
     const hasFlashcards = flashcards.length > 0;
+    const questionCount =
+      view === "quiz"
+        ? mcqs.length
+        : view === "flashcard"
+          ? flashcards.length
+          : 0;
+
+    const goToPreviousQuestion = useCallback(() => {
+      if (currentIdx <= 0) return false;
+
+      setCurrentIdx((index) => index - 1);
+      setFlipped(false);
+      return true;
+    }, [currentIdx]);
+
+    const goToNextQuestion = useCallback(() => {
+      if (currentIdx >= questionCount - 1) return false;
+
+      setCurrentIdx((index) => index + 1);
+      setFlipped(false);
+      return true;
+    }, [currentIdx, questionCount]);
+
+    const handleNextButton = useCallback(() => {
+      if (!goToNextQuestion()) setView("menu");
+    }, [goToNextQuestion]);
+
+    useEffect(() => {
+      if (view !== "quiz" && view !== "flashcard") return undefined;
+
+      const handleKeyDown = (event) => {
+        const target = event.target;
+        const isEditing =
+          target instanceof HTMLElement &&
+          (target.isContentEditable ||
+            ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName));
+        const isSidebarOpen = document
+          .querySelector(".sidebar-shell")
+          ?.classList.contains("is-open");
+
+        if (
+          event.defaultPrevented ||
+          event.altKey ||
+          event.ctrlKey ||
+          event.metaKey ||
+          isEditing ||
+          showNavModal ||
+          isSidebarOpen
+        ) {
+          return;
+        }
+
+        let didNavigate = false;
+        if (event.key === "ArrowLeft") {
+          didNavigate = goToPreviousQuestion();
+        } else if (event.key === "ArrowRight") {
+          didNavigate = goToNextQuestion();
+        }
+
+        if (didNavigate) event.preventDefault();
+      };
+
+      window.addEventListener("keydown", handleKeyDown);
+      return () => window.removeEventListener("keydown", handleKeyDown);
+    }, [
+      goToNextQuestion,
+      goToPreviousQuestion,
+      showNavModal,
+      view,
+    ]);
 
     const resetState = () => {
       setCurrentIdx(0);
@@ -942,9 +1066,9 @@ const flashcards = [];</script>
 
     if (view === "quiz") {
       return (
-        <div className="max-w-2xl mx-auto pt-1 px-0 sm:pt-4 sm:px-4 md:pt-8">
+        <div className="study-view quiz-view max-w-2xl mx-auto pt-1 px-0 sm:pt-4 sm:px-4 md:pt-8">
           {/* 导航头 */}
-          <div className="flex items-center justify-between gap-2 mb-4 sm:mb-6">
+          <div className="study-view-header flex items-center justify-between gap-2 mb-4 sm:mb-6">
             <button
               onClick={() => setView("menu")}
               className="min-h-11 shrink-0 text-slate-500 hover:text-slate-800 transition-colors flex items-center gap-1 font-medium"
@@ -966,7 +1090,7 @@ const flashcards = [];</script>
           </div>
 
           {/* 进度条 */}
-          <div className="w-full h-2 bg-slate-200 rounded-full mb-5 sm:mb-8 overflow-hidden">
+          <div className="study-view-progress w-full h-2 bg-slate-200 rounded-full mb-5 sm:mb-8 overflow-hidden">
             <div
               className="h-full bg-brand-800 transition-all duration-300"
               style={{ width: `${((currentIdx + 1) / mcqs.length) * 100}%` }}
@@ -1144,26 +1268,16 @@ const flashcards = [];</script>
           )}
           
           {/* 控制按钮 */}
-          <div className="flex items-center justify-between gap-2 sm:gap-4 mt-5 sm:mt-8">
+          <div className="study-view-controls flex items-center justify-between gap-2 sm:gap-4 mt-5 sm:mt-8">
             <button
               disabled={currentIdx === 0}
-              onClick={() => {
-                setCurrentIdx(currentIdx - 1);
-                setFlipped(false);
-              }}
+              onClick={goToPreviousQuestion}
               className="min-h-12 flex flex-1 sm:flex-none items-center justify-center gap-1 sm:gap-2 px-3 sm:px-6 py-3 bg-white text-slate-600 hover:text-slate-800 border rounded-xl font-bold shadow-sm transition-all disabled:opacity-30 disabled:pointer-events-none"
             >
               <ChevronLeft size={20} /> 上一题
             </button>
             <button
-              onClick={() => {
-                if (currentIdx < mcqs.length - 1) {
-                  setCurrentIdx(currentIdx + 1);
-                  setFlipped(false);
-                } else {
-                  setView("menu");
-                }
-              }}
+              onClick={handleNextButton}
               className="min-h-12 flex flex-1 sm:flex-none items-center justify-center gap-1 sm:gap-2 px-3 sm:px-6 py-3 bg-brand-800 hover:bg-brand-900 text-white rounded-xl font-bold shadow-sm transition-all"
             >
               {currentIdx === mcqs.length - 1 ? "完成复习" : "下一题"}{" "}
@@ -1208,9 +1322,9 @@ const flashcards = [];</script>
 
     if (view === "flashcard") {
       return (
-        <div className="flashcard-view min-h-full max-w-4xl mx-auto pt-1 px-0 sm:pt-4 sm:px-4 md:pt-8">
+        <div className="study-view flashcard-view min-h-full max-w-4xl mx-auto pt-1 px-0 sm:pt-4 sm:px-4 md:pt-8">
           {/* 导航头 */}
-          <div className="flex items-center justify-between gap-2 mb-4 sm:mb-6">
+          <div className="study-view-header flex items-center justify-between gap-2 mb-4 sm:mb-6">
             <button
               onClick={() => setView("menu")}
               className="min-h-11 shrink-0 text-slate-500 hover:text-slate-800 transition-colors flex items-center gap-1 font-medium"
@@ -1232,7 +1346,7 @@ const flashcards = [];</script>
           </div>
 
           {/* 进度条 */}
-          <div className="w-full h-2 bg-slate-200 rounded-full mb-5 sm:mb-8 overflow-hidden">
+          <div className="study-view-progress w-full h-2 bg-slate-200 rounded-full mb-5 sm:mb-8 overflow-hidden">
             <div
               className="h-full bg-brand-800 transition-all duration-300"
               style={{
@@ -1313,26 +1427,16 @@ const flashcards = [];</script>
           </div>
 
           {/* 控制按钮 */}
-          <div className="flex items-center justify-between gap-2 sm:gap-4 mt-5 sm:mt-8">
+          <div className="study-view-controls flex items-center justify-between gap-2 sm:gap-4 mt-5 sm:mt-8">
             <button
               disabled={currentIdx === 0}
-              onClick={() => {
-                setCurrentIdx(currentIdx - 1);
-                setFlipped(false);
-              }}
+              onClick={goToPreviousQuestion}
               className="min-h-12 flex flex-1 sm:flex-none items-center justify-center gap-1 sm:gap-2 px-3 sm:px-6 py-3 bg-white text-slate-600 hover:text-slate-800 border rounded-xl font-bold shadow-sm transition-all disabled:opacity-30 disabled:pointer-events-none"
             >
               <ChevronLeft size={20} /> 上一题
             </button>
             <button
-              onClick={() => {
-                if (currentIdx < flashcards.length - 1) {
-                  setCurrentIdx(currentIdx + 1);
-                  setFlipped(false);
-                } else {
-                  setView("menu");
-                }
-              }}
+              onClick={handleNextButton}
               className="min-h-12 flex flex-1 sm:flex-none items-center justify-center gap-1 sm:gap-2 px-3 sm:px-6 py-3 bg-brand-800 hover:bg-brand-900 text-white rounded-xl font-bold shadow-sm transition-all"
             >
               {currentIdx === flashcards.length - 1 ? "完成复习" : "下一题"}{" "}

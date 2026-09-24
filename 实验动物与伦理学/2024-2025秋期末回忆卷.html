@@ -68,6 +68,24 @@
           Roboto,
           sans-serif;
       }
+      .app-viewport {
+        height: 100vh;
+      }
+      @supports (height: 100dvh) {
+        .app-viewport {
+          height: 100dvh;
+        }
+      }
+      .app-main {
+        padding-bottom: max(
+          1.5rem,
+          calc(env(safe-area-inset-bottom, 0px) + 1.5rem)
+        ) !important;
+        scroll-padding-bottom: max(
+          1.5rem,
+          calc(env(safe-area-inset-bottom, 0px) + 1.5rem)
+        );
+      }
       #root {
         min-height: 100%;
       }
@@ -227,6 +245,42 @@
           left: 1rem;
         }
       }
+      @media (min-width: 768px) and (max-height: 820px) and (orientation: landscape) {
+        .app-viewport {
+          height: 100svh;
+        }
+        .app-main {
+          padding-top: 1rem !important;
+          padding-bottom: max(
+            5.5rem,
+            calc(env(safe-area-inset-bottom, 0px) + 4.5rem)
+          ) !important;
+          scroll-padding-bottom: max(
+            5.5rem,
+            calc(env(safe-area-inset-bottom, 0px) + 4.5rem)
+          );
+        }
+        .study-view {
+          padding-top: 0 !important;
+        }
+        .study-view-header {
+          margin-bottom: 0.75rem !important;
+        }
+        .study-view-progress {
+          margin-bottom: 1rem !important;
+        }
+        .study-view-controls {
+          margin-top: 1rem !important;
+        }
+        .flip-card {
+          min-height: clamp(20rem, calc(100vh - 14rem), 36rem);
+          min-height: clamp(20rem, calc(100svh - 14rem), 36rem);
+        }
+        .flip-card-front,
+        .flip-card-back {
+          padding: 1.25rem;
+        }
+      }
       @media (prefers-reduced-motion: reduce) {
         .sidebar-shell aside,
         .js-sidebar-backdrop {
@@ -235,7 +289,7 @@
       }
     </style>
   </head>
-  <body class="h-screen h-[100dvh] overflow-hidden bg-slate-50 text-slate-800">
+  <body class="app-viewport overflow-hidden bg-slate-50 text-slate-800">
     <div class="flex h-full w-full flex-col md:flex-row">
       <!-- 移动端顶部导航 -->
       <header class="flex h-14 shrink-0 items-center gap-3 border-b border-slate-200 bg-white px-3 md:hidden">
@@ -298,7 +352,7 @@
       </div>
       <div class="js-link-container ml-3 space-y-0.5 border-l-2 border-slate-200 pl-2 md:space-y-1 md:border-l md:border-slate-100">
         <!-- 子链接将会被 append 到这里 -->
-      <a href="../%E5%9F%BA%E7%A1%80%E5%8C%BB%E5%AD%A6%E7%A7%91%E5%AD%A6%E7%A0%94%E7%A9%B6%E6%8A%80%E8%83%BD%20I/2024-2025%E5%A4%8F%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025夏期末回忆卷<!-- 链接文本占位 -->
+      <a href="../%E5%9F%BA%E7%A1%80%E5%8C%BB%E5%AD%A6%E7%A7%91%E5%AD%A6%E7%A0%94%E7%A9%B6%E6%8A%80%E8%83%BD%20I/2024-2025%E6%98%A5%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025春期末回忆卷<!-- 链接文本占位 -->
     </a>
   <a href="../%E5%9F%BA%E7%A1%80%E5%8C%BB%E5%AD%A6%E7%A7%91%E5%AD%A6%E7%A0%94%E7%A9%B6%E6%8A%80%E8%83%BD%20I/2024-2025%E5%86%AC%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025冬期末回忆卷<!-- 链接文本占位 -->
     </a>
@@ -363,7 +417,7 @@
       </div>
       <div class="js-link-container ml-3 space-y-0.5 border-l-2 border-slate-200 pl-2 md:space-y-1 md:border-l md:border-slate-100">
         <!-- 子链接将会被 append 到这里 -->
-      <a href="../%E5%8C%BB%E5%AD%A6%E5%A4%A7%E6%95%B0%E6%8D%AE%E4%B8%8E%E5%BA%94%E7%94%A8/2024-2025%E5%86%AC%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025冬期末回忆卷<!-- 链接文本占位 -->
+      <a href="../%E5%8C%BB%E5%AD%A6%E5%A4%A7%E6%95%B0%E6%8D%AE%E4%B8%8E%E5%BA%94%E7%94%A8/2024-2025%E5%A4%8F%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025夏期末回忆卷<!-- 链接文本占位 -->
     </a>
   </div>
     </div>
@@ -421,14 +475,14 @@
 </div>
 
       <!-- 右侧主体内容区 -->
-      <main class=".js-quiz-container min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-contain p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:p-5 md:p-8"><div id="root"></div>
+      <main class=".js-quiz-container app-main min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-contain p-3 sm:p-5 md:p-8"><div id="root"></div>
 
 <script>const examMetadata = {"title": "2024-2025 学年秋学期实验动物与伦理学期末回忆卷", "description": "", "authors": "李建树"};
-const mcqs = [{"question": [{"type": "text", "content": "最常用的模式动物。"}], "options": [{"type": "text", "content": "大鼠", "correct": false}, {"type": "text", "content": "小鼠", "correct": true}, {"type": "text", "content": "豚鼠", "correct": false}, {"type": "text", "content": "猴子", "correct": false}]}, {"question": [{"type": "text", "content": "遇突发事件先干什么？"}], "options": [{"type": "text", "content": "自救", "correct": true}, {"type": "text", "content": "报警", "correct": false}, {"type": "text", "content": "启动应急预案", "correct": false}, {"type": "text", "content": "等待救援", "correct": false}]}, {"question": [{"type": "text", "content": "消毒剂是什么因素？"}], "options": [{"type": "text", "content": "理化", "correct": true}, {"type": "text", "content": "生物", "correct": false}, {"type": "text", "content": "居住", "correct": false}, {"type": "text", "content": "营养", "correct": false}]}, {"question": [{"type": "text", "content": "CRISPR/Cas9 的必要条件。"}], "options": [{"type": "text", "content": "RNA 和 DNA 互补配对", "correct": true}, {"type": "text", "content": "RNase Ⅲ 存在", "correct": false}, {"type": "text", "content": "限制性内切酶参与", "correct": false}, {"type": "text", "content": "连接酶参与", "correct": false}]}, {"question": [{"type": "text", "content": "谁奠定了西方生物科学的基础？"}], "options": [{"type": "text", "content": "维萨里", "correct": false}, {"type": "text", "content": "盖伦", "correct": true}, {"type": "text", "content": "哈维", "correct": false}, {"type": "text", "content": "达芬奇", "correct": false}]}, {"question": [{"type": "text", "content": "以下哪个不是小鼠的品系？"}], "options": [{"type": "text", "content": "C57BL", "correct": false}, {"type": "text", "content": "C3H", "correct": false}, {"type": "text", "content": "Long Evans", "correct": true}, {"type": "text", "content": "FVB", "correct": false}]}, {"question": [{"type": "text", "content": "哪一种成像技术有更高的时间分辨率？"}], "options": [{"type": "text", "content": "GCaMP", "correct": true}, {"type": "text", "content": "NAFP", "correct": false}, {"type": "text", "content": "VSFP", "correct": false}, {"type": "text", "content": "C-fos", "correct": false}]}, {"question": [{"type": "text", "content": "鹿的红细胞是镰刀状的，可以用来研究镰刀型贫血，是什么动物模型？"}], "options": [{"type": "text", "content": "生物医学动物模型", "correct": true}, {"type": "text", "content": "自发性动物模型", "correct": false}, {"type": "text", "content": "诱导性动物模型", "correct": false}, {"type": "text", "content": "抗疾病动物模型", "correct": false}]}, {"question": [{"type": "text", "content": "Mecp2 基因突变会引起什么疾病？"}], "options": [{"type": "text", "content": "雷特综合征", "correct": true}, {"type": "text", "content": "马凡综合征", "correct": false}, {"type": "text", "content": "亨廷顿舞蹈症", "correct": false}, {"type": "text", "content": "囊性纤维化", "correct": false}]}, {"question": [{"type": "text", "content": "果蝇的听觉器官定位在哪里？"}], "options": [{"type": "text", "content": "前足", "correct": false}, {"type": "text", "content": "翅膀边缘", "correct": false}, {"type": "text", "content": "触角", "correct": true}, {"type": "text", "content": "背部绒毛", "correct": false}]}, {"question": [{"type": "text", "content": "哪种动物中最先发现 microRNA？"}], "options": [{"type": "text", "content": "小鼠", "correct": false}, {"type": "text", "content": "斑马鱼", "correct": false}, {"type": "text", "content": "果蝇", "correct": false}, {"type": "text", "content": "线虫", "correct": true}]}, {"question": [{"type": "text", "content": "哪个不是近交系动物的特点？"}], "options": [{"type": "text", "content": "遗传一致性高", "correct": false}, {"type": "text", "content": "易于饲养", "correct": true}, {"type": "text", "content": "受外界影响小", "correct": false}, {"type": "text", "content": "基因纯合度高", "correct": false}]}, {"question": [{"type": "text", "content": "以下哪种属于实验动物的环境丰荣措施？"}], "options": [{"type": "text", "content": "增加饲养密度", "correct": false}, {"type": "text", "content": "提供筑巢材料", "correct": false}, {"type": "text", "content": "减少光照时间", "correct": false}, {"type": "text", "content": "更换饲料种类", "correct": false}, {"type": "text", "content": "提供玩具或隐藏场所", "correct": true}]}, {"question": [{"type": "text", "content": "关于实验动物安乐死的原则，下列哪项是正确的？"}], "options": [{"type": "text", "content": "应尽量减少动物的痛苦", "correct": false}, {"type": "text", "content": "需符合伦理委员会批准的流程", "correct": false}, {"type": "text", "content": "选用最便捷迅速的方法", "correct": false}, {"type": "text", "content": "以上均正确", "correct": false}, {"type": "text", "content": "以上均正确", "correct": true}]}, {"question": [{"type": "text", "content": "哪种动物适合用于发育生物学和神经发育研究？"}], "options": [{"type": "text", "content": "小鼠", "correct": false}, {"type": "text", "content": "斑马鱼", "correct": true}, {"type": "text", "content": "豚鼠", "correct": false}, {"type": "text", "content": "果蝇", "correct": false}]}];
+const mcqs = [{"question": [{"type": "text", "content": "果蝇没有类似人胃的器官。"}], "options": [{"type": "text", "content": "对", "correct": true}, {"type": "text", "content": "错", "correct": false}]}, {"question": [{"type": "text", "content": "果蝇没有特异性免疫。"}], "options": [{"type": "text", "content": "对", "correct": true}, {"type": "text", "content": "错", "correct": false}]}, {"question": [{"type": "text", "content": "斑马鱼是多倍体，不易于进行基因编辑。"}], "options": [{"type": "text", "content": "对", "correct": false}, {"type": "text", "content": "错", "correct": true}]}, {"question": [{"type": "text", "content": "第一个动物保护的法案是“马丁法案”。"}], "options": [{"type": "text", "content": "对", "correct": true}, {"type": "text", "content": "错", "correct": false}]}, {"question": [{"type": "text", "content": "大鼠和小鼠可以一起饲养。"}], "options": [{"type": "text", "content": "对", "correct": false}, {"type": "text", "content": "错", "correct": true}]}, {"question": [{"type": "text", "content": "秀丽隐杆线虫营寄生生活，会引起肝腹水。"}], "options": [{"type": "text", "content": "对", "correct": false}, {"type": "text", "content": "错", "correct": true}]}, {"question": [{"type": "text", "content": "小鼠和人类的基因同源性到达 99%。"}], "options": [{"type": "text", "content": "对", "correct": false}, {"type": "text", "content": "错", "correct": true}]}, {"question": [{"type": "text", "content": "测量实验室气体质量的指标是氨气。"}], "options": [{"type": "text", "content": "对", "correct": true}, {"type": "text", "content": "错", "correct": false}]}, {"question": [{"type": "text", "content": "最常用的模式动物。"}], "options": [{"type": "text", "content": "大鼠", "correct": false}, {"type": "text", "content": "小鼠", "correct": true}, {"type": "text", "content": "豚鼠", "correct": false}, {"type": "text", "content": "猴子", "correct": false}]}, {"question": [{"type": "text", "content": "遇突发事件先干什么？"}], "options": [{"type": "text", "content": "自救", "correct": true}, {"type": "text", "content": "报警", "correct": false}, {"type": "text", "content": "启动应急预案", "correct": false}, {"type": "text", "content": "等待救援", "correct": false}]}, {"question": [{"type": "text", "content": "消毒剂是什么因素？"}], "options": [{"type": "text", "content": "理化", "correct": true}, {"type": "text", "content": "生物", "correct": false}, {"type": "text", "content": "居住", "correct": false}, {"type": "text", "content": "营养", "correct": false}]}, {"question": [{"type": "text", "content": "CRISPR/Cas9 的必要条件。"}], "options": [{"type": "text", "content": "RNA 和 DNA 互补配对", "correct": true}, {"type": "text", "content": "RNase Ⅲ 存在", "correct": false}, {"type": "text", "content": "限制性内切酶参与", "correct": false}, {"type": "text", "content": "连接酶参与", "correct": false}]}, {"question": [{"type": "text", "content": "谁奠定了西方生物科学的基础？"}], "options": [{"type": "text", "content": "维萨里", "correct": false}, {"type": "text", "content": "盖伦", "correct": true}, {"type": "text", "content": "哈维", "correct": false}, {"type": "text", "content": "达芬奇", "correct": false}]}, {"question": [{"type": "text", "content": "以下哪个不是小鼠的品系？"}], "options": [{"type": "text", "content": "C57BL", "correct": false}, {"type": "text", "content": "C3H", "correct": false}, {"type": "text", "content": "Long Evans", "correct": true}, {"type": "text", "content": "FVB", "correct": false}]}, {"question": [{"type": "text", "content": "哪一种成像技术有更高的时间分辨率？"}], "options": [{"type": "text", "content": "GCaMP", "correct": true}, {"type": "text", "content": "NAFP", "correct": false}, {"type": "text", "content": "VSFP", "correct": false}, {"type": "text", "content": "C-fos", "correct": false}]}, {"question": [{"type": "text", "content": "鹿的红细胞是镰刀状的，可以用来研究镰刀型贫血，是什么动物模型？"}], "options": [{"type": "text", "content": "生物医学动物模型", "correct": true}, {"type": "text", "content": "自发性动物模型", "correct": false}, {"type": "text", "content": "诱导性动物模型", "correct": false}, {"type": "text", "content": "抗疾病动物模型", "correct": false}]}, {"question": [{"type": "text", "content": "Mecp2 基因突变会引起什么疾病？"}], "options": [{"type": "text", "content": "雷特综合征", "correct": true}, {"type": "text", "content": "马凡综合征", "correct": false}, {"type": "text", "content": "亨廷顿舞蹈症", "correct": false}, {"type": "text", "content": "囊性纤维化", "correct": false}]}, {"question": [{"type": "text", "content": "果蝇的听觉器官定位在哪里？"}], "options": [{"type": "text", "content": "前足", "correct": false}, {"type": "text", "content": "翅膀边缘", "correct": false}, {"type": "text", "content": "触角", "correct": true}, {"type": "text", "content": "背部绒毛", "correct": false}]}, {"question": [{"type": "text", "content": "哪种动物中最先发现 microRNA？"}], "options": [{"type": "text", "content": "小鼠", "correct": false}, {"type": "text", "content": "斑马鱼", "correct": false}, {"type": "text", "content": "果蝇", "correct": false}, {"type": "text", "content": "线虫", "correct": true}]}, {"question": [{"type": "text", "content": "哪个不是近交系动物的特点？"}], "options": [{"type": "text", "content": "遗传一致性高", "correct": false}, {"type": "text", "content": "易于饲养", "correct": true}, {"type": "text", "content": "受外界影响小", "correct": false}, {"type": "text", "content": "基因纯合度高", "correct": false}]}, {"question": [{"type": "text", "content": "以下哪种属于实验动物的环境丰荣措施？"}], "options": [{"type": "text", "content": "增加饲养密度", "correct": false}, {"type": "text", "content": "提供筑巢材料", "correct": false}, {"type": "text", "content": "减少光照时间", "correct": false}, {"type": "text", "content": "更换饲料种类", "correct": false}, {"type": "text", "content": "提供玩具或隐藏场所", "correct": true}]}, {"question": [{"type": "text", "content": "关于实验动物安乐死的原则，下列哪项是正确的？"}], "options": [{"type": "text", "content": "应尽量减少动物的痛苦", "correct": false}, {"type": "text", "content": "需符合伦理委员会批准的流程", "correct": false}, {"type": "text", "content": "选用最便捷迅速的方法", "correct": false}, {"type": "text", "content": "以上均正确", "correct": false}, {"type": "text", "content": "以上均正确", "correct": true}]}, {"question": [{"type": "text", "content": "哪种动物适合用于发育生物学和神经发育研究？"}], "options": [{"type": "text", "content": "小鼠", "correct": false}, {"type": "text", "content": "斑马鱼", "correct": true}, {"type": "text", "content": "豚鼠", "correct": false}, {"type": "text", "content": "果蝇", "correct": false}]}];
 const flashcards = [{"question": [{"type": "text", "content": "什么是动物实验伦理学。"}], "answer": [{"type": "text", "content": "动物实验伦理学是研究在科学研究中使用动物时应遵循的道德原则和伦理规范的学科，核心是尊重动物生命、减少痛苦、替代和改进实验方法，确保实验的必要性和合理性。"}]}, {"question": [{"type": "text", "content": "爪蟾在生物医学上的应用价值。"}], "answer": [{"type": "text", "content": "爪蟾是经典的发育生物学和细胞生物学模型，常用于胚胎发育研究、细胞分裂与分化、基因功能研究（如通过显微注射调控基因表达），以及药物筛选和毒理学测试，其卵母细胞也是离子通道和受体研究的常用工具。"}]}, {"question": [{"type": "text", "content": "影响实验动物环境的因素。"}], "answer": [{"type": "text", "content": "包括温度、湿度、光照、通风/空气质量（如氨气浓度）、噪音、饲养密度、垫料和笼具条件，以及营养和饮水质量等。"}]}, {"question": [{"type": "text", "content": "说明从 T1、T2 数据解读脑神经元活动的 fMRI 成像的结果。"}], "answer": [{"type": "text", "content": "T1加权像主要显示解剖结构，T2加权像和BOLD信号依赖的T2加权像反映血氧水平变化，间接显示神经元活动。通过比较任务状态与静息状态的T2信号变化，可推断脑区激活情况；T1数据用于配准和结构定位。"}]}, {"question": [{"type": "text", "content": "什么是自发性疾病和诱发性疾病，并分别说明对于肿瘤研究的优缺点。"}], "answer": [{"type": "text", "content": "自发性疾病指动物自然发生的疾病，不借助人为干预；诱发性疾病是通过化学、物理或生物手段人为诱导的疾病。在肿瘤研究中，自发性肿瘤更接近人类自然发生过程，但发生率低、周期长；诱发性肿瘤可控性强、模型重复性好，但可能与自然病程存在差异。"}]}, {"question": [{"type": "text", "content": "动物权利和动物福利的异同。"}], "answer": [{"type": "text", "content": "动物福利强调人类有责任保障动物的基本生存和健康需求（如免受饥渴、疾病、痛苦和恐惧），注重使用中的善待和管理；动物权利更强调动物本身享有不被利用的基本权利，反对任何形式的动物使用。两者都关注动物利益，但权利观点更激进，福利观点更注重平衡科学需求与伦理责任。"}]}, {"question": [{"type": "text", "content": "对如何善待实验动物的看法。"}], "answer": [{"type": "text", "content": "善待实验动物应从饲养管理、操作规范、伦理审查和人员培训等方面入手，包括提供适宜的居住环境、减少应激和疼痛、优化实验设计（如3R原则）、尊重动物生命尊严，并在实验后实施安乐死。"}]}, {"question": [{"type": "text", "content": "实验动物微生物控制的重要性，国家标准的分级，每级对环境的要求。"}], "answer": [{"type": "text", "content": "微生物控制是防止动物感染和疾病传播、保障实验可重复性和人员健康的关键。国家标准一般分为普通级、清洁级、SPF级和无菌级。普通级要求基本环境卫生；清洁级需排除特定人畜共患病和主要病原；SPF级需排除多种特定病原体，使用屏障设施；无菌级要求完全无菌，使用隔离器。"}]}, {"question": [{"type": "text", "content": "如何用小鼠的胚胎干细胞（ES）转基因。"}], "answer": [{"type": "text", "content": "将目标基因（或敲除载体）通过电穿孔或脂质体转染等方法导入小鼠ES细胞，筛选稳定整合的克隆，将其注射入囊胚，移植到假孕母鼠子宫中，产下嵌合体小鼠，再与野生型小鼠交配，筛选可生殖传递的转基因品系。"}]}, {"question": [{"type": "text", "content": "系统说明果蝇、线虫、斑马鱼在人类疾病研究上的优缺点。"}], "answer": [{"type": "text", "content": "果蝇：繁殖快、遗传工具丰富、成本低，适合研究神经退行性疾病、节律、发育；但无脊椎动物生理与人类差异大，部分疾病机制不保守。线虫：体型小、细胞谱系清晰、寿命短，适合衰老、神经科学和药物筛选；但同样无脊椎，缺乏复杂器官系统。斑马鱼：脊椎动物、胚胎透明、发育快、适合遗传学和药物筛选，器官系统与人类相似度高；但饲养繁殖成本较高，基因编辑效率相对较低，部分疾病模型尚不完善。"}]}, {"question": [{"type": "text", "content": "选取一种模式动物，设计方案探究并证明影响睡眠节律的基因。"}], "answer": [{"type": "text", "content": "以小鼠为模型，选择候选基因（如Clock或Per2），构建基因敲除或条件性敲除小鼠，结合脑电/肌电记录监测睡眠-觉醒周期，分析敲除组与野生组的昼夜节律、总睡眠时间、REM/NREM分布等指标。还可使用光遗传或化学遗传结合睡眠监测调控相关脑区神经元活动，验证该基因对睡眠节律的影响。同时可引入药物干预或环境光周期干扰作为对照，量化基因表达的节律性变化，最终证明该基因对节律的调控作用。"}]}];</script>
 
 <script type="text/babel">
-  const { useState, useLayoutEffect, useRef } = React;
+  const { useState, useEffect, useLayoutEffect, useRef, useCallback } = React;
 
   // 自定义 SVG 图标组件，替代有 bug 的 Lucide-React 库，解决 Infinity 冲突
   const CheckCircle2 = ({ size = 24, className = "" }) => (
@@ -788,6 +842,76 @@ const flashcards = [{"question": [{"type": "text", "content": "什么是动物�
     const [wrongAnswers, setWrongAnswers] = useState([]);
     const hasMcqs = mcqs.length > 0;
     const hasFlashcards = flashcards.length > 0;
+    const questionCount =
+      view === "quiz"
+        ? mcqs.length
+        : view === "flashcard"
+          ? flashcards.length
+          : 0;
+
+    const goToPreviousQuestion = useCallback(() => {
+      if (currentIdx <= 0) return false;
+
+      setCurrentIdx((index) => index - 1);
+      setFlipped(false);
+      return true;
+    }, [currentIdx]);
+
+    const goToNextQuestion = useCallback(() => {
+      if (currentIdx >= questionCount - 1) return false;
+
+      setCurrentIdx((index) => index + 1);
+      setFlipped(false);
+      return true;
+    }, [currentIdx, questionCount]);
+
+    const handleNextButton = useCallback(() => {
+      if (!goToNextQuestion()) setView("menu");
+    }, [goToNextQuestion]);
+
+    useEffect(() => {
+      if (view !== "quiz" && view !== "flashcard") return undefined;
+
+      const handleKeyDown = (event) => {
+        const target = event.target;
+        const isEditing =
+          target instanceof HTMLElement &&
+          (target.isContentEditable ||
+            ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName));
+        const isSidebarOpen = document
+          .querySelector(".sidebar-shell")
+          ?.classList.contains("is-open");
+
+        if (
+          event.defaultPrevented ||
+          event.altKey ||
+          event.ctrlKey ||
+          event.metaKey ||
+          isEditing ||
+          showNavModal ||
+          isSidebarOpen
+        ) {
+          return;
+        }
+
+        let didNavigate = false;
+        if (event.key === "ArrowLeft") {
+          didNavigate = goToPreviousQuestion();
+        } else if (event.key === "ArrowRight") {
+          didNavigate = goToNextQuestion();
+        }
+
+        if (didNavigate) event.preventDefault();
+      };
+
+      window.addEventListener("keydown", handleKeyDown);
+      return () => window.removeEventListener("keydown", handleKeyDown);
+    }, [
+      goToNextQuestion,
+      goToPreviousQuestion,
+      showNavModal,
+      view,
+    ]);
 
     const resetState = () => {
       setCurrentIdx(0);
@@ -942,9 +1066,9 @@ const flashcards = [{"question": [{"type": "text", "content": "什么是动物�
 
     if (view === "quiz") {
       return (
-        <div className="max-w-2xl mx-auto pt-1 px-0 sm:pt-4 sm:px-4 md:pt-8">
+        <div className="study-view quiz-view max-w-2xl mx-auto pt-1 px-0 sm:pt-4 sm:px-4 md:pt-8">
           {/* 导航头 */}
-          <div className="flex items-center justify-between gap-2 mb-4 sm:mb-6">
+          <div className="study-view-header flex items-center justify-between gap-2 mb-4 sm:mb-6">
             <button
               onClick={() => setView("menu")}
               className="min-h-11 shrink-0 text-slate-500 hover:text-slate-800 transition-colors flex items-center gap-1 font-medium"
@@ -966,7 +1090,7 @@ const flashcards = [{"question": [{"type": "text", "content": "什么是动物�
           </div>
 
           {/* 进度条 */}
-          <div className="w-full h-2 bg-slate-200 rounded-full mb-5 sm:mb-8 overflow-hidden">
+          <div className="study-view-progress w-full h-2 bg-slate-200 rounded-full mb-5 sm:mb-8 overflow-hidden">
             <div
               className="h-full bg-brand-800 transition-all duration-300"
               style={{ width: `${((currentIdx + 1) / mcqs.length) * 100}%` }}
@@ -1144,26 +1268,16 @@ const flashcards = [{"question": [{"type": "text", "content": "什么是动物�
           )}
           
           {/* 控制按钮 */}
-          <div className="flex items-center justify-between gap-2 sm:gap-4 mt-5 sm:mt-8">
+          <div className="study-view-controls flex items-center justify-between gap-2 sm:gap-4 mt-5 sm:mt-8">
             <button
               disabled={currentIdx === 0}
-              onClick={() => {
-                setCurrentIdx(currentIdx - 1);
-                setFlipped(false);
-              }}
+              onClick={goToPreviousQuestion}
               className="min-h-12 flex flex-1 sm:flex-none items-center justify-center gap-1 sm:gap-2 px-3 sm:px-6 py-3 bg-white text-slate-600 hover:text-slate-800 border rounded-xl font-bold shadow-sm transition-all disabled:opacity-30 disabled:pointer-events-none"
             >
               <ChevronLeft size={20} /> 上一题
             </button>
             <button
-              onClick={() => {
-                if (currentIdx < mcqs.length - 1) {
-                  setCurrentIdx(currentIdx + 1);
-                  setFlipped(false);
-                } else {
-                  setView("menu");
-                }
-              }}
+              onClick={handleNextButton}
               className="min-h-12 flex flex-1 sm:flex-none items-center justify-center gap-1 sm:gap-2 px-3 sm:px-6 py-3 bg-brand-800 hover:bg-brand-900 text-white rounded-xl font-bold shadow-sm transition-all"
             >
               {currentIdx === mcqs.length - 1 ? "完成复习" : "下一题"}{" "}
@@ -1208,9 +1322,9 @@ const flashcards = [{"question": [{"type": "text", "content": "什么是动物�
 
     if (view === "flashcard") {
       return (
-        <div className="flashcard-view min-h-full max-w-4xl mx-auto pt-1 px-0 sm:pt-4 sm:px-4 md:pt-8">
+        <div className="study-view flashcard-view min-h-full max-w-4xl mx-auto pt-1 px-0 sm:pt-4 sm:px-4 md:pt-8">
           {/* 导航头 */}
-          <div className="flex items-center justify-between gap-2 mb-4 sm:mb-6">
+          <div className="study-view-header flex items-center justify-between gap-2 mb-4 sm:mb-6">
             <button
               onClick={() => setView("menu")}
               className="min-h-11 shrink-0 text-slate-500 hover:text-slate-800 transition-colors flex items-center gap-1 font-medium"
@@ -1232,7 +1346,7 @@ const flashcards = [{"question": [{"type": "text", "content": "什么是动物�
           </div>
 
           {/* 进度条 */}
-          <div className="w-full h-2 bg-slate-200 rounded-full mb-5 sm:mb-8 overflow-hidden">
+          <div className="study-view-progress w-full h-2 bg-slate-200 rounded-full mb-5 sm:mb-8 overflow-hidden">
             <div
               className="h-full bg-brand-800 transition-all duration-300"
               style={{
@@ -1313,26 +1427,16 @@ const flashcards = [{"question": [{"type": "text", "content": "什么是动物�
           </div>
 
           {/* 控制按钮 */}
-          <div className="flex items-center justify-between gap-2 sm:gap-4 mt-5 sm:mt-8">
+          <div className="study-view-controls flex items-center justify-between gap-2 sm:gap-4 mt-5 sm:mt-8">
             <button
               disabled={currentIdx === 0}
-              onClick={() => {
-                setCurrentIdx(currentIdx - 1);
-                setFlipped(false);
-              }}
+              onClick={goToPreviousQuestion}
               className="min-h-12 flex flex-1 sm:flex-none items-center justify-center gap-1 sm:gap-2 px-3 sm:px-6 py-3 bg-white text-slate-600 hover:text-slate-800 border rounded-xl font-bold shadow-sm transition-all disabled:opacity-30 disabled:pointer-events-none"
             >
               <ChevronLeft size={20} /> 上一题
             </button>
             <button
-              onClick={() => {
-                if (currentIdx < flashcards.length - 1) {
-                  setCurrentIdx(currentIdx + 1);
-                  setFlipped(false);
-                } else {
-                  setView("menu");
-                }
-              }}
+              onClick={handleNextButton}
               className="min-h-12 flex flex-1 sm:flex-none items-center justify-center gap-1 sm:gap-2 px-3 sm:px-6 py-3 bg-brand-800 hover:bg-brand-900 text-white rounded-xl font-bold shadow-sm transition-all"
             >
               {currentIdx === flashcards.length - 1 ? "完成复习" : "下一题"}{" "}

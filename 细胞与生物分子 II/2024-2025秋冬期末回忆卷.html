@@ -68,6 +68,24 @@
           Roboto,
           sans-serif;
       }
+      .app-viewport {
+        height: 100vh;
+      }
+      @supports (height: 100dvh) {
+        .app-viewport {
+          height: 100dvh;
+        }
+      }
+      .app-main {
+        padding-bottom: max(
+          1.5rem,
+          calc(env(safe-area-inset-bottom, 0px) + 1.5rem)
+        ) !important;
+        scroll-padding-bottom: max(
+          1.5rem,
+          calc(env(safe-area-inset-bottom, 0px) + 1.5rem)
+        );
+      }
       #root {
         min-height: 100%;
       }
@@ -227,6 +245,42 @@
           left: 1rem;
         }
       }
+      @media (min-width: 768px) and (max-height: 820px) and (orientation: landscape) {
+        .app-viewport {
+          height: 100svh;
+        }
+        .app-main {
+          padding-top: 1rem !important;
+          padding-bottom: max(
+            5.5rem,
+            calc(env(safe-area-inset-bottom, 0px) + 4.5rem)
+          ) !important;
+          scroll-padding-bottom: max(
+            5.5rem,
+            calc(env(safe-area-inset-bottom, 0px) + 4.5rem)
+          );
+        }
+        .study-view {
+          padding-top: 0 !important;
+        }
+        .study-view-header {
+          margin-bottom: 0.75rem !important;
+        }
+        .study-view-progress {
+          margin-bottom: 1rem !important;
+        }
+        .study-view-controls {
+          margin-top: 1rem !important;
+        }
+        .flip-card {
+          min-height: clamp(20rem, calc(100vh - 14rem), 36rem);
+          min-height: clamp(20rem, calc(100svh - 14rem), 36rem);
+        }
+        .flip-card-front,
+        .flip-card-back {
+          padding: 1.25rem;
+        }
+      }
       @media (prefers-reduced-motion: reduce) {
         .sidebar-shell aside,
         .js-sidebar-backdrop {
@@ -235,7 +289,7 @@
       }
     </style>
   </head>
-  <body class="h-screen h-[100dvh] overflow-hidden bg-slate-50 text-slate-800">
+  <body class="app-viewport overflow-hidden bg-slate-50 text-slate-800">
     <div class="flex h-full w-full flex-col md:flex-row">
       <!-- 移动端顶部导航 -->
       <header class="flex h-14 shrink-0 items-center gap-3 border-b border-slate-200 bg-white px-3 md:hidden">
@@ -298,7 +352,7 @@
       </div>
       <div class="js-link-container ml-3 space-y-0.5 border-l-2 border-slate-200 pl-2 md:space-y-1 md:border-l md:border-slate-100">
         <!-- 子链接将会被 append 到这里 -->
-      <a href="../%E5%9F%BA%E7%A1%80%E5%8C%BB%E5%AD%A6%E7%A7%91%E5%AD%A6%E7%A0%94%E7%A9%B6%E6%8A%80%E8%83%BD%20I/2024-2025%E5%A4%8F%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025夏期末回忆卷<!-- 链接文本占位 -->
+      <a href="../%E5%9F%BA%E7%A1%80%E5%8C%BB%E5%AD%A6%E7%A7%91%E5%AD%A6%E7%A0%94%E7%A9%B6%E6%8A%80%E8%83%BD%20I/2024-2025%E6%98%A5%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025春期末回忆卷<!-- 链接文本占位 -->
     </a>
   <a href="../%E5%9F%BA%E7%A1%80%E5%8C%BB%E5%AD%A6%E7%A7%91%E5%AD%A6%E7%A0%94%E7%A9%B6%E6%8A%80%E8%83%BD%20I/2024-2025%E5%86%AC%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025冬期末回忆卷<!-- 链接文本占位 -->
     </a>
@@ -363,7 +417,7 @@
       </div>
       <div class="js-link-container ml-3 space-y-0.5 border-l-2 border-slate-200 pl-2 md:space-y-1 md:border-l md:border-slate-100">
         <!-- 子链接将会被 append 到这里 -->
-      <a href="../%E5%8C%BB%E5%AD%A6%E5%A4%A7%E6%95%B0%E6%8D%AE%E4%B8%8E%E5%BA%94%E7%94%A8/2024-2025%E5%86%AC%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025冬期末回忆卷<!-- 链接文本占位 -->
+      <a href="../%E5%8C%BB%E5%AD%A6%E5%A4%A7%E6%95%B0%E6%8D%AE%E4%B8%8E%E5%BA%94%E7%94%A8/2024-2025%E5%A4%8F%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025夏期末回忆卷<!-- 链接文本占位 -->
     </a>
   </div>
     </div>
@@ -421,14 +475,14 @@
 </div>
 
       <!-- 右侧主体内容区 -->
-      <main class=".js-quiz-container min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-contain p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:p-5 md:p-8"><div id="root"></div>
+      <main class=".js-quiz-container app-main min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-contain p-3 sm:p-5 md:p-8"><div id="root"></div>
 
 <script>const examMetadata = {"title": "细胞与生物分子Ⅱ 2024-2025 学年秋冬学期期末回忆卷", "description": "", "authors": "李建树"};
 const mcqs = [];
 const flashcards = [{"question": [{"type": "text", "content": "解释 miRNA 与 siRNA 的联系和差异。"}], "answer": [{"type": "text", "content": "联系：均为非编码小RNA，由Dicer酶加工形成，并与Argonaute蛋白组装成RISC复合物，通过碱基互补配对靶向mRNA，在转录后水平负调控基因表达。差异：miRNA通常由内源基因组中的发夹结构前体转录，靶向不完全互补的mRNA，主要抑制翻译或诱导去腺苷酸化；siRNA通常来源于外源长双链RNA（dsRNA）或人工导入，靶向完全互补的mRNA，引导Ago2蛋白切割靶mRNA。"}]}, {"question": [{"type": "text", "content": "解释 substrate-level phosphorylation 与 oxidative phosphorylation 的联系和差异。"}], "answer": [{"type": "text", "content": "联系：均为细胞内合成ATP的核心生化机制。差异：底物水平磷酸化由高能代谢物（如1,3-二磷酸甘油酸、磷酸烯醇式丙酮酸）直接将磷酸基团转移给ADP，不依赖电子传递链，发生于糖酵解和三羧酸循环中；氧化磷酸化依赖于线粒体内膜电子传递链建立的质子电化学梯度，由ATP合酶催化合成ATP，需氧气作为最终电子受体。"}]}, {"question": [{"type": "text", "content": "解释 one carbon unit 与 S-Adenosylmethionine（SAM）的联系和差异。"}], "answer": [{"type": "text", "content": "联系：一碳单位是SAM分子中甲基基团的间接来源之一（通过甲硫氨酸循环）。差异：一碳单位（如甲基、亚甲基、甲酰基等）由四氢叶酸（THF）携带，参与嘌呤环、胸腺嘧啶及甲硫氨酸的从头合成；SAM是生物体内最主要的直接甲基供体，由甲硫氨酸与ATP反应生成，参与蛋白质、DNA、RNA及小分子代谢物的甲基化修饰。"}]}, {"question": [{"type": "text", "content": "解释 chromatin loops 与 topologically associated domains（TADs）的联系和差异。"}], "answer": [{"type": "text", "content": "联系：TAD是染色质三维空间折叠的结构单元，其内部包含多个染色质环。差异：TAD是较大的拓扑结构域（通常几百kb至几Mb），边界由CTCF蛋白和黏连蛋白（cohesin）划定，域内互作频率显著高于域间；染色质环是TAD内部由cohesin和CTCF介导的特定长程互作结构（通常几十kb至几百kb），常介导增强子与启动子之间的特异性调控。"}]}, {"question": [{"type": "text", "content": "写出蛋白质变性且沉淀、蛋白质变性但不沉淀、蛋白质不变性但沉淀的例子各一个。"}], "answer": [{"type": "text", "content": "变性且沉淀：煮沸鸡蛋清（加热使蛋白质空间结构破坏，疏水基团暴露后聚集凝固沉淀）。变性但不沉淀：尿素或盐酸胍处理后的球状蛋白溶液（肽链伸展但仍可溶于溶剂，未达到等电点或浓度较低时不沉淀）。不变性但沉淀：硫酸铵分级盐析（中性盐中和蛋白质表面电荷、破坏水化层使其沉淀，但天然构象完整）。"}]}, {"question": [{"type": "text", "content": "100个葡萄糖通过磷酸戊糖途径变为40个5-磷酸-核酮糖，剩下的碳架全部通过磷酸戊糖途径完全氧化为二氧化碳。请计算生成的NADPH的总数量。"}], "answer": [{"type": "text", "content": "总NADPH生成量为 800。计算依据：100个葡萄糖共含600个碳原子，最终生成40个5-磷酸-核酮糖（含200个碳原子），其余400个碳原子经氧化脱羧生成CO₂。磷酸戊糖途径氧化阶段每脱羧1个碳原子伴随产生2分子NADPH，因此总NADPH = 400 × 2 = 800。"}]}, {"question": [{"type": "text", "content": "三组小鼠空腹实验。1. 为什么要提前空腹12小时？2. 为什么B组（缺精氨酸）氨中毒？3. 为什么C组（缺精氨酸+鸟氨酸）没有氨中毒？"}], "answer": [{"type": "text", "content": "(1) 空腹12小时用于耗尽肝糖原储备和循环中的内源性氨基酸，降低基础代谢干扰，使动物主要依赖外源氨基酸供能，从而清晰观察尿素循环对膳食氨基酸的响应。2. B组缺乏精氨酸，而精氨酸是尿素循环的必需中间产物（氨甲酰磷酸+鸟氨酸→瓜氨酸→精氨酸琥珀酸→精氨酸→尿素+鸟氨酸），缺乏精氨酸导致循环中断，氨无法转化为尿素，血氨堆积导致中毒。3. C组添加的鸟氨酸可通过鸟氨酸转氨甲酰酶与氨甲酰磷酸反应生成瓜氨酸，后续生成精氨酸，从而绕过膳食精氨酸的绝对需求，恢复尿素循环功能。"}]}, {"question": [{"type": "text", "content": "拓扑异构酶Ⅱ（Topoisomerase Ⅱ）的相关问题。1. 有什么效果？2. 写两个该酶参与的过程。3. 治疗癌症可能的机理。"}], "answer": [{"type": "text", "content": "(1) 效果：催化DNA双链的瞬时断裂与再连接，改变DNA拓扑结构，可松弛正/负超螺旋，并介导双链DNA的解连环（decatenation）。2. 参与过程：DNA复制（移除复制叉前方形成的正超螺旋，并分离姊妹染色单体）；转录（释放RNA聚合酶行进时产生的扭转应力）；有丝分裂染色体凝集。3. 治疗机理：拓扑异构酶Ⅱ抑制剂（如依托泊苷、多柔比星）可捕获酶与DNA共价结合的切割中间体（“切割-再连接”平衡被破坏），导致DNA双链断裂积累，激活DNA损伤应答及凋亡途径；由于增殖活跃的癌细胞拓扑压力大，对该类药物敏感性更高，从而选择性杀伤。"}]}, {"question": [{"type": "text", "content": "请思考“镜像分子”和“镜像生命体”可能带来的机遇和挑战。"}], "answer": [{"type": "text", "content": "机遇：可作为新型生物材料或药物（D-肽药物具有抗蛋白酶降解特性，半衰期长）；用于镜像生物催化，合成自然界难以制备的立体专一化合物；为研究生命手性起源、对称性破缺及酶进化提供独特工具。挑战：安全风险极大，镜像生命体可能无法被免疫系统识别，逃逸天然免疫监视；缺乏天敌和降解酶系，可能导致生态入侵；技术合成门槛极高（需构建镜像DNA聚合酶和核糖体等）；需配套严格的生物遏制策略和伦理规范。"}]}, {"question": [{"type": "text", "content": "患者长期酗酒且几乎不进食，出现低血糖（40 mg/L）。推测原因和分子机制。"}], "answer": [{"type": "text", "content": "直接原因：糖原耗竭后，糖异生途径被酒精代谢强烈抑制。分子机制：酒精经乙醇脱氢酶氧化为乙醛，产生大量NADH，导致细胞质NADH/NAD⁺比值急剧升高。高NADH抑制糖异生的关键酶（如丙酮酸羧化酶、磷酸烯醇式丙酮酸羧激酶），并促进丙酮酸大量还原为乳酸，减少了糖异生前体（如丙氨酸、乳酸）向葡萄糖的转化；同时，肝脏糖原已耗尽，无法通过糖原分解补充血糖，最终导致严重低血糖。"}]}, {"question": [{"type": "text", "content": "HBG1/2 基因诱导治疗镰状细胞贫血。图中三种分子（根据常见临床及实验策略推断：羟基脲、丁酸盐/HDAC抑制剂、DNA甲基转移酶抑制剂）的治疗机制及缺点。"}], "answer": [{"type": "text", "content": "由于原题配图缺失具体分子结构，以下基于诱导胎儿血红蛋白（HbF）的经典策略补全：分子A（羟基脲）：机制为抑制核糖核苷酸还原酶，通过NO/cGMP通路及应激信号诱导γ-珠蛋白转录；缺点为骨髓抑制、个体差异大。分子B（丁酸盐/组蛋白去乙酰化酶抑制剂）：改变HBG启动子区域组蛋白乙酰化状态，开放染色质促进转录；缺点为半衰期短、需持续给药、胃肠反应明显。分子C（地西他滨/氮杂胞苷，DNA甲基转移酶抑制剂）：降低HBG启动子CpG岛甲基化水平，逆转发育性基因沉默；缺点为遗传毒性、骨髓抑制及致突变风险。"}]}, {"question": [{"type": "text", "content": "解析题：培养液含0.1 M草酰乙酸，供氧加丙酸盐（复合物Ⅱ抑制剂）促琥珀酸生成；切断氧气供N₂加丙酸盐抑琥珀酸生成。推测机理。"}], "answer": [{"type": "text", "content": "供氧条件下：呼吸链正常运转，NADH可被再氧化，TCA循环通量维持。丙酸盐抑制琥珀酸脱氢酶（复合物Ⅱ），使琥珀酸无法氧化为延胡索酸，导致琥珀酸直接累积；同时，草酰乙酸可通过苹果酸脱氢酶还原为苹果酸，苹果酸在复合物Ⅱ抑制处反向或经其他旁路也可转化为琥珀酸，故可见琥珀酸生成增加。缺氧（N₂）条件下：电子传递链受阻，NADH无法重新氧化，导致TCA循环停滞，草酰乙酸向苹果酸/柠檬酸的转化效率大幅降低；且缺乏氧化磷酸化提供的能量支持，草酰乙酸的代谢转化受阻，因此琥珀酸生成被抑制。"}]}, {"question": [{"type": "text", "content": "解析题：基因X表达经细胞因子处理-撤除-再处理呈现“低-高-爆发”趋势。提出假说并设计实验。"}], "answer": [{"type": "text", "content": "假说：细胞因子诱导了基因X启动子区域表观遗传修饰的改变（如组蛋白H3K4me3富集、DNA去甲基化），形成“转录记忆”；撤除因子后，转录因子解离但表观标记保留，mRNA合成回落；再刺激时，转录因子快速结合已开放的染色质模板，导致转录爆发性激活。实验设计：① 使用转录抑制剂（放线菌素D）追踪不同阶段mRNA半衰期，判断表达变化是否源于转录速率改变；② 染色质免疫共沉淀测序（ChIP-seq）检测基因X启动子区组蛋白H3K4me3、H3K27ac及RNA聚合酶II的富集动态；③ 使用组蛋白甲基转移酶抑制剂（如MLL抑制剂）或DNA甲基转移酶抑制剂预处理，观察第三阶段爆发性升高是否被抑制；④ 蛋白质印迹（Western blot）检测该细胞因子下游关键转录因子的磷酸化水平与核转位速率。"}]}];</script>
 
 <script type="text/babel">
-  const { useState, useLayoutEffect, useRef } = React;
+  const { useState, useEffect, useLayoutEffect, useRef, useCallback } = React;
 
   // 自定义 SVG 图标组件，替代有 bug 的 Lucide-React 库，解决 Infinity 冲突
   const CheckCircle2 = ({ size = 24, className = "" }) => (
@@ -788,6 +842,76 @@ const flashcards = [{"question": [{"type": "text", "content": "解释 miRNA 与 
     const [wrongAnswers, setWrongAnswers] = useState([]);
     const hasMcqs = mcqs.length > 0;
     const hasFlashcards = flashcards.length > 0;
+    const questionCount =
+      view === "quiz"
+        ? mcqs.length
+        : view === "flashcard"
+          ? flashcards.length
+          : 0;
+
+    const goToPreviousQuestion = useCallback(() => {
+      if (currentIdx <= 0) return false;
+
+      setCurrentIdx((index) => index - 1);
+      setFlipped(false);
+      return true;
+    }, [currentIdx]);
+
+    const goToNextQuestion = useCallback(() => {
+      if (currentIdx >= questionCount - 1) return false;
+
+      setCurrentIdx((index) => index + 1);
+      setFlipped(false);
+      return true;
+    }, [currentIdx, questionCount]);
+
+    const handleNextButton = useCallback(() => {
+      if (!goToNextQuestion()) setView("menu");
+    }, [goToNextQuestion]);
+
+    useEffect(() => {
+      if (view !== "quiz" && view !== "flashcard") return undefined;
+
+      const handleKeyDown = (event) => {
+        const target = event.target;
+        const isEditing =
+          target instanceof HTMLElement &&
+          (target.isContentEditable ||
+            ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName));
+        const isSidebarOpen = document
+          .querySelector(".sidebar-shell")
+          ?.classList.contains("is-open");
+
+        if (
+          event.defaultPrevented ||
+          event.altKey ||
+          event.ctrlKey ||
+          event.metaKey ||
+          isEditing ||
+          showNavModal ||
+          isSidebarOpen
+        ) {
+          return;
+        }
+
+        let didNavigate = false;
+        if (event.key === "ArrowLeft") {
+          didNavigate = goToPreviousQuestion();
+        } else if (event.key === "ArrowRight") {
+          didNavigate = goToNextQuestion();
+        }
+
+        if (didNavigate) event.preventDefault();
+      };
+
+      window.addEventListener("keydown", handleKeyDown);
+      return () => window.removeEventListener("keydown", handleKeyDown);
+    }, [
+      goToNextQuestion,
+      goToPreviousQuestion,
+      showNavModal,
+      view,
+    ]);
 
     const resetState = () => {
       setCurrentIdx(0);
@@ -942,9 +1066,9 @@ const flashcards = [{"question": [{"type": "text", "content": "解释 miRNA 与 
 
     if (view === "quiz") {
       return (
-        <div className="max-w-2xl mx-auto pt-1 px-0 sm:pt-4 sm:px-4 md:pt-8">
+        <div className="study-view quiz-view max-w-2xl mx-auto pt-1 px-0 sm:pt-4 sm:px-4 md:pt-8">
           {/* 导航头 */}
-          <div className="flex items-center justify-between gap-2 mb-4 sm:mb-6">
+          <div className="study-view-header flex items-center justify-between gap-2 mb-4 sm:mb-6">
             <button
               onClick={() => setView("menu")}
               className="min-h-11 shrink-0 text-slate-500 hover:text-slate-800 transition-colors flex items-center gap-1 font-medium"
@@ -966,7 +1090,7 @@ const flashcards = [{"question": [{"type": "text", "content": "解释 miRNA 与 
           </div>
 
           {/* 进度条 */}
-          <div className="w-full h-2 bg-slate-200 rounded-full mb-5 sm:mb-8 overflow-hidden">
+          <div className="study-view-progress w-full h-2 bg-slate-200 rounded-full mb-5 sm:mb-8 overflow-hidden">
             <div
               className="h-full bg-brand-800 transition-all duration-300"
               style={{ width: `${((currentIdx + 1) / mcqs.length) * 100}%` }}
@@ -1144,26 +1268,16 @@ const flashcards = [{"question": [{"type": "text", "content": "解释 miRNA 与 
           )}
           
           {/* 控制按钮 */}
-          <div className="flex items-center justify-between gap-2 sm:gap-4 mt-5 sm:mt-8">
+          <div className="study-view-controls flex items-center justify-between gap-2 sm:gap-4 mt-5 sm:mt-8">
             <button
               disabled={currentIdx === 0}
-              onClick={() => {
-                setCurrentIdx(currentIdx - 1);
-                setFlipped(false);
-              }}
+              onClick={goToPreviousQuestion}
               className="min-h-12 flex flex-1 sm:flex-none items-center justify-center gap-1 sm:gap-2 px-3 sm:px-6 py-3 bg-white text-slate-600 hover:text-slate-800 border rounded-xl font-bold shadow-sm transition-all disabled:opacity-30 disabled:pointer-events-none"
             >
               <ChevronLeft size={20} /> 上一题
             </button>
             <button
-              onClick={() => {
-                if (currentIdx < mcqs.length - 1) {
-                  setCurrentIdx(currentIdx + 1);
-                  setFlipped(false);
-                } else {
-                  setView("menu");
-                }
-              }}
+              onClick={handleNextButton}
               className="min-h-12 flex flex-1 sm:flex-none items-center justify-center gap-1 sm:gap-2 px-3 sm:px-6 py-3 bg-brand-800 hover:bg-brand-900 text-white rounded-xl font-bold shadow-sm transition-all"
             >
               {currentIdx === mcqs.length - 1 ? "完成复习" : "下一题"}{" "}
@@ -1208,9 +1322,9 @@ const flashcards = [{"question": [{"type": "text", "content": "解释 miRNA 与 
 
     if (view === "flashcard") {
       return (
-        <div className="flashcard-view min-h-full max-w-4xl mx-auto pt-1 px-0 sm:pt-4 sm:px-4 md:pt-8">
+        <div className="study-view flashcard-view min-h-full max-w-4xl mx-auto pt-1 px-0 sm:pt-4 sm:px-4 md:pt-8">
           {/* 导航头 */}
-          <div className="flex items-center justify-between gap-2 mb-4 sm:mb-6">
+          <div className="study-view-header flex items-center justify-between gap-2 mb-4 sm:mb-6">
             <button
               onClick={() => setView("menu")}
               className="min-h-11 shrink-0 text-slate-500 hover:text-slate-800 transition-colors flex items-center gap-1 font-medium"
@@ -1232,7 +1346,7 @@ const flashcards = [{"question": [{"type": "text", "content": "解释 miRNA 与 
           </div>
 
           {/* 进度条 */}
-          <div className="w-full h-2 bg-slate-200 rounded-full mb-5 sm:mb-8 overflow-hidden">
+          <div className="study-view-progress w-full h-2 bg-slate-200 rounded-full mb-5 sm:mb-8 overflow-hidden">
             <div
               className="h-full bg-brand-800 transition-all duration-300"
               style={{
@@ -1313,26 +1427,16 @@ const flashcards = [{"question": [{"type": "text", "content": "解释 miRNA 与 
           </div>
 
           {/* 控制按钮 */}
-          <div className="flex items-center justify-between gap-2 sm:gap-4 mt-5 sm:mt-8">
+          <div className="study-view-controls flex items-center justify-between gap-2 sm:gap-4 mt-5 sm:mt-8">
             <button
               disabled={currentIdx === 0}
-              onClick={() => {
-                setCurrentIdx(currentIdx - 1);
-                setFlipped(false);
-              }}
+              onClick={goToPreviousQuestion}
               className="min-h-12 flex flex-1 sm:flex-none items-center justify-center gap-1 sm:gap-2 px-3 sm:px-6 py-3 bg-white text-slate-600 hover:text-slate-800 border rounded-xl font-bold shadow-sm transition-all disabled:opacity-30 disabled:pointer-events-none"
             >
               <ChevronLeft size={20} /> 上一题
             </button>
             <button
-              onClick={() => {
-                if (currentIdx < flashcards.length - 1) {
-                  setCurrentIdx(currentIdx + 1);
-                  setFlipped(false);
-                } else {
-                  setView("menu");
-                }
-              }}
+              onClick={handleNextButton}
               className="min-h-12 flex flex-1 sm:flex-none items-center justify-center gap-1 sm:gap-2 px-3 sm:px-6 py-3 bg-brand-800 hover:bg-brand-900 text-white rounded-xl font-bold shadow-sm transition-all"
             >
               {currentIdx === flashcards.length - 1 ? "完成复习" : "下一题"}{" "}

@@ -68,6 +68,24 @@
           Roboto,
           sans-serif;
       }
+      .app-viewport {
+        height: 100vh;
+      }
+      @supports (height: 100dvh) {
+        .app-viewport {
+          height: 100dvh;
+        }
+      }
+      .app-main {
+        padding-bottom: max(
+          1.5rem,
+          calc(env(safe-area-inset-bottom, 0px) + 1.5rem)
+        ) !important;
+        scroll-padding-bottom: max(
+          1.5rem,
+          calc(env(safe-area-inset-bottom, 0px) + 1.5rem)
+        );
+      }
       #root {
         min-height: 100%;
       }
@@ -227,6 +245,42 @@
           left: 1rem;
         }
       }
+      @media (min-width: 768px) and (max-height: 820px) and (orientation: landscape) {
+        .app-viewport {
+          height: 100svh;
+        }
+        .app-main {
+          padding-top: 1rem !important;
+          padding-bottom: max(
+            5.5rem,
+            calc(env(safe-area-inset-bottom, 0px) + 4.5rem)
+          ) !important;
+          scroll-padding-bottom: max(
+            5.5rem,
+            calc(env(safe-area-inset-bottom, 0px) + 4.5rem)
+          );
+        }
+        .study-view {
+          padding-top: 0 !important;
+        }
+        .study-view-header {
+          margin-bottom: 0.75rem !important;
+        }
+        .study-view-progress {
+          margin-bottom: 1rem !important;
+        }
+        .study-view-controls {
+          margin-top: 1rem !important;
+        }
+        .flip-card {
+          min-height: clamp(20rem, calc(100vh - 14rem), 36rem);
+          min-height: clamp(20rem, calc(100svh - 14rem), 36rem);
+        }
+        .flip-card-front,
+        .flip-card-back {
+          padding: 1.25rem;
+        }
+      }
       @media (prefers-reduced-motion: reduce) {
         .sidebar-shell aside,
         .js-sidebar-backdrop {
@@ -235,7 +289,7 @@
       }
     </style>
   </head>
-  <body class="h-screen h-[100dvh] overflow-hidden bg-slate-50 text-slate-800">
+  <body class="app-viewport overflow-hidden bg-slate-50 text-slate-800">
     <div class="flex h-full w-full flex-col md:flex-row">
       <!-- 移动端顶部导航 -->
       <header class="flex h-14 shrink-0 items-center gap-3 border-b border-slate-200 bg-white px-3 md:hidden">
@@ -298,7 +352,7 @@
       </div>
       <div class="js-link-container ml-3 space-y-0.5 border-l-2 border-slate-200 pl-2 md:space-y-1 md:border-l md:border-slate-100">
         <!-- 子链接将会被 append 到这里 -->
-      <a href="../%E5%9F%BA%E7%A1%80%E5%8C%BB%E5%AD%A6%E7%A7%91%E5%AD%A6%E7%A0%94%E7%A9%B6%E6%8A%80%E8%83%BD%20I/2024-2025%E5%A4%8F%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025夏期末回忆卷<!-- 链接文本占位 -->
+      <a href="../%E5%9F%BA%E7%A1%80%E5%8C%BB%E5%AD%A6%E7%A7%91%E5%AD%A6%E7%A0%94%E7%A9%B6%E6%8A%80%E8%83%BD%20I/2024-2025%E6%98%A5%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025春期末回忆卷<!-- 链接文本占位 -->
     </a>
   <a href="../%E5%9F%BA%E7%A1%80%E5%8C%BB%E5%AD%A6%E7%A7%91%E5%AD%A6%E7%A0%94%E7%A9%B6%E6%8A%80%E8%83%BD%20I/2024-2025%E5%86%AC%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025冬期末回忆卷<!-- 链接文本占位 -->
     </a>
@@ -363,7 +417,7 @@
       </div>
       <div class="js-link-container ml-3 space-y-0.5 border-l-2 border-slate-200 pl-2 md:space-y-1 md:border-l md:border-slate-100">
         <!-- 子链接将会被 append 到这里 -->
-      <a href="../%E5%8C%BB%E5%AD%A6%E5%A4%A7%E6%95%B0%E6%8D%AE%E4%B8%8E%E5%BA%94%E7%94%A8/2024-2025%E5%86%AC%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025冬期末回忆卷<!-- 链接文本占位 -->
+      <a href="../%E5%8C%BB%E5%AD%A6%E5%A4%A7%E6%95%B0%E6%8D%AE%E4%B8%8E%E5%BA%94%E7%94%A8/2024-2025%E5%A4%8F%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025夏期末回忆卷<!-- 链接文本占位 -->
     </a>
   </div>
     </div>
@@ -421,14 +475,14 @@
 </div>
 
       <!-- 右侧主体内容区 -->
-      <main class=".js-quiz-container min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-contain p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:p-5 md:p-8"><div id="root"></div>
+      <main class=".js-quiz-container app-main min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-contain p-3 sm:p-5 md:p-8"><div id="root"></div>
 
 <script>const examMetadata = {"title": "24-25医学生命基础期末考", "description": "", "authors": "强基2401, 强基2402"};
 const mcqs = [{"question": [{"type": "text", "content": "随着温度降低，蛋白质分子会逐渐靠近，若继续降温，肽链上的巯基 -SH 会形成二硫键 -SH，升温后蛋白质分子会逐渐分开，但是二硫键会被保留。由以上信息，以下哪个选项是错误的："}], "options": [{"type": "text", "content": "巯基在氨基酸的 R 基上", "correct": false}, {"type": "text", "content": "冷冻和解冻前后蛋白质结构没有发生变化。", "correct": true}, {"type": "text", "content": "二硫键的形成不涉及肽键变化", "correct": false}, {"type": "text", "content": "抗冻植物对防止巯基氧化的能力更强", "correct": false}]}, {"question": [{"type": "text", "content": "Viral genome sizes vary greatly, ranging from four genes to several hundreds of genes. The following features of viruses are most closely correlated with genome size:"}], "options": [{"type": "text", "content": "The size of the capsid", "correct": true}, {"type": "text", "content": "RNA versus DNA genome type", "correct": false}, {"type": "text", "content": "Whether the genome is double-stranded or single-stranded", "correct": false}, {"type": "text", "content": "The complexity of glycoproteins on the capsid surface", "correct": false}]}, {"question": [{"type": "text", "content": "Which of the following is derived from the ancestral cyanobacterium?"}], "options": [{"type": "text", "content": "Chloroplast", "correct": true}, {"type": "text", "content": "mitochondrion", "correct": false}, {"type": "text", "content": "nydrogenosome", "correct": false}, {"type": "text", "content": "mitosome", "correct": false}, {"type": "text", "content": "The above two are correct", "correct": false}]}, {"question": [{"type": "text", "content": "关于细菌荚膜，以下说法错误的是："}], "options": [{"type": "text", "content": "有免疫原性可以区分细菌", "correct": false}, {"type": "text", "content": "使细菌会更耐受热", "correct": true}, {"type": "text", "content": "抗吞噬", "correct": false}, {"type": "text", "content": "机体内生成", "correct": false}]}, {"question": [{"type": "text", "content": "The ventilation of the lungs during inhalation is:"}], "options": [{"type": "text", "content": "A passive process", "correct": false}, {"type": "text", "content": "Driven by positive pressure", "correct": false}, {"type": "text", "content": "Caused by the downward movement of the diaphragm.", "correct": false}, {"type": "text", "content": "Caused by the outward movement of the rib cage.", "correct": false}, {"type": "text", "content": "An active process of forcing air into the lungs.", "correct": true}]}, {"question": [{"type": "text", "content": "关于Th1细胞对Tc细胞(CTL)的作用，以下正确的是："}], "options": [{"type": "text", "content": "Th1分泌细胞因子促进CTL的增殖、分化", "correct": true}, {"type": "text", "content": "Th1促进CTL膜上MHC I类受体表达", "correct": false}, {"type": "text", "content": "Th1促进CTL膜上MHC II类受体表达", "correct": false}, {"type": "text", "content": "Th1促进CTL分泌穿孔素", "correct": false}]}, {"question": [{"type": "text", "content": "关于人类进化的历程，以下顺序正确的是："}], "options": [{"type": "text", "content": "南方古猿-能人-直立人-智人", "correct": true}, {"type": "text", "content": "南方古猿-直立人-能人-智人", "correct": false}, {"type": "text", "content": "猿人-原始人-能人-直立人", "correct": false}, {"type": "text", "content": "猿人-原始人-直立人-能人", "correct": false}]}, {"question": [{"type": "text", "content": "In electrocardiogram："}], "options": [{"type": "text", "content": "The QT indicates that the ventricular is contacting(systole)", "correct": false}, {"type": "text", "content": "The QSR complex indicates that ventricular depolarization.", "correct": true}, {"type": "text", "content": "The time between the heartbreaks is approximatedly 8 milliseconds", "correct": false}, {"type": "text", "content": "The heartbreak will be slow when we take vigorous activities.", "correct": false}, {"type": "text", "content": "No information the electrocardiogram can provide", "correct": false}]}, {"question": [{"type": "text", "content": "关于人类的迁移，以下说法正确的是："}], "options": [{"type": "text", "content": "人类的迁移增大的疾病的风向，这是人类“成长的烦恼”", "correct": false}, {"type": "text", "content": "人类的迁移拓展生境，积累多样性，同时新的生境，也催生多样性", "correct": false}, {"type": "text", "content": "个体的病患与痛苦，也是群体进化的适应性过程", "correct": false}, {"type": "text", "content": "以上三个选项都是正确的", "correct": true}]}];
 const flashcards = [{"question": [{"type": "text", "content": "List 5 main processes by which cells communciate with each other in multicellular organisms.For each process state the key machanism uesed to transfer information."}], "answer": [{"type": "text", "content": "直接接触（通过间隙连接或黏附分子传递信号）；旁分泌（分泌局部化学信号）；内分泌（激素经血液循环传递）；自分泌（细胞作用于自身受体）；突触传递（神经递质跨突触传递）。"}]}];</script>
 
 <script type="text/babel">
-  const { useState, useLayoutEffect, useRef } = React;
+  const { useState, useEffect, useLayoutEffect, useRef, useCallback } = React;
 
   // 自定义 SVG 图标组件，替代有 bug 的 Lucide-React 库，解决 Infinity 冲突
   const CheckCircle2 = ({ size = 24, className = "" }) => (
@@ -788,6 +842,76 @@ const flashcards = [{"question": [{"type": "text", "content": "List 5 main proce
     const [wrongAnswers, setWrongAnswers] = useState([]);
     const hasMcqs = mcqs.length > 0;
     const hasFlashcards = flashcards.length > 0;
+    const questionCount =
+      view === "quiz"
+        ? mcqs.length
+        : view === "flashcard"
+          ? flashcards.length
+          : 0;
+
+    const goToPreviousQuestion = useCallback(() => {
+      if (currentIdx <= 0) return false;
+
+      setCurrentIdx((index) => index - 1);
+      setFlipped(false);
+      return true;
+    }, [currentIdx]);
+
+    const goToNextQuestion = useCallback(() => {
+      if (currentIdx >= questionCount - 1) return false;
+
+      setCurrentIdx((index) => index + 1);
+      setFlipped(false);
+      return true;
+    }, [currentIdx, questionCount]);
+
+    const handleNextButton = useCallback(() => {
+      if (!goToNextQuestion()) setView("menu");
+    }, [goToNextQuestion]);
+
+    useEffect(() => {
+      if (view !== "quiz" && view !== "flashcard") return undefined;
+
+      const handleKeyDown = (event) => {
+        const target = event.target;
+        const isEditing =
+          target instanceof HTMLElement &&
+          (target.isContentEditable ||
+            ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName));
+        const isSidebarOpen = document
+          .querySelector(".sidebar-shell")
+          ?.classList.contains("is-open");
+
+        if (
+          event.defaultPrevented ||
+          event.altKey ||
+          event.ctrlKey ||
+          event.metaKey ||
+          isEditing ||
+          showNavModal ||
+          isSidebarOpen
+        ) {
+          return;
+        }
+
+        let didNavigate = false;
+        if (event.key === "ArrowLeft") {
+          didNavigate = goToPreviousQuestion();
+        } else if (event.key === "ArrowRight") {
+          didNavigate = goToNextQuestion();
+        }
+
+        if (didNavigate) event.preventDefault();
+      };
+
+      window.addEventListener("keydown", handleKeyDown);
+      return () => window.removeEventListener("keydown", handleKeyDown);
+    }, [
+      goToNextQuestion,
+      goToPreviousQuestion,
+      showNavModal,
+      view,
+    ]);
 
     const resetState = () => {
       setCurrentIdx(0);
@@ -942,9 +1066,9 @@ const flashcards = [{"question": [{"type": "text", "content": "List 5 main proce
 
     if (view === "quiz") {
       return (
-        <div className="max-w-2xl mx-auto pt-1 px-0 sm:pt-4 sm:px-4 md:pt-8">
+        <div className="study-view quiz-view max-w-2xl mx-auto pt-1 px-0 sm:pt-4 sm:px-4 md:pt-8">
           {/* 导航头 */}
-          <div className="flex items-center justify-between gap-2 mb-4 sm:mb-6">
+          <div className="study-view-header flex items-center justify-between gap-2 mb-4 sm:mb-6">
             <button
               onClick={() => setView("menu")}
               className="min-h-11 shrink-0 text-slate-500 hover:text-slate-800 transition-colors flex items-center gap-1 font-medium"
@@ -966,7 +1090,7 @@ const flashcards = [{"question": [{"type": "text", "content": "List 5 main proce
           </div>
 
           {/* 进度条 */}
-          <div className="w-full h-2 bg-slate-200 rounded-full mb-5 sm:mb-8 overflow-hidden">
+          <div className="study-view-progress w-full h-2 bg-slate-200 rounded-full mb-5 sm:mb-8 overflow-hidden">
             <div
               className="h-full bg-brand-800 transition-all duration-300"
               style={{ width: `${((currentIdx + 1) / mcqs.length) * 100}%` }}
@@ -1144,26 +1268,16 @@ const flashcards = [{"question": [{"type": "text", "content": "List 5 main proce
           )}
           
           {/* 控制按钮 */}
-          <div className="flex items-center justify-between gap-2 sm:gap-4 mt-5 sm:mt-8">
+          <div className="study-view-controls flex items-center justify-between gap-2 sm:gap-4 mt-5 sm:mt-8">
             <button
               disabled={currentIdx === 0}
-              onClick={() => {
-                setCurrentIdx(currentIdx - 1);
-                setFlipped(false);
-              }}
+              onClick={goToPreviousQuestion}
               className="min-h-12 flex flex-1 sm:flex-none items-center justify-center gap-1 sm:gap-2 px-3 sm:px-6 py-3 bg-white text-slate-600 hover:text-slate-800 border rounded-xl font-bold shadow-sm transition-all disabled:opacity-30 disabled:pointer-events-none"
             >
               <ChevronLeft size={20} /> 上一题
             </button>
             <button
-              onClick={() => {
-                if (currentIdx < mcqs.length - 1) {
-                  setCurrentIdx(currentIdx + 1);
-                  setFlipped(false);
-                } else {
-                  setView("menu");
-                }
-              }}
+              onClick={handleNextButton}
               className="min-h-12 flex flex-1 sm:flex-none items-center justify-center gap-1 sm:gap-2 px-3 sm:px-6 py-3 bg-brand-800 hover:bg-brand-900 text-white rounded-xl font-bold shadow-sm transition-all"
             >
               {currentIdx === mcqs.length - 1 ? "完成复习" : "下一题"}{" "}
@@ -1208,9 +1322,9 @@ const flashcards = [{"question": [{"type": "text", "content": "List 5 main proce
 
     if (view === "flashcard") {
       return (
-        <div className="flashcard-view min-h-full max-w-4xl mx-auto pt-1 px-0 sm:pt-4 sm:px-4 md:pt-8">
+        <div className="study-view flashcard-view min-h-full max-w-4xl mx-auto pt-1 px-0 sm:pt-4 sm:px-4 md:pt-8">
           {/* 导航头 */}
-          <div className="flex items-center justify-between gap-2 mb-4 sm:mb-6">
+          <div className="study-view-header flex items-center justify-between gap-2 mb-4 sm:mb-6">
             <button
               onClick={() => setView("menu")}
               className="min-h-11 shrink-0 text-slate-500 hover:text-slate-800 transition-colors flex items-center gap-1 font-medium"
@@ -1232,7 +1346,7 @@ const flashcards = [{"question": [{"type": "text", "content": "List 5 main proce
           </div>
 
           {/* 进度条 */}
-          <div className="w-full h-2 bg-slate-200 rounded-full mb-5 sm:mb-8 overflow-hidden">
+          <div className="study-view-progress w-full h-2 bg-slate-200 rounded-full mb-5 sm:mb-8 overflow-hidden">
             <div
               className="h-full bg-brand-800 transition-all duration-300"
               style={{
@@ -1313,26 +1427,16 @@ const flashcards = [{"question": [{"type": "text", "content": "List 5 main proce
           </div>
 
           {/* 控制按钮 */}
-          <div className="flex items-center justify-between gap-2 sm:gap-4 mt-5 sm:mt-8">
+          <div className="study-view-controls flex items-center justify-between gap-2 sm:gap-4 mt-5 sm:mt-8">
             <button
               disabled={currentIdx === 0}
-              onClick={() => {
-                setCurrentIdx(currentIdx - 1);
-                setFlipped(false);
-              }}
+              onClick={goToPreviousQuestion}
               className="min-h-12 flex flex-1 sm:flex-none items-center justify-center gap-1 sm:gap-2 px-3 sm:px-6 py-3 bg-white text-slate-600 hover:text-slate-800 border rounded-xl font-bold shadow-sm transition-all disabled:opacity-30 disabled:pointer-events-none"
             >
               <ChevronLeft size={20} /> 上一题
             </button>
             <button
-              onClick={() => {
-                if (currentIdx < flashcards.length - 1) {
-                  setCurrentIdx(currentIdx + 1);
-                  setFlipped(false);
-                } else {
-                  setView("menu");
-                }
-              }}
+              onClick={handleNextButton}
               className="min-h-12 flex flex-1 sm:flex-none items-center justify-center gap-1 sm:gap-2 px-3 sm:px-6 py-3 bg-brand-800 hover:bg-brand-900 text-white rounded-xl font-bold shadow-sm transition-all"
             >
               {currentIdx === flashcards.length - 1 ? "完成复习" : "下一题"}{" "}

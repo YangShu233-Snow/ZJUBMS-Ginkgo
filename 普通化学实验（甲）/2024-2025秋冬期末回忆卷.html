@@ -68,6 +68,24 @@
           Roboto,
           sans-serif;
       }
+      .app-viewport {
+        height: 100vh;
+      }
+      @supports (height: 100dvh) {
+        .app-viewport {
+          height: 100dvh;
+        }
+      }
+      .app-main {
+        padding-bottom: max(
+          1.5rem,
+          calc(env(safe-area-inset-bottom, 0px) + 1.5rem)
+        ) !important;
+        scroll-padding-bottom: max(
+          1.5rem,
+          calc(env(safe-area-inset-bottom, 0px) + 1.5rem)
+        );
+      }
       #root {
         min-height: 100%;
       }
@@ -227,6 +245,42 @@
           left: 1rem;
         }
       }
+      @media (min-width: 768px) and (max-height: 820px) and (orientation: landscape) {
+        .app-viewport {
+          height: 100svh;
+        }
+        .app-main {
+          padding-top: 1rem !important;
+          padding-bottom: max(
+            5.5rem,
+            calc(env(safe-area-inset-bottom, 0px) + 4.5rem)
+          ) !important;
+          scroll-padding-bottom: max(
+            5.5rem,
+            calc(env(safe-area-inset-bottom, 0px) + 4.5rem)
+          );
+        }
+        .study-view {
+          padding-top: 0 !important;
+        }
+        .study-view-header {
+          margin-bottom: 0.75rem !important;
+        }
+        .study-view-progress {
+          margin-bottom: 1rem !important;
+        }
+        .study-view-controls {
+          margin-top: 1rem !important;
+        }
+        .flip-card {
+          min-height: clamp(20rem, calc(100vh - 14rem), 36rem);
+          min-height: clamp(20rem, calc(100svh - 14rem), 36rem);
+        }
+        .flip-card-front,
+        .flip-card-back {
+          padding: 1.25rem;
+        }
+      }
       @media (prefers-reduced-motion: reduce) {
         .sidebar-shell aside,
         .js-sidebar-backdrop {
@@ -235,7 +289,7 @@
       }
     </style>
   </head>
-  <body class="h-screen h-[100dvh] overflow-hidden bg-slate-50 text-slate-800">
+  <body class="app-viewport overflow-hidden bg-slate-50 text-slate-800">
     <div class="flex h-full w-full flex-col md:flex-row">
       <!-- 移动端顶部导航 -->
       <header class="flex h-14 shrink-0 items-center gap-3 border-b border-slate-200 bg-white px-3 md:hidden">
@@ -298,7 +352,7 @@
       </div>
       <div class="js-link-container ml-3 space-y-0.5 border-l-2 border-slate-200 pl-2 md:space-y-1 md:border-l md:border-slate-100">
         <!-- 子链接将会被 append 到这里 -->
-      <a href="../%E5%9F%BA%E7%A1%80%E5%8C%BB%E5%AD%A6%E7%A7%91%E5%AD%A6%E7%A0%94%E7%A9%B6%E6%8A%80%E8%83%BD%20I/2024-2025%E5%A4%8F%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025夏期末回忆卷<!-- 链接文本占位 -->
+      <a href="../%E5%9F%BA%E7%A1%80%E5%8C%BB%E5%AD%A6%E7%A7%91%E5%AD%A6%E7%A0%94%E7%A9%B6%E6%8A%80%E8%83%BD%20I/2024-2025%E6%98%A5%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025春期末回忆卷<!-- 链接文本占位 -->
     </a>
   <a href="../%E5%9F%BA%E7%A1%80%E5%8C%BB%E5%AD%A6%E7%A7%91%E5%AD%A6%E7%A0%94%E7%A9%B6%E6%8A%80%E8%83%BD%20I/2024-2025%E5%86%AC%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025冬期末回忆卷<!-- 链接文本占位 -->
     </a>
@@ -363,7 +417,7 @@
       </div>
       <div class="js-link-container ml-3 space-y-0.5 border-l-2 border-slate-200 pl-2 md:space-y-1 md:border-l md:border-slate-100">
         <!-- 子链接将会被 append 到这里 -->
-      <a href="../%E5%8C%BB%E5%AD%A6%E5%A4%A7%E6%95%B0%E6%8D%AE%E4%B8%8E%E5%BA%94%E7%94%A8/2024-2025%E5%86%AC%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025冬期末回忆卷<!-- 链接文本占位 -->
+      <a href="../%E5%8C%BB%E5%AD%A6%E5%A4%A7%E6%95%B0%E6%8D%AE%E4%B8%8E%E5%BA%94%E7%94%A8/2024-2025%E5%A4%8F%E6%9C%9F%E6%9C%AB%E5%9B%9E%E5%BF%86%E5%8D%B7.html" class="js-link-item block min-h-11 w-full rounded-lg px-3 py-3 text-left text-sm text-slate-600 transition-all hover:bg-slate-50 hover:text-slate-900 md:min-h-0 md:py-1.5 md:text-xs">2024-2025夏期末回忆卷<!-- 链接文本占位 -->
     </a>
   </div>
     </div>
@@ -421,14 +475,14 @@
 </div>
 
       <!-- 右侧主体内容区 -->
-      <main class=".js-quiz-container min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-contain p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:p-5 md:p-8"><div id="root"></div>
+      <main class=".js-quiz-container app-main min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-contain p-3 sm:p-5 md:p-8"><div id="root"></div>
 
 <script>const examMetadata = {"title": "2024-2025 普通化学实验(甲) 期末理论考", "description": "", "authors": ""};
 const mcqs = [];
-const flashcards = [{"question": [{"type": "text", "content": "化学品安全技术说明书的英文缩写是 ____。"}], "answer": [{"type": "text", "content": "MSDS"}]}, {"question": [{"type": "text", "content": "pH = 10.85 的有效数字是 _。化学实验中，偏差反应的是实验的 ，误差反应的是 _（以上两空填入：准确度/精密度/灵敏度）。多次取平均可以最小化 ，用同一个设备可以最小化 ____（以上两空填入：系统误差/随机误差/过失误差）。"}], "answer": [{"type": "text", "content": "两位；精密度；准确度；随机误差；系统误差"}]}, {"question": [{"type": "text", "content": "测定自制乙酰水杨酸中水杨酸总酸度测定中，采用的滴定溶液是 _，该溶液采用 _（填入化学名称）进行标定。实验要求滴定前在锥形瓶中加入 30 mL 蒸馏水，某同学多加了 20 mL，对实验结果的影响是 ____（偏大、偏小、几乎不变）。"}], "answer": [{"type": "text", "content": "NaOH 标准溶液；邻苯二甲酸氢钾；几乎不变"}]}, {"question": [{"type": "text", "content": "在制备三草酸合铁(III)酸钾实验中，发生了什么类型的化学反应：_，，_ 和酸碱反应。甲同学蒸发三草酸合铁(III)酸钾时候发现溶液浑浊，并且有黄色沉淀产生，可能的原因是 。乙同学发现最终的产品有白色颗粒，可能的原因是 ____。"}], "answer": [{"type": "text", "content": "氧化还原反应；复分解反应；配位反应；加热过度导致配合物分解产生氢氧化铁沉淀；未完全溶解的草酸钾或氯化钾晶体"}]}, {"question": [{"type": "text", "content": "在化学反应速率和活化能测定中，探究浓度对化学反应速率的影响时加入硫酸钾与硝酸钾的作用是 _。加入水后，反应速率的变化是 _（增大，减小，不变）。有同学发现反应溶液变蓝一段时间后溶液变为棕黄色，原因是 ____。"}], "answer": [{"type": "text", "content": "保持反应体系离子强度和总浓度不变；减小；过量的碘离子被空气中的氧气氧化为碘单质"}]}, {"question": [{"type": "text", "content": "采用薄层色谱进行定性分析依据是 _，实验采用的硅胶 GF₂₅₄ 中 F₂₅₄ 指的是 _，采用的粘结剂是 ____。"}], "answer": [{"type": "text", "content": "比较未知物与标准物在相同条件下的比移值 (Rf 值)；含 254 nm 波长下具有荧光的指示剂；羧甲基纤维素钠 (CMC-Na)"}]}, {"question": [{"type": "text", "content": "电镀铜实验中采用的电镀液主要成分是 _（化学式），在电镀过程中，待镀件作 _ 极，用作镀层的金属板作 ____ 极。"}], "answer": [{"type": "text", "content": "CuSO₄；阴；阳"}]}, {"question": [{"type": "text", "content": "在制取手工皂的实验中，有同学想用紫甘蓝提取液制作出蓝色的手工皂，老师说这不可能，因为____。"}], "answer": [{"type": "text", "content": "手工皂（油脂与 NaOH 反应）呈碱性，紫甘蓝指示剂在碱性条件下显示绿色或黄色，不会显示蓝色。"}]}, {"question": [{"type": "text", "content": "本学期实验中用了两个离子选择电极，分别是 _，。其各自的个核心部件分别是 _，。"}], "answer": [{"type": "text", "content": "氟离子选择电极；pH 玻璃电极；氟化镧单晶膜；玻璃敏感膜"}]}, {"question": [{"type": "text", "content": "测定果蔬中维生素 C 含量的实验里，测定维生素 C 含量用的滴定标准溶液成分是 _，其在碱性条件下是  色，在碱性条件下是 _ 色。实验中用到的仪器有研钵，过滤用的烧杯，容量瓶，锥形瓶，滴定管，移液管，其中  要求干燥，____ 要求进行润洗。"}], "answer": [{"type": "text", "content": "2,6-二氯酚靛酚；蓝；无色；容量瓶；滴定管和移液管"}]}, {"question": [{"type": "text", "content": "在茶叶氟离子含量测定中采用了两种方法，分别是 _ 和 。在氟离子标准溶液中加入了 _，其有三个作用，分别是 ，_ 和 _。"}], "answer": [{"type": "text", "content": "标准曲线法；标准加入法；总离子强度调节缓冲剂 (TISAB)；固定溶液的离子强度；掩蔽 Al³⁺、Fe³⁺ 等干扰离子；调节溶液的 pH 值"}]}, {"question": [{"type": "text", "content": "分析天平称量的三种方法是什么？分别适合什么情况？"}], "answer": [{"type": "text", "content": "(1) 直接称量法：适用于称量不易吸潮、不与空气反应的固体试样，如称量器皿或基准物质。2. 差减称量法（递减称量法）：适用于称取多份易吸湿、易氧化或易与 CO₂ 反应的样品。3. 固定质量称量法（增量法）：适用于称取某一固定质量的样品，常用于配制标准溶液。"}]}, {"question": [{"type": "text", "content": "蓝晒法的实验原理是什么？影响其成像质量的因素有什么？"}], "answer": [{"type": "text", "content": "实验原理：利用柠檬酸铁铵和铁氰化钾在紫外光照射下发生光化学反应，生成不溶性的蓝色络合物（普鲁士蓝），未被光照的部分被水洗去，从而形成蓝色图像。影响因素：光照强度和时间、纸张类型、试剂配比、涂布均匀度、水洗时间等。"}]}, {"question": [{"type": "text", "content": "量气法测量理想气体常数 R 的实验中：(1) 为什么量气管读数的时候需要保持水准瓶中液面与量气管中液面水平。(2) 大部分同学 R 值偏小，可能的原因是？(3) 一部分同学的 R 值偏大，可能的原因是？(4) 如何检验装置的气密性？"}], "answer": [{"type": "text", "content": "(1) 为了使量气管内气体压力与外界大气压相等，避免液面差引入的附加压力造成读数误差。(2) 镁带未完全反应或酸不足；气体未冷却至室温就读数；量气管读数时未调平导致压力大于大气压。(3) 量气管刻度读数错误；镁带中含有与酸反应的其他杂质；装置漏气。(4) 连接好装置后，将水准瓶下移一段距离后固定，观察量气管中液面是否发生变化。若液面不变，则气密性良好。"}]}, {"question": [{"type": "text", "content": "在分光光度法测定自制乙酰水杨酸中残留水杨酸的实验中：(1) 分光光度计组成和各个部分功能。(2) 按照实验绘制图表的要求补全下图图表中的横、纵坐标标题与图表标题。(3) 依据图表，测定时候应该选取什么波长，理由是什么。(4) 已知测定溶液的摩尔吸光系数 ε = 1.7×10⁴ L·mol⁻¹·cm⁻¹，比色皿的厚度是 b = 1 cm，为了保证实验结果准确性，需要控制吸光度 A 在 0.2~0.7 的范围，则溶液的浓度应该在什么范围内？"}, {"type": "image", "src": "../assets/24-25普化实验甲理论考回忆卷-简答题-5-e5b83326e98b.png", "alt": "分光光度法图表", "caption": "分光光度法图表"}], "answer": [{"type": "text", "content": "(1) 光源（提供稳定的连续光谱）、单色器（分离出所需波长的单色光）、样品室（放置比色皿）、检测器（将光信号转换为电信号）、信号显示系统（显示或记录测量结果）。(2) 图表标题：水杨酸吸收光谱图；横坐标：波长 (nm)；纵坐标：吸光度 A。(3) 应选取最大吸收波长，约为 530 nm，因为在此波长处吸光度最大，测定灵敏度最高，且能够最大程度降低其他组分干扰。(4) 浓度范围为 c = A/(ε·b)，所以 c_min = 0.2/(1.7×10⁴ × 1) ≈ 1.18×10⁻⁵ mol/L，c_max = 0.7/(1.7×10⁴ × 1) ≈ 4.12×10⁻⁵ mol/L。"}]}, {"question": [{"type": "text", "content": "草酸亚铁难溶于水，其饱和溶液可以视为无限稀释溶液，已知其 Ksp，采用电导率法设计实验求草酸亚铁的 Λₘ∞，并写出相应的实验方案和计算过程。FeC₂O₄ → Fe²⁺ + C₂O₄²⁻"}], "answer": [{"type": "text", "content": "实验方案：1. 制备草酸亚铁的饱和溶液，过滤得到澄清溶液。2. 用电导率仪测定该饱和溶液的电导率 κ(溶液)。3. 测定用于配制饱和溶液的去离子水的电导率 κ(水)。4. 计算草酸亚铁的电导率 κ(FeC₂O₄) = κ(溶液) - κ(水)。计算过程：已知 Ksp = [Fe²⁺][C₂O₄²⁻] = s²，因此溶解度 s = √Ksp (mol/L)。溶液无限稀释时，摩尔电导率 Λₘ∞ = κ(FeC₂O₄) / c，其中 c 为草酸亚铁的摩尔浓度 (s)。因草酸亚铁为难溶强电解质，其饱和溶液浓度即为 s，所以 Λₘ∞ = (κ(FeC₂O₄) / s) × 1000 (S·cm²·mol⁻¹)，注意单位换算。"}]}];</script>
+const flashcards = [{"question": [{"type": "text", "content": "化学品安全技术说明书的英文缩写是 ____。"}], "answer": [{"type": "text", "content": "MSDS"}]}, {"question": [{"type": "text", "content": "pH = 10.85 的有效数字是 _。化学实验中，偏差反应的是实验的 ，误差反应的是 _（以上两空填入：准确度/精密度/灵敏度）。多次取平均可以最小化 ，用同一个设备可以最小化 ____（以上两空填入：系统误差/随机误差/过失误差）。"}], "answer": [{"type": "text", "content": "两位；精密度；准确度；随机误差；系统误差"}]}, {"question": [{"type": "text", "content": "测定自制乙酰水杨酸中水杨酸总酸度测定中，采用的滴定溶液是 _，该溶液采用 _（填入化学名称）进行标定。实验要求滴定前在锥形瓶中加入 30 mL 蒸馏水，某同学多加了 20 mL，对实验结果的影响是 ____（偏大、偏小、几乎不变）。"}], "answer": [{"type": "text", "content": "NaOH 标准溶液；邻苯二甲酸氢钾；几乎不变"}]}, {"question": [{"type": "text", "content": "在制备三草酸合铁(III)酸钾实验中，发生了什么类型的化学反应：_，，_ 和酸碱反应。甲同学蒸发三草酸合铁(III)酸钾时候发现溶液浑浊，并且有黄色沉淀产生，可能的原因是 。乙同学发现最终的产品有白色颗粒，可能的原因是 ____。"}], "answer": [{"type": "text", "content": "氧化还原反应；复分解反应；配位反应；加热过度导致配合物分解产生氢氧化铁沉淀；未完全溶解的草酸钾或氯化钾晶体"}]}, {"question": [{"type": "text", "content": "在化学反应速率和活化能测定中，探究浓度对化学反应速率的影响时加入硫酸钾与硝酸钾的作用是 _。加入水后，反应速率的变化是 _（增大，减小，不变）。有同学发现反应溶液变蓝一段时间后溶液变为棕黄色，原因是 ____。"}], "answer": [{"type": "text", "content": "保持反应体系离子强度和总浓度不变；减小；过量的碘离子被空气中的氧气氧化为碘单质"}]}, {"question": [{"type": "text", "content": "采用薄层色谱进行定性分析依据是 _，实验采用的硅胶 GF₂₅₄ 中 F₂₅₄ 指的是 _，采用的粘结剂是 ____。"}], "answer": [{"type": "text", "content": "比较未知物与标准物在相同条件下的比移值 (Rf 值)；含 254 nm 波长下具有荧光的指示剂；羧甲基纤维素钠 (CMC-Na)"}]}, {"question": [{"type": "text", "content": "电镀铜实验中采用的电镀液主要成分是 _（化学式），在电镀过程中，待镀件作 _ 极，用作镀层的金属板作 ____ 极。"}], "answer": [{"type": "text", "content": "CuSO₄；阴；阳"}]}, {"question": [{"type": "text", "content": "在制取手工皂的实验中，有同学想用紫甘蓝提取液制作出蓝色的手工皂，老师说这不可能，因为____。"}], "answer": [{"type": "text", "content": "手工皂（油脂与 NaOH 反应）呈碱性，紫甘蓝指示剂在碱性条件下显示绿色或黄色，不会显示蓝色。"}]}, {"question": [{"type": "text", "content": "本学期实验中用了两个离子选择电极，分别是 _，_。其各自的个核心部件分别是 ，。"}], "answer": [{"type": "text", "content": "氟离子选择电极；pH 玻璃电极；氟化镧单晶膜；玻璃敏感膜"}]}, {"question": [{"type": "text", "content": "测定果蔬中维生素 C 含量的实验里，测定维生素 C 含量用的滴定标准溶液成分是 _，其在碱性条件下是  色，在碱性条件下是 _ 色。实验中用到的仪器有研钵，过滤用的烧杯，容量瓶，锥形瓶，滴定管，移液管，其中  要求干燥，____ 要求进行润洗。"}], "answer": [{"type": "text", "content": "2,6-二氯酚靛酚；蓝；无色；容量瓶；滴定管和移液管"}]}, {"question": [{"type": "text", "content": "在茶叶氟离子含量测定中采用了两种方法，分别是 _ 和 。在氟离子标准溶液中加入了 _，其有三个作用，分别是 ，_ 和 _。"}], "answer": [{"type": "text", "content": "标准曲线法；标准加入法；总离子强度调节缓冲剂 (TISAB)；固定溶液的离子强度；掩蔽 Al³⁺、Fe³⁺ 等干扰离子；调节溶液的 pH 值"}]}, {"question": [{"type": "text", "content": "分析天平称量的三种方法是什么？分别适合什么情况？"}], "answer": [{"type": "text", "content": "(1) 直接称量法：适用于称量不易吸潮、不与空气反应的固体试样，如称量器皿或基准物质。2. 差减称量法（递减称量法）：适用于称取多份易吸湿、易氧化或易与 CO₂ 反应的样品。3. 固定质量称量法（增量法）：适用于称取某一固定质量的样品，常用于配制标准溶液。"}]}, {"question": [{"type": "text", "content": "蓝晒法的实验原理是什么？影响其成像质量的因素有什么？"}], "answer": [{"type": "text", "content": "实验原理：利用柠檬酸铁铵和铁氰化钾在紫外光照射下发生光化学反应，生成不溶性的蓝色络合物（普鲁士蓝），未被光照的部分被水洗去，从而形成蓝色图像。影响因素：光照强度和时间、纸张类型、试剂配比、涂布均匀度、水洗时间等。"}]}, {"question": [{"type": "text", "content": "量气法测量理想气体常数 R 的实验中：(1) 为什么量气管读数的时候需要保持水准瓶中液面与量气管中液面水平。(2) 大部分同学 R 值偏小，可能的原因是？(3) 一部分同学的 R 值偏大，可能的原因是？(4) 如何检验装置的气密性？"}], "answer": [{"type": "text", "content": "(1) 为了使量气管内气体压力与外界大气压相等，避免液面差引入的附加压力造成读数误差。(2) 镁带未完全反应或酸不足；气体未冷却至室温就读数；量气管读数时未调平导致压力大于大气压。(3) 量气管刻度读数错误；镁带中含有与酸反应的其他杂质；装置漏气。(4) 连接好装置后，将水准瓶下移一段距离后固定，观察量气管中液面是否发生变化。若液面不变，则气密性良好。"}]}, {"question": [{"type": "text", "content": "在分光光度法测定自制乙酰水杨酸中残留水杨酸的实验中：(1) 分光光度计组成和各个部分功能。(2) 按照实验绘制图表的要求补全下图图表中的横、纵坐标标题与图表标题。(3) 依据图表，测定时候应该选取什么波长，理由是什么。(4) 已知测定溶液的摩尔吸光系数 ε = 1.7×10⁴ L·mol⁻¹·cm⁻¹，比色皿的厚度是 b = 1 cm，为了保证实验结果准确性，需要控制吸光度 A 在 0.2~0.7 的范围，则溶液的浓度应该在什么范围内？"}, {"type": "image", "src": "../assets/24-25普化实验甲理论考回忆卷-简答题-5-e5b83326e98b.png", "alt": "分光光度法图表", "caption": "分光光度法图表"}], "answer": [{"type": "text", "content": "(1) 光源（提供稳定的连续光谱）、单色器（分离出所需波长的单色光）、样品室（放置比色皿）、检测器（将光信号转换为电信号）、信号显示系统（显示或记录测量结果）。(2) 图表标题：水杨酸吸收光谱图；横坐标：波长 (nm)；纵坐标：吸光度 A。(3) 应选取最大吸收波长，约为 530 nm，因为在此波长处吸光度最大，测定灵敏度最高，且能够最大程度降低其他组分干扰。(4) 浓度范围为 c = A/(ε·b)，所以 c_min = 0.2/(1.7×10⁴ × 1) ≈ 1.18×10⁻⁵ mol/L，c_max = 0.7/(1.7×10⁴ × 1) ≈ 4.12×10⁻⁵ mol/L。"}]}, {"question": [{"type": "text", "content": "草酸亚铁难溶于水，其饱和溶液可以视为无限稀释溶液，已知其 Ksp，采用电导率法设计实验求草酸亚铁的 Λₘ∞，并写出相应的实验方案和计算过程。$$\\ce{FeC2O4 \\rightarrow Fe2+ + C2O4^{2-}}$$"}], "answer": [{"type": "text", "content": "实验方案：\n    (1) 制备草酸亚铁的饱和溶液，过滤得到澄清溶液。\n    (2) 用电导率仪测定该饱和溶液的电导率 κ(溶液)。\n    (3) 测定用于配制饱和溶液的去离子水的电导率 κ(水)。\n    (4) 计算草酸亚铁的电导率 κ(FeC₂O₄) = κ(溶液) - κ(水)。\n        计算过程：已知 Ksp = [Fe²⁺][C₂O₄²⁻] = s²，因此溶解度 s = √Ksp (mol/L)。溶液无限稀释时，摩尔电导率 Λₘ∞ = κ(FeC₂O₄) / c，其中 c 为草酸亚铁的摩尔浓度 (s)。因草酸亚铁为难溶强电解质，其饱和溶液浓度即为 s，所以 Λₘ∞ = (κ(FeC₂O₄) / s) × 1000 (S·cm²·mol⁻¹)，注意单位换算。"}]}];</script>
 
 <script type="text/babel">
-  const { useState, useLayoutEffect, useRef } = React;
+  const { useState, useEffect, useLayoutEffect, useRef, useCallback } = React;
 
   // 自定义 SVG 图标组件，替代有 bug 的 Lucide-React 库，解决 Infinity 冲突
   const CheckCircle2 = ({ size = 24, className = "" }) => (
@@ -788,6 +842,76 @@ const flashcards = [{"question": [{"type": "text", "content": "化学品安全�
     const [wrongAnswers, setWrongAnswers] = useState([]);
     const hasMcqs = mcqs.length > 0;
     const hasFlashcards = flashcards.length > 0;
+    const questionCount =
+      view === "quiz"
+        ? mcqs.length
+        : view === "flashcard"
+          ? flashcards.length
+          : 0;
+
+    const goToPreviousQuestion = useCallback(() => {
+      if (currentIdx <= 0) return false;
+
+      setCurrentIdx((index) => index - 1);
+      setFlipped(false);
+      return true;
+    }, [currentIdx]);
+
+    const goToNextQuestion = useCallback(() => {
+      if (currentIdx >= questionCount - 1) return false;
+
+      setCurrentIdx((index) => index + 1);
+      setFlipped(false);
+      return true;
+    }, [currentIdx, questionCount]);
+
+    const handleNextButton = useCallback(() => {
+      if (!goToNextQuestion()) setView("menu");
+    }, [goToNextQuestion]);
+
+    useEffect(() => {
+      if (view !== "quiz" && view !== "flashcard") return undefined;
+
+      const handleKeyDown = (event) => {
+        const target = event.target;
+        const isEditing =
+          target instanceof HTMLElement &&
+          (target.isContentEditable ||
+            ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName));
+        const isSidebarOpen = document
+          .querySelector(".sidebar-shell")
+          ?.classList.contains("is-open");
+
+        if (
+          event.defaultPrevented ||
+          event.altKey ||
+          event.ctrlKey ||
+          event.metaKey ||
+          isEditing ||
+          showNavModal ||
+          isSidebarOpen
+        ) {
+          return;
+        }
+
+        let didNavigate = false;
+        if (event.key === "ArrowLeft") {
+          didNavigate = goToPreviousQuestion();
+        } else if (event.key === "ArrowRight") {
+          didNavigate = goToNextQuestion();
+        }
+
+        if (didNavigate) event.preventDefault();
+      };
+
+      window.addEventListener("keydown", handleKeyDown);
+      return () => window.removeEventListener("keydown", handleKeyDown);
+    }, [
+      goToNextQuestion,
+      goToPreviousQuestion,
+      showNavModal,
+      view,
+    ]);
 
     const resetState = () => {
       setCurrentIdx(0);
@@ -942,9 +1066,9 @@ const flashcards = [{"question": [{"type": "text", "content": "化学品安全�
 
     if (view === "quiz") {
       return (
-        <div className="max-w-2xl mx-auto pt-1 px-0 sm:pt-4 sm:px-4 md:pt-8">
+        <div className="study-view quiz-view max-w-2xl mx-auto pt-1 px-0 sm:pt-4 sm:px-4 md:pt-8">
           {/* 导航头 */}
-          <div className="flex items-center justify-between gap-2 mb-4 sm:mb-6">
+          <div className="study-view-header flex items-center justify-between gap-2 mb-4 sm:mb-6">
             <button
               onClick={() => setView("menu")}
               className="min-h-11 shrink-0 text-slate-500 hover:text-slate-800 transition-colors flex items-center gap-1 font-medium"
@@ -966,7 +1090,7 @@ const flashcards = [{"question": [{"type": "text", "content": "化学品安全�
           </div>
 
           {/* 进度条 */}
-          <div className="w-full h-2 bg-slate-200 rounded-full mb-5 sm:mb-8 overflow-hidden">
+          <div className="study-view-progress w-full h-2 bg-slate-200 rounded-full mb-5 sm:mb-8 overflow-hidden">
             <div
               className="h-full bg-brand-800 transition-all duration-300"
               style={{ width: `${((currentIdx + 1) / mcqs.length) * 100}%` }}
@@ -1144,26 +1268,16 @@ const flashcards = [{"question": [{"type": "text", "content": "化学品安全�
           )}
           
           {/* 控制按钮 */}
-          <div className="flex items-center justify-between gap-2 sm:gap-4 mt-5 sm:mt-8">
+          <div className="study-view-controls flex items-center justify-between gap-2 sm:gap-4 mt-5 sm:mt-8">
             <button
               disabled={currentIdx === 0}
-              onClick={() => {
-                setCurrentIdx(currentIdx - 1);
-                setFlipped(false);
-              }}
+              onClick={goToPreviousQuestion}
               className="min-h-12 flex flex-1 sm:flex-none items-center justify-center gap-1 sm:gap-2 px-3 sm:px-6 py-3 bg-white text-slate-600 hover:text-slate-800 border rounded-xl font-bold shadow-sm transition-all disabled:opacity-30 disabled:pointer-events-none"
             >
               <ChevronLeft size={20} /> 上一题
             </button>
             <button
-              onClick={() => {
-                if (currentIdx < mcqs.length - 1) {
-                  setCurrentIdx(currentIdx + 1);
-                  setFlipped(false);
-                } else {
-                  setView("menu");
-                }
-              }}
+              onClick={handleNextButton}
               className="min-h-12 flex flex-1 sm:flex-none items-center justify-center gap-1 sm:gap-2 px-3 sm:px-6 py-3 bg-brand-800 hover:bg-brand-900 text-white rounded-xl font-bold shadow-sm transition-all"
             >
               {currentIdx === mcqs.length - 1 ? "完成复习" : "下一题"}{" "}
@@ -1208,9 +1322,9 @@ const flashcards = [{"question": [{"type": "text", "content": "化学品安全�
 
     if (view === "flashcard") {
       return (
-        <div className="flashcard-view min-h-full max-w-4xl mx-auto pt-1 px-0 sm:pt-4 sm:px-4 md:pt-8">
+        <div className="study-view flashcard-view min-h-full max-w-4xl mx-auto pt-1 px-0 sm:pt-4 sm:px-4 md:pt-8">
           {/* 导航头 */}
-          <div className="flex items-center justify-between gap-2 mb-4 sm:mb-6">
+          <div className="study-view-header flex items-center justify-between gap-2 mb-4 sm:mb-6">
             <button
               onClick={() => setView("menu")}
               className="min-h-11 shrink-0 text-slate-500 hover:text-slate-800 transition-colors flex items-center gap-1 font-medium"
@@ -1232,7 +1346,7 @@ const flashcards = [{"question": [{"type": "text", "content": "化学品安全�
           </div>
 
           {/* 进度条 */}
-          <div className="w-full h-2 bg-slate-200 rounded-full mb-5 sm:mb-8 overflow-hidden">
+          <div className="study-view-progress w-full h-2 bg-slate-200 rounded-full mb-5 sm:mb-8 overflow-hidden">
             <div
               className="h-full bg-brand-800 transition-all duration-300"
               style={{
@@ -1313,26 +1427,16 @@ const flashcards = [{"question": [{"type": "text", "content": "化学品安全�
           </div>
 
           {/* 控制按钮 */}
-          <div className="flex items-center justify-between gap-2 sm:gap-4 mt-5 sm:mt-8">
+          <div className="study-view-controls flex items-center justify-between gap-2 sm:gap-4 mt-5 sm:mt-8">
             <button
               disabled={currentIdx === 0}
-              onClick={() => {
-                setCurrentIdx(currentIdx - 1);
-                setFlipped(false);
-              }}
+              onClick={goToPreviousQuestion}
               className="min-h-12 flex flex-1 sm:flex-none items-center justify-center gap-1 sm:gap-2 px-3 sm:px-6 py-3 bg-white text-slate-600 hover:text-slate-800 border rounded-xl font-bold shadow-sm transition-all disabled:opacity-30 disabled:pointer-events-none"
             >
               <ChevronLeft size={20} /> 上一题
             </button>
             <button
-              onClick={() => {
-                if (currentIdx < flashcards.length - 1) {
-                  setCurrentIdx(currentIdx + 1);
-                  setFlipped(false);
-                } else {
-                  setView("menu");
-                }
-              }}
+              onClick={handleNextButton}
               className="min-h-12 flex flex-1 sm:flex-none items-center justify-center gap-1 sm:gap-2 px-3 sm:px-6 py-3 bg-brand-800 hover:bg-brand-900 text-white rounded-xl font-bold shadow-sm transition-all"
             >
               {currentIdx === flashcards.length - 1 ? "完成复习" : "下一题"}{" "}
